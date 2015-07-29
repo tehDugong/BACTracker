@@ -62,7 +62,7 @@ public class BACActivity extends Activity
         Log.i(TAG, "Button pressed");
 
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/dummy");
-        putDataMapReq.getDataMap().putString("key", "value");
+        putDataMapReq.getDataMap().putString("key", String.valueOf(System.currentTimeMillis()));
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
 
         PendingResult<DataApi.DataItemResult> pendingResult =

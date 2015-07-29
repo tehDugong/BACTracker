@@ -37,6 +37,7 @@ public class PhoneListeningService extends WearableListenerService {
         // to the node that created the data item.
         for (DataEvent event : dataEvents) {
             Uri uri = event.getDataItem().getUri();
+            Log.i(TAG, uri.toString());
 
 
             // Get the node id from the host value of the URI
