@@ -1,5 +1,6 @@
 package org.cs160.bactracker;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
@@ -38,7 +39,6 @@ public class PhoneListeningService extends WearableListenerService {
         for (DataEvent event : dataEvents) {
             Uri uri = event.getDataItem().getUri();
             Log.i(TAG, uri.toString());
-
 
             // Get the node id from the host value of the URI
             // String nodeId = uri.getHost();
