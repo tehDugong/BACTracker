@@ -16,11 +16,6 @@
         <activity
             android:name=".BACActivity"
             android:label="@string/title_activity_bac" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <service
@@ -34,7 +29,6 @@
             android:label="@string/title_activity_start_drinking" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -45,11 +39,6 @@
         <activity
             android:name=".CountDrinks"
             android:label="@string/title_activity_count_drinks" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
