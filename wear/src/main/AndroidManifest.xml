@@ -38,6 +38,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".DrinksListActivity"
+            android:label="@string/title_activity_drinks_list" >
+        </activity>
+        <activity
+            android:name=".CountDrinks"
+            android:label="@string/title_activity_count_drinks" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
