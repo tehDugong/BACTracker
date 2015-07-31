@@ -6,16 +6,26 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 public class PhoneListeningService extends WearableListenerService {
 
     private final String TAG = "PhoneListeningService";
+    private final String PATH = "/bac";
+    public static final String PREFS_NAME = "DrinksFile";
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
@@ -34,20 +44,53 @@ public class PhoneListeningService extends WearableListenerService {
             return;
         }
 
+        SharedPreferences drinks = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = drinks.edit();
+
         // Loop through the events and send a message
         // to the node that created the data item.
         for (DataEvent event : dataEvents) {
             Uri uri = event.getDataItem().getUri();
             Log.i(TAG, uri.toString());
 
-            // Get the node id from the host value of the URI
-            // String nodeId = uri.getHost();
-            // Set the data of the message to be the bytes of the URI
-            // byte[] payload = uri.toString().getBytes();
+            byte[] bytes = event.getDataItem().getData();
+            float alcohol = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            Log.i(TAG, "Alcohol added: " + alcohol);
 
-            // Send the RPC
-            //Wearable.MessageApi.sendMessage(googleApiClient, nodeId,
-            //        DATA_ITEM_RECEIVED_PATH, payload);
+            editor.putFloat("alcohol", drinks.getFloat("alcohol",0.0f) + alcohol);
         }
+
+
+        // calculate new BAC
+        float ratio = drinks.getFloat("ratio_male", 0.0f);
+        int weight = drinks.getInt("weight", 0);
+        float alcohol = drinks.getFloat("alcohol", 0.0f);
+        int start_time = drinks.getInt("start_time", 0);
+
+        Calendar c= Calendar.getInstance();
+        int current_time = c.get(Calendar.SECOND);
+
+        float hours = ((float) current_time - start_time)/3600 ;
+
+        float bac = (alcohol * (5.14f/weight) * ratio) - 0.015f * hours;
+
+        Log.i(TAG, "BAC calculated: " + bac);
+
+        // update new BAC and send result to watch
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
+        putDataMapReq.getDataMap().putFloat("bac", bac);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
+
+        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+            @Override
+            public void onResult(final DataApi.DataItemResult result) {
+                if (result.getStatus().isSuccess()) {
+                    Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
+                }
+            }
+        });
     }
 }

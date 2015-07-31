@@ -1,17 +1,38 @@
 package org.cs160.bactracker;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Calendar;
+
 
 public class PhoneActivity extends ActionBarActivity {
+
+    public static final String PREFS_NAME = "DrinksFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone);
+
+        // Create a SharedPreferences file listing what drinks are available. For debugging only
+        // File will include weight, height, Time passed since drinking, and alcohol
+        // I should really be using a SQLite db for this...
+
+        SharedPreferences drinks = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = drinks.edit();
+        editor.putFloat("ratio_male", 0.73f);
+        editor.putFloat("ratio_female", 0.66f);
+        editor.putInt("weight", 140); // weight in lbs
+        Calendar c = Calendar.getInstance();
+        int seconds = c.get(Calendar.SECOND);
+        editor.putInt("start_time", seconds); // current time, in seconds
+        editor.putFloat("alcohol", 0.0f); // the amount of alcohol consumed in oz
+
+        editor.commit();
     }
 
     @Override

@@ -31,6 +31,11 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+        <service
+            android:name=".BACService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>
