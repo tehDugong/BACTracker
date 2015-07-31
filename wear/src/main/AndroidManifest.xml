@@ -29,6 +29,15 @@
             android:exported="true" >
         </service>
 
+        <activity
+            android:name=".StartDrinkingActivity"
+            android:label="@string/title_activity_start_drinking" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
