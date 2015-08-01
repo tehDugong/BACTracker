@@ -40,6 +40,7 @@ public class PhoneActivity extends ActionBarActivity {
 
     public void pressProfile(View view) {
         Intent intent = new Intent(this, ProfilePressedActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
     }
 }
