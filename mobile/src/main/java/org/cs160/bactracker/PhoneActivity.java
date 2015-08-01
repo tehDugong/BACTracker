@@ -1,9 +1,11 @@
 package org.cs160.bactracker;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class PhoneActivity extends ActionBarActivity {
@@ -35,4 +37,10 @@ public class PhoneActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void pressProfile(View view) {
+        Intent intent = new Intent(this, ProfilePressedActivity.class);
+        startActivity(intent);
+    }
 }
+

@@ -1,0 +1,109 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="org.cs160.bactracker.ProfilePressedActivity">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="PROFILE"
+        android:id="@+id/profile_text"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/user_name"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Name"
+        android:id="@+id/name_text"
+        android:layout_marginEnd="28dp"
+        android:layout_alignBottom="@+id/user_name"
+        android:layout_toStartOf="@+id/user_name" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Enter your name"
+        android:ems="10"
+        android:id="@+id/user_name"
+        android:layout_marginTop="28dp"
+        android:layout_below="@+id/profile_text"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Weight"
+        android:id="@+id/weight_text"
+        android:layout_alignBottom="@+id/user_weight"
+        android:layout_alignStart="@+id/name_text" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/user_weight"
+        android:hint="Enter weight in lbs"
+        android:layout_below="@+id/user_name"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Gender"
+        android:id="@+id/gender_text"
+        android:layout_below="@+id/user_weight"
+        android:layout_alignStart="@+id/weight_text"
+        android:layout_marginTop="28dp" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignTop="@+id/gender_text"
+        android:layout_alignStart="@+id/user_weight"
+        android:id="@+id/radioGroup">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Male"
+            android:id="@+id/male_button"
+            android:layout_alignTop="@+id/gender_text"
+            android:layout_alignStart="@+id/user_weight"
+            android:onClick="onRadioButtonClicked"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Female"
+            android:id="@+id/female_button"
+            android:layout_below="@+id/male_button"
+            android:layout_alignEnd="@+id/male_button"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:id="@+id/save_button"
+        android:layout_marginTop="28dp"
+        android:layout_below="@+id/radioGroup"
+        android:layout_centerHorizontal="true"
+        android:onClick="pressSaveButton"/>
+
+
+
+</RelativeLayout>
