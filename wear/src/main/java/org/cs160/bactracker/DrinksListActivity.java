@@ -9,12 +9,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class DrinksListActivity extends Activity {
     private ListView list;
-    private ArrayList<Item> drinksArray;
+    public static ArrayList<Item> drinksArray;
     private int selectedPosition;
     private EntryItem itemSelected;
     @Override
@@ -30,8 +29,8 @@ public class DrinksListActivity extends Activity {
                 Item beer = new SectionItem("Beers");
                 Item cocktails = new SectionItem("Cocktails");
                 Item wines = new SectionItem("Wines");
-                Item darkBeer = new EntryItem("Dark Beer", null);
-                Item lightBeer = new EntryItem("Light Beer", null);
+                Item darkBeer = new EntryItem("Dark Beer",0, .7f);
+                Item lightBeer = new EntryItem("Light Beer", 0, .5f);
                 drinksArray.add(beer);
                 drinksArray.add(darkBeer);
                 drinksArray.add(lightBeer);
@@ -43,19 +42,16 @@ public class DrinksListActivity extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Log.d("Item clicked", Integer.toString(position));
+                        Intent i = new Intent(DrinksListActivity.this, CountDrinks.class);
+                        EntryItem item = (EntryItem)drinksArray.get(position);
+                        i.putExtra("drinkName", item.title);
+                        i.putExtra("drinkCount", item.drinkCount);
+                        i.putExtra("alc", item.alc);
+                        i.putExtra("index", position);
+                        startActivity(i);
                     }
                 });
             }
         });
-    }
-
-    public void forwardToCountDrinks(View v) throws IOException {
-        Intent i = new Intent(this, CountDrinks.class);
-        if (itemSelected == null) {
-            throw new IOException("Nothing Selected");
-        } else {
-            i.putExtra("drink_name", itemSelected.title);
-        }
-        startActivity(i);
     }
 }

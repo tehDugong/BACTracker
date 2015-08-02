@@ -5,10 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -18,30 +16,21 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 public class BACActivity extends Activity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private final String TAG = "BACActivity";
-    private GoogleApiClient mGoogleApiClient;
-    private final String PATH = "/alcohol";
+    public static GoogleApiClient mGoogleApiClient;
+    private static final String PATH = "/alcohol";
     private String mobileNodeId;
 
     private float bac = 0.0f;
-    private float alcohol = 0.0f;
+    public static float alcohol = 0.0f;
 
     private BroadcastReceiver receiver;
     static final public String BACTRACKER_RESULT = "org.cs160.BACTracker" +
@@ -109,13 +98,13 @@ public class BACActivity extends Activity
     }
 
 
-    public void increment(View view){
+    public static void increment(float alc){
         // send dummy data to the PhoneListenerService
-        Log.i(TAG, "Button pressed");
+        //Log.i(TAG, "Button pressed");
 
-        alcohol += 12.0f;    // equivalent of drinking 20 beer
+        alcohol += alc;    // equivalent of drinking 20 beer
 
-        Log.i(TAG, "Sending alcohol content of " + alcohol);
+        //Log.i(TAG, "Sending alcohol content of " + alcohol);
 
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
         putDataMapReq.getDataMap().putFloat("beer", alcohol);
@@ -128,10 +117,16 @@ public class BACActivity extends Activity
             @Override
             public void onResult(final DataApi.DataItemResult result) {
                 if (result.getStatus().isSuccess()) {
-                    Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
+        //            Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
                 }
             }
         });
+    }
+
+    public void toDrinksSelection(View v) {
+        Intent i = new Intent(this, DrinksListActivity.class);
+        BACActivity.increment(1.0f);
+        startActivity(i);
     }
 
     private Uri getUriForAlcohol() {

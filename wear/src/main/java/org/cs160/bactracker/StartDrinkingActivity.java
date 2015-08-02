@@ -20,8 +20,8 @@ public class StartDrinkingActivity extends Activity {
             }
         });
     }
-    public void goToDrinkSelection(View v) {
-        Intent i = new Intent(this, DrinksListActivity.class);
+    public void goToBAC(View v) {
+        Intent i = new Intent(this, BACActivity.class);
         i.putExtra("startedDrinking", true);
         this.startActivity(i);
     }

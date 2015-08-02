@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="45dp"
         android:layout_alignParentBottom="true"
-        android:onClick="goToDrinkSelection"
+        android:onClick="goToBAC"
         />
 
 

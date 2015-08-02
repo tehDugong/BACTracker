@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+
     <TextView
         android:id="@+id/current_BAC"
         android:layout_width="wrap_content"
@@ -12,15 +13,22 @@
         android:layout_centerVertical="true"
         android:text="0.00"
         android:textSize="60dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_above="@id/current_BAC"
+        android:text="Your Current BAC is"
+        android:layout_centerHorizontal="true"/>
 
     <Button
-        android:id="@+id/plus_beer"
+        android:id="@+id/menu_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/current_BAC"
-        android:onClick="increment"
-        android:text="+20 Beer" />
+        android:onClick="toDrinksSelection"
+        android:text="Menu" />
 
 
 </RelativeLayout>
