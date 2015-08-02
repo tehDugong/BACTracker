@@ -113,7 +113,7 @@ public class BACActivity extends Activity
         // send dummy data to the PhoneListenerService
         Log.i(TAG, "Button pressed");
 
-        alcohol += 120.0f;    // equivalent of drinking 20 beer
+        alcohol += 12.0f;    // equivalent of drinking 20 beer
 
         Log.i(TAG, "Sending alcohol content of " + alcohol);
 

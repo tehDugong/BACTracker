@@ -65,7 +65,13 @@ public class PhoneListeningService extends WearableListenerService {
                 editor.commit();
 
                 // calculate new BAC
-                float ratio = drinks.getFloat("ratio_male", 0.0f);
+                boolean gender = drinks.getBoolean("gender", true);
+                float ratio = 0.0f;
+                if (gender){
+                    ratio = 0.73f;
+                } else{
+                    ratio = 0.66f;
+                }
                 int weight = drinks.getInt("weight", 0);
                 float alcohol = drinks.getFloat("alcohol", 0.0f);
                 int start_time = drinks.getInt("start_time", 0);
