@@ -12,6 +12,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataItem;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -20,21 +23,12 @@ import java.nio.ByteOrder;
 import java.util.concurrent.TimeUnit;
 
 public class BACService extends WearableListenerService {
-    private LocalBroadcastManager broadcastManager;
     private final String TAG = "BACService";
 
     static final public String BACTRACKER_RESULT = "org.cs160.BACTracker" +
             ".backend.BACService.REQUEST_PROCESSED";
     static final public String BACTRACKER_MESSAGE = "org.cs160.BACTracker" +
             ".backend.BACService.BAC_MSG";
-
-    public BACService() {
-    }
-
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate();
-        broadcastManager = LocalBroadcastManager.getInstance(this);
-    }
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents){
@@ -58,16 +52,21 @@ public class BACService extends WearableListenerService {
             Uri uri = event.getDataItem().getUri();
             Log.i(TAG, uri.toString());
 
-            byte[] bytes = event.getDataItem().getData();
-            float bac = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            Log.i(TAG, "Calculated BAC: " + bac);
-            updateBAC(String.format("%.2f", bac));
+            if (uri.toString().contains("/bac")){
+                DataItem item = event.getDataItem();
+                DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                float bac= dataMap.getFloat("bac");
+                Log.i(TAG, "Calculated BAC: " + bac);
+                updateBAC(String.format("%.2f", bac));
+            }
         }
     }
 
     public void updateBAC(String message) {
+        Log.i(TAG, "Sending broadcast...");
         Intent intent = new Intent(BACTRACKER_RESULT);
         intent.putExtra(BACTRACKER_MESSAGE, message);
-        broadcastManager.sendBroadcast(intent);
+        getApplicationContext().sendBroadcast(new Intent("wat?")
+                .putExtra(BACTRACKER_MESSAGE, message));
     }
 }

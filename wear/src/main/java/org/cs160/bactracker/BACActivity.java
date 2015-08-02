@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -66,14 +67,13 @@ public class BACActivity extends Activity
         mGoogleApiClient.connect();
         Log.i(TAG, "BACActivity.onCreate finished");
 
-        // set mobileNodeId
-        getRemoteNodeId();
-
         // broadcast listener
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.i(TAG, "Broadcast received!");
                 String s = intent.getStringExtra(BACTRACKER_MESSAGE);
+                Log.i(TAG, "Found BAC: "+s);
                 TextView view = (TextView) findViewById(R.id.current_BAC);
                 view.setText(s);
             }
@@ -96,11 +96,26 @@ public class BACActivity extends Activity
         Log.i(TAG, "Connection to GoogleAPI failed!");
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        registerReceiver(receiver, new IntentFilter("wat?"));
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+
     public void increment(View view){
         // send dummy data to the PhoneListenerService
         Log.i(TAG, "Button pressed");
 
-        alcohol += 0.6f;    // equivalent of drinking a beer
+        alcohol += 120.0f;    // equivalent of drinking 20 beer
+
+        Log.i(TAG, "Sending alcohol content of " + alcohol);
 
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
         putDataMapReq.getDataMap().putFloat("beer", alcohol);
