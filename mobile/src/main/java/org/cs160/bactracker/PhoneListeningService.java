@@ -72,7 +72,7 @@ public class PhoneListeningService extends WearableListenerService {
                 } else{
                     ratio = 0.66f;
                 }
-                int weight = drinks.getInt("weight", 0);
+                int weight = drinks.getInt("weight", 1);
                 float alcohol = drinks.getFloat("alcohol", 0.0f);
                 int start_time = drinks.getInt("start_time", 0);
 
