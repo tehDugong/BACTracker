@@ -3,12 +3,15 @@ package org.cs160.bactracker;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 
 public class PhoneActivity extends ActionBarActivity {
+
+    String TAG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,5 +46,8 @@ public class PhoneActivity extends ActionBarActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
     }
-}
 
+    public void pressDrinkdb(View view) {
+        Log.d(TAG, "press drink db");
+    }
+}

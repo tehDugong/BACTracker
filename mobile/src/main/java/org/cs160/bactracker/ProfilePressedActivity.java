@@ -25,15 +25,15 @@ public class ProfilePressedActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        /*
+
         if (savedInstanceState == null)
             Log.d(TAG, "null");
         else
             Log.d(TAG, "not null"+savedInstanceState.toString());
-        */
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_pressed);
-        /*
+
         user_name = (EditText)findViewById(R.id.user_name);
 
         if ((savedInstanceState != null) && (savedInstanceState.getString("name") != null)) {
@@ -41,7 +41,7 @@ public class ProfilePressedActivity extends ActionBarActivity {
             user_name = (EditText)findViewById(R.id.user_name);
             user_name.setText(name);
         }
-        */
+
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ProfilePressedActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*
+
     @Override
     protected void onSaveInstanceState(Bundle state){
         Log.d(TAG, "in saveInstance");
@@ -75,10 +75,10 @@ public class ProfilePressedActivity extends ActionBarActivity {
         super.onSaveInstanceState(state);
         Log.d(TAG, state.toString());
     }
-    */
 
 
-    /*
+
+
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState){
         Log.d(TAG, "in RestoreInstance");
@@ -87,7 +87,7 @@ public class ProfilePressedActivity extends ActionBarActivity {
         user_name = (EditText)findViewById(R.id.user_name);
         user_name.setText(name);
     }
-    */
+
 
     //RadioButton = Male/Female
     public void onRadioButtonClicked(View view) {
@@ -96,7 +96,6 @@ public class ProfilePressedActivity extends ActionBarActivity {
         switch(view.getId()){
             case R.id.male_button:
                 if (checked){
-                    //save in database
                     Log.d(TAG, "male button checked");
                     //RadioButton maleButton = (RadioButton)findViewById(R.id.male_button);
                     //maleButton.setChecked(true);
@@ -104,7 +103,6 @@ public class ProfilePressedActivity extends ActionBarActivity {
                 break;
             case R.id.female_button:
                 if (checked){
-                    //save in database
                     Log.d(TAG, "female button checked");
                     //RadioButton femaleButton = (RadioButton)findViewById(R.id.female_button);
                     //femaleButton.setChecked(true);
@@ -117,7 +115,7 @@ public class ProfilePressedActivity extends ActionBarActivity {
     public void pressSaveButton(View view) {
         Intent intent = new Intent(this, PhoneActivity.class);
         Log.d(TAG, "save button?");
-        /*
+
         user_name = (EditText) findViewById(R.id.user_name);
         user_weight = (EditText) findViewById(R.id.user_weight);
         name = user_name.getText().toString();
@@ -126,9 +124,11 @@ public class ProfilePressedActivity extends ActionBarActivity {
         user_weight.setText(weight);
         Log.d(TAG, name);
         Log.d(TAG, weight);
-        */
+
         Toast.makeText(getApplicationContext(), "Profile saved!", Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }
+
+
 
 }
