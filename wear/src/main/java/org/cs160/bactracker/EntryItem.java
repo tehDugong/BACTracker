@@ -7,6 +7,8 @@ public class EntryItem implements Item{
 
     public final String title;
     public final String subtitle;
+    public int count;
+    public float percentAlcohol;
 
     public EntryItem(String title, String subtitle) {
         this.title = title;
