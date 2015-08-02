@@ -8,19 +8,19 @@
         android:id="@+id/current_BAC"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:text="0.00"
-        android:textSize="30dp"/>
+        android:textSize="60dp"/>
 
     <Button
         android:id="@+id/plus_beer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/current_BAC"
         android:onClick="increment"
-        android:text="+20 Beer"/>
+        android:text="+20 Beer" />
 
 
 </RelativeLayout>
