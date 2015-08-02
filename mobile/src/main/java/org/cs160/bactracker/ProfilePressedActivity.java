@@ -87,9 +87,6 @@ public class ProfilePressedActivity extends ActionBarActivity {
         Log.d(TAG, state.toString());
     }
 
-
-
-
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState){
         Log.d(TAG, "in RestoreInstance");

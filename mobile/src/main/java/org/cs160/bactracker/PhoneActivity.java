@@ -52,5 +52,8 @@ public class PhoneActivity extends ActionBarActivity {
 
     public void pressDrinkdb(View view) {
         Log.d(TAG, "press drink db");
+        Intent intent = new Intent(this, DBActivity.class);
+        startActivity(intent);
+
     }
 }
