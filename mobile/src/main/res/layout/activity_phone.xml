@@ -11,9 +11,9 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="BACTracker"
         android:id="@+id/BAC_text"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/profile_button"
-        android:layout_marginTop="82dp" />
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -21,8 +21,9 @@
         android:text="Profile"
         android:id="@+id/profile_button"
         android:onClick="pressProfile"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/BAC_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="68dp" />
 
 
 </RelativeLayout>
