@@ -27,9 +27,6 @@ public class BACActivity extends Activity
     private final String TAG = "BACActivity";
     public static GoogleApiClient mGoogleApiClient;
     private static final String PATH = "/alcohol";
-    private String mobileNodeId;
-
-    private float bac = 0.0f;
     public static float alcohol = 0.0f;
 
     private BroadcastReceiver receiver;
@@ -37,8 +34,6 @@ public class BACActivity extends Activity
             ".backend.BACService.REQUEST_PROCESSED";
     static final public String BACTRACKER_MESSAGE = "org.cs160.BACTracker" +
             ".backend.BACService.BAC_MSG";
-
-    public static final String PREFS_NAME = "DrinksFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +62,8 @@ public class BACActivity extends Activity
                 view.setText(s);
             }
         };
+
+        registerReceiver(receiver, new IntentFilter("wat?"));
     }
 
     @Override
@@ -88,13 +85,15 @@ public class BACActivity extends Activity
     @Override
     public void onResume(){
         super.onResume();
-        registerReceiver(receiver, new IntentFilter("wat?"));
+        // Log.i(TAG, "Receiver up");
+        // registerReceiver(receiver, new IntentFilter("wat?"));
     }
 
     @Override
     public void onPause(){
         super.onPause();
-        unregisterReceiver(receiver);
+        // Log.i(TAG, "Receiver down");
+        // unregisterReceiver(receiver);
     }
 
 
@@ -102,7 +101,7 @@ public class BACActivity extends Activity
         // send dummy data to the PhoneListenerService
         //Log.i(TAG, "Button pressed");
 
-        alcohol += alc;    // equivalent of drinking 20 beer
+        alcohol += alc;
 
         //Log.i(TAG, "Sending alcohol content of " + alcohol);
 
@@ -117,7 +116,7 @@ public class BACActivity extends Activity
             @Override
             public void onResult(final DataApi.DataItemResult result) {
                 if (result.getStatus().isSuccess()) {
-        //            Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
+                    //            Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
                 }
             }
         });
@@ -128,33 +127,4 @@ public class BACActivity extends Activity
         BACActivity.increment(1.0f);
         startActivity(i);
     }
-
-    private Uri getUriForAlcohol() {
-        return new Uri.Builder().scheme(PutDataRequest.WEAR_URI_SCHEME)
-                .authority(mobileNodeId).path(PATH).build();
-    }
-
-    /*
-    private String getLocalNodeId() {
-        NodeApi.GetLocalNodeResult nodeResult =
-                Wearable.NodeApi.getLocalNode(mGoogleApiClient).await();
-        return nodeResult.getNode().getId();
-    }
-    */
-
-
-    private void getRemoteNodeId() {
-        PendingResult<NodeApi.GetConnectedNodesResult> nodesResult =
-                Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
-
-        nodesResult.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-            @Override
-            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                // this will NOT fail gracefully, but don't have time to fix right now
-                mobileNodeId = getConnectedNodesResult.getNodes().get(0).getId();
-                Log.i(TAG, "Node(s) succesfully retrieved: " + mobileNodeId);
-            }
-        });
-    }
-
 }
