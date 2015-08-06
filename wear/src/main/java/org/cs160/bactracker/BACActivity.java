@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,23 +14,27 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.CapabilityApi;
+import com.google.android.gms.wearable.CapabilityInfo;
 import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+
+import java.util.Set;
 
 public class BACActivity extends Activity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private final String TAG = "BACActivity";
     public static GoogleApiClient mGoogleApiClient;
-    private static final String PATH = "/alcohol";
     public static float alcohol = 0.0f;
+    private String transcriptionNodeId = null;
 
     private BroadcastReceiver receiver;
-    static final public String BACTRACKER_RESULT = "org.cs160.BACTracker" +
-            ".backend.BACService.REQUEST_PROCESSED";
     static final public String BACTRACKER_MESSAGE = "org.cs160.BACTracker" +
             ".backend.BACService.BAC_MSG";
 
@@ -62,8 +65,10 @@ public class BACActivity extends Activity
                 view.setText(s);
             }
         };
-
         registerReceiver(receiver, new IntentFilter("wat?"));
+
+        // check existing BAC
+        sendMessage("/check_BAC", "");
     }
 
     @Override
@@ -85,27 +90,29 @@ public class BACActivity extends Activity
     @Override
     public void onResume(){
         super.onResume();
-        // Log.i(TAG, "Receiver up");
-        // registerReceiver(receiver, new IntentFilter("wat?"));
     }
 
     @Override
     public void onPause(){
         super.onPause();
-        // Log.i(TAG, "Receiver down");
-        // unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        mGoogleApiClient.disconnect();
     }
 
 
     public static void increment(float alc){
         // send dummy data to the PhoneListenerService
-        //Log.i(TAG, "Button pressed");
+        // Log.i(TAG, "Button pressed");
 
         alcohol += alc;
 
-        //Log.i(TAG, "Sending alcohol content of " + alcohol);
+        // Log.i(TAG, "Sending alcohol content of " + alcohol);
 
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/alcohol");
         putDataMapReq.getDataMap().putFloat("beer", alcohol);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
 
@@ -116,10 +123,26 @@ public class BACActivity extends Activity
             @Override
             public void onResult(final DataApi.DataItemResult result) {
                 if (result.getStatus().isSuccess()) {
-                    //            Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
+                    // Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
                 }
             }
         });
+    }
+
+    private void sendMessage(final String path, final String text){
+        new Thread( new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "Sending message: "+text);
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(
+                        mGoogleApiClient ).await();
+                for(Node node : nodes.getNodes()) {
+                    Log.i(TAG, "Node: "+node);
+                    MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
+                            mGoogleApiClient, node.getId(), path, text.getBytes() ).await();
+                }
+            }
+        }).start();
     }
 
     public void toDrinksSelection(View v) {

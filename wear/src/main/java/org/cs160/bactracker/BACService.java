@@ -32,7 +32,7 @@ public class BACService extends WearableListenerService {
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents){
-        Log.i(TAG, "Listener triggered!");
+        Log.i(TAG, "BACService triggered!");
 
         GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
