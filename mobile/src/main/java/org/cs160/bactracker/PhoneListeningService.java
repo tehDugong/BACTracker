@@ -15,7 +15,10 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
@@ -56,6 +59,7 @@ public class PhoneListeningService extends WearableListenerService {
 
             float bac = calculateBAC();
 
+            /*
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
             putDataMapReq.getDataMap().putFloat("bac", bac);
             PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
@@ -71,6 +75,8 @@ public class PhoneListeningService extends WearableListenerService {
                     }
                 }
             });
+            */
+            updateBAC(PATH, bac);
 
 
         } else if (messageEvent.getPath().equalsIgnoreCase("/reset")) {
@@ -85,7 +91,9 @@ public class PhoneListeningService extends WearableListenerService {
             float bac = calculateBAC(); // This should return 0. If it doesn't, something is wrong
 
             // update new BAC and send result to watch
+            /*
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
+
             putDataMapReq.getDataMap().putFloat("bac", bac);
             PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
 
@@ -100,6 +108,9 @@ public class PhoneListeningService extends WearableListenerService {
                     }
                 }
             });
+            */
+
+            updateBAC(PATH, bac);
         }
     }
 
@@ -140,7 +151,9 @@ public class PhoneListeningService extends WearableListenerService {
                 float bac = calculateBAC();
 
                 // update new BAC and send result to watch
-                PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
+                updateBAC(PATH, bac);
+
+                /*PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
                 putDataMapReq.getDataMap().putFloat("bac", bac);
                 PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
 
@@ -155,6 +168,7 @@ public class PhoneListeningService extends WearableListenerService {
                         }
                     }
                 });
+                */
             }
         }
     }
@@ -197,5 +211,34 @@ public class PhoneListeningService extends WearableListenerService {
         Log.i(TAG, "BAC calculated: " + bac);
 
         return bac;
+    }
+
+    private void updateBAC(final String path, final float bac){
+        final GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .build();
+
+        ConnectionResult connectionResult =
+                googleApiClient.blockingConnect(30, TimeUnit.SECONDS);
+
+        if (!connectionResult.isSuccess()) {
+            Log.i(TAG, "Unable to connect");
+            return;
+        }
+
+        new Thread( new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "Sending message: "+path);
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(
+                        googleApiClient ).await();
+                for(Node node : nodes.getNodes()) {
+                    Log.i(TAG, "Node: " + node);
+                    MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
+                            googleApiClient, node.getId(), path,
+                            ByteBuffer.allocate(4).putFloat(bac).array()).await();
+                }
+            }
+        }).start();
     }
 }
