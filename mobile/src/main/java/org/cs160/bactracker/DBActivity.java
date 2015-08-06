@@ -89,7 +89,7 @@ public class DBActivity extends Activity {
 //        myDB.insertRow("Red Wine", 1, 1.1, "Wine", "Red Wine Ingredients");
 //        myDB.insertRow("White Wine", 2 , 2.2, "Wine", "White Wine Ingredients");
         myDB.insertRow("Red Wine", 1.1 , 1, "Red Wine Ingredients");
-        myDB.insertRow("White Wine", 2.2 , 2, "White Wine Ingredients");
+        myDB.insertRow("White Wine", 2.2, 2, "White Wine Ingredients");
     }
 
     @Override
@@ -116,5 +116,10 @@ public class DBActivity extends Activity {
     }
     public void queryDatabase(SQLiteDatabase db){
 
+    }
+
+    public void addDrinkPressed(View view) {
+        Intent intent = new Intent(this, AddDrinkActivity.class);
+        startActivity(intent);
     }
 }
