@@ -45,9 +45,6 @@ public class CountDrinks extends Activity {
     public void increment(int inc) {
         if(count+inc < 0)
             return;
-        EntryItem selectedDrink = (EntryItem)DrinksListActivity.drinksArray.get(index);
-        selectedDrink.drinkCount += inc;
-        BACActivity.increment(selectedDrink.alc * ((float)inc));
         this.count += inc;
         this.drinkCount.setText(Integer.toString(this.count));
 
