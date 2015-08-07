@@ -1,11 +1,12 @@
 package org.cs160.bactracker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
@@ -26,26 +29,16 @@ public class BACActivity extends Activity
 
     private final String TAG = "BACActivity";
     public static GoogleApiClient mGoogleApiClient;
-    private static final String PATH = "/alcohol";
-    private String mobileNodeId;
-
-    private float bac = 0.0f;
     public static float alcohol = 0.0f;
-
     private BroadcastReceiver receiver;
-    static final public String BACTRACKER_RESULT = "org.cs160.BACTracker" +
-            ".backend.BACService.REQUEST_PROCESSED";
     static final public String BACTRACKER_MESSAGE = "org.cs160.BACTracker" +
             ".backend.BACService.BAC_MSG";
-
-    public static final String PREFS_NAME = "DrinksFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "BACActivity started!");
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bac);
 
         mGoogleApiClient= new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -67,6 +60,12 @@ public class BACActivity extends Activity
                 view.setText(s);
             }
         };
+        registerReceiver(receiver, new IntentFilter("wat?"));
+
+        // check existing BAC
+        sendMessage("/check_BAC", "");
+
+        setContentView(R.layout.activity_bac);
     }
 
     @Override
@@ -88,25 +87,29 @@ public class BACActivity extends Activity
     @Override
     public void onResume(){
         super.onResume();
-        registerReceiver(receiver, new IntentFilter("wat?"));
     }
 
     @Override
     public void onPause(){
         super.onPause();
-        unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        mGoogleApiClient.disconnect();
     }
 
 
     public static void increment(float alc){
         // send dummy data to the PhoneListenerService
-        //Log.i(TAG, "Button pressed");
+        // Log.i(TAG, "Button pressed");
 
-        alcohol += alc;    // equivalent of drinking 20 beer
+        alcohol += alc;
 
-        //Log.i(TAG, "Sending alcohol content of " + alcohol);
+        // Log.i(TAG, "Sending alcohol content of " + alcohol);
 
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/alcohol");
         putDataMapReq.getDataMap().putFloat("beer", alcohol);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
 
@@ -117,10 +120,48 @@ public class BACActivity extends Activity
             @Override
             public void onResult(final DataApi.DataItemResult result) {
                 if (result.getStatus().isSuccess()) {
-        //            Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
+                    // Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
                 }
             }
         });
+    }
+
+    private void sendMessage(final String path, final String text){
+        new Thread( new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "Sending message: "+path);
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(
+                        mGoogleApiClient ).await();
+                for(Node node : nodes.getNodes()) {
+                    Log.i(TAG, "Node: "+node);
+                    MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
+                            mGoogleApiClient, node.getId(), path, text.getBytes() ).await();
+                }
+            }
+        }).start();
+    }
+
+    public void reset(View v){
+        AlertDialog ad = new AlertDialog.Builder(this)
+                .setMessage("Are you sure you want to reset?")
+                .setTitle("Reset?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendMessage("/reset", "");
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        ad.show();
     }
 
     public void toDrinksSelection(View v) {
@@ -128,33 +169,4 @@ public class BACActivity extends Activity
         BACActivity.increment(1.0f);
         startActivity(i);
     }
-
-    private Uri getUriForAlcohol() {
-        return new Uri.Builder().scheme(PutDataRequest.WEAR_URI_SCHEME)
-                .authority(mobileNodeId).path(PATH).build();
-    }
-
-    /*
-    private String getLocalNodeId() {
-        NodeApi.GetLocalNodeResult nodeResult =
-                Wearable.NodeApi.getLocalNode(mGoogleApiClient).await();
-        return nodeResult.getNode().getId();
-    }
-    */
-
-
-    private void getRemoteNodeId() {
-        PendingResult<NodeApi.GetConnectedNodesResult> nodesResult =
-                Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
-
-        nodesResult.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-            @Override
-            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                // this will NOT fail gracefully, but don't have time to fix right now
-                mobileNodeId = getConnectedNodesResult.getNodes().get(0).getId();
-                Log.i(TAG, "Node(s) succesfully retrieved: " + mobileNodeId);
-            }
-        });
-    }
-
 }
