@@ -4,30 +4,42 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.wearable.view.WearableListView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 
 
 public class DrinkCategories extends Activity {
-    private ListView wearableListView;
+    private WearableListView wearableListView;
+    private final int WIDTH_RESIZE = 50;
+    private final int HEIGHT_RESIZE = 50;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drink_categories);
-        wearableListView = (ListView)findViewById(R.id.drinksListView);
-        CategoryItem beer = new CategoryItem();
-        beer.drinks=new ArrayList<DrinkItem>();
-        beer.name = "Beer";
+        wearableListView = (WearableListView)findViewById(R.id.drinksListView);
 
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.beer);
-        Bitmap resizedbitmap = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
-        beer.image = resizedbitmap;
+        Bitmap beercategoryimage = BitmapFactory.decodeResource(getResources(), R.drawable.beer_category);
+        CategoryItem beercategory = new CategoryItem("Beer", beercategoryimage, WIDTH_RESIZE,HEIGHT_RESIZE);
+
+        Bitmap winecategoryimage = BitmapFactory.decodeResource(getResources(), R.drawable.wine_category);
+        CategoryItem winecategory = new CategoryItem("Wine", winecategoryimage, WIDTH_RESIZE, HEIGHT_RESIZE);
+
+        Bitmap liquorcategoryimage = BitmapFactory.decodeResource(getResources(), R.drawable.liquor_category);
+        CategoryItem liquorcategory = new CategoryItem("Liquor", liquorcategoryimage, WIDTH_RESIZE, HEIGHT_RESIZE);
+
+        Bitmap cocktailcategoryimage = BitmapFactory.decodeResource(getResources(), R.drawable.cocktails_category);
+        CategoryItem cocktailcategory = new CategoryItem("Cocktail", cocktailcategoryimage, WIDTH_RESIZE, HEIGHT_RESIZE);
+
         ArrayList<CategoryItem> categoryList = new ArrayList<CategoryItem>();
-        categoryList.add(beer);
-        CategoryAdapter adapter = new CategoryAdapter(getApplicationContext(), categoryList);
+        categoryList.add(beercategory);
+        categoryList.add(winecategory);
+        categoryList.add(liquorcategory);
+        categoryList.add(cocktailcategory);
+
+        CategoryAdapterWearable adapter = new CategoryAdapterWearable(getApplicationContext(), categoryList);
         wearableListView.setAdapter(adapter);
     }
 
