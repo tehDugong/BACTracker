@@ -19,6 +19,7 @@ public class DBActivity extends Activity {
     DBAdapter myDB;
     ListView myList;
     final String TAG = "MainActivity";
+    String category;
 
 
     @Override
@@ -29,7 +30,11 @@ public class DBActivity extends Activity {
         myList = (ListView) findViewById(R.id. listView);
         openDB();
         InitializeDatabase();
-        populateListView();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            category = extras.getString("category");
+        }
+        populateListView(category);
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -71,8 +76,9 @@ public class DBActivity extends Activity {
         startActivity(i);
     }
 
-    private void populateListView() {
-        Cursor cursor = myDB.getAllRows();
+    private void populateListView(String category) {
+
+        Cursor cursor = myDB.getRowByCategory(category);
         String[] fromFieldNames = new String[] {DBAdapter.KEY_NAME};
         int[] toViewIDs = new int[] {R.id.name};
         SimpleCursorAdapter myCursorAdapter;
@@ -87,16 +93,16 @@ public class DBActivity extends Activity {
 
     public void InitializeDatabase(){
         myDB.deleteAll();
-//        myDB.insertRow("Red Wine", 1, 1.1, "Wine", "Red Wine Ingredients");
-//        myDB.insertRow("White Wine", 2 , 2.2, "Wine", "White Wine Ingredients");
-        myDB.insertRow("Red Wine", 1.1 , 1, "Red Wine Ingredients");
-        myDB.insertRow("White Wine", 2.2, 2, "White Wine Ingredients");
+        myDB.insertRow("Red Wine", 1, 1.1, "Wine", "Red Wine Ingredients");
+        myDB.insertRow("White Wine", 2 , 2.2, "Wine", "White Wine Ingredients");
+//        myDB.insertRow("Red Wine", 1.1 , 1, "Red Wine Ingredients");
+//        myDB.insertRow("White Wine", 2.2, 2, "White Wine Ingredients");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_db, menu);
         return true;
     }
 
@@ -119,8 +125,4 @@ public class DBActivity extends Activity {
 
     }
 
-    public void addDrinkPressed(View view) {
-        Intent intent = new Intent(this, AddDrinkActivity.class);
-        startActivity(intent);
-    }
 }

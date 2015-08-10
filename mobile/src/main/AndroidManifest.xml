@@ -17,9 +17,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".DBActivity"
-            android:label="@string/app_name" >
+            android:label="BACtracker"
+            android:theme="@style/PhoneTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,10 +43,11 @@
             android:label="@string/title_activity_profile_pressed"
             android:theme="@style/Theme.AppCompat.NoActionBar" >
         </activity>
+
         <activity android:name=".DrinkInfo" />
         <activity
             android:name=".AddDrinkActivity"
-            android:label="@string/title_activity_add_drink" >
+            android:label="Add Drink" >
         </activity>
     </application>
 

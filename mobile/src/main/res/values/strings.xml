@@ -6,9 +6,9 @@
     <string name="title_activity_profile_pressed">ProfilePressedActivity</string>
     <string name="title_activity_add_drink">AddDrinkActivity</string>
     <string-array name="categories_spinner">
-        <item>Red Wine</item>
-        <item>White Wine</item>
         <item>Beer</item>
+        <item>Wine</item>
+        <item>Cocktail</item>
     </string-array>
 
 </resources>

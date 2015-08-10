@@ -16,7 +16,7 @@ public class DBAdapter {
 	public static final String KEY_INGREDIENTS = "ingredients";
 	public static final String KEY_ABV = "abv";
 	public static final String KEY_CAL = "calories";
-//	public static final String KEY_CATEGORY = "category";
+	public static final String KEY_CATEGORY = "category";
 
 	public static final String[] ALL_KEYS = new String[] {KEY_NAME, KEY_INGREDIENTS, KEY_ABV};
 
@@ -30,7 +30,7 @@ public class DBAdapter {
 	// DataBase info:
 	public static final String DATABASE_NAME = "DrinkDatabase";
 	public static final String DATABASE_TABLE = "mainDrinkDatabase";
-	public static final int DATABASE_VERSION = 1; // The version number must be incremented each time a change to DB structure occurs.
+	public static final int DATABASE_VERSION = 3; // The version number must be incremented each time a change to DB structure occurs.
 
 	//SQL statement to create database
 	private static final String DATABASE_CREATE_SQL =
@@ -38,8 +38,8 @@ public class DBAdapter {
 					+ " (" + KEY_NAME + " TEXT, "
 					+ KEY_INGREDIENTS + " TEXT, "
 					+ KEY_CAL + " INT, "
-					+ KEY_ABV + " DECIMAL(10,5) "
-//					+ KEY_CATEGORY + " TEXT"
+					+ KEY_ABV + " DECIMAL(10,5), "
+					+ KEY_CATEGORY + " TEXT "
 					+ ");";
 
 	private final Context context;
@@ -64,13 +64,13 @@ public class DBAdapter {
 	}
 
 	// Add a new set of values to be inserted into the database.
-//	public long insertRow(String name, int abv, double cal, String category, String ingredients) {
-	public long insertRow(String name, double abv, int cal, String ingredients) {
+	public long insertRow(String name, int cal, double abv, String category, String ingredients) {
+//	public long insertRow(String name, double abv, int cal, String ingredients) {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_INGREDIENTS, ingredients);
 		initialValues.put(KEY_ABV, abv);
 		initialValues.put(KEY_CAL, cal);
-//		initialValues.put(KEY_CATEGORY, category);
+		initialValues.put(KEY_CATEGORY, category);
 		initialValues.put(KEY_NAME, name);
 
 		// Insert the data into the database.
@@ -129,6 +129,21 @@ public class DBAdapter {
 			Log.i(TAG, "cursor moved to first");
 		}
 		return c;	}
+
+    public Cursor getRowByCategory(String cat){
+        String predicate = KEY_CATEGORY + "= '" + cat + "'";
+
+//		String predicate = "name = ?";
+//		String[] predicate_values = {name};
+        Cursor c = 	db.query(true, DATABASE_TABLE, ALL_KEYS,
+                predicate, null, null, null, null, null);
+//		Cursor c = 	db.query(true, DATABASE_TABLE, ALL_KEYS,
+//				predicate, predicate_values, null, null, null, null);
+        if (c != null) {
+            c.moveToFirst();
+            Log.i(TAG, "cursor moved to first");
+        }
+        return c;	}
 
 	// Change an existing row to be equal to new data.
 	public boolean updateRow(long rowId, String task, String date) {
