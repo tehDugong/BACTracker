@@ -20,6 +20,15 @@ public class DrinkItem implements Parcelable {
     private int resizeWidth;
     private int resizeHeight;
     private final String TAG = "DrinkItem";
+    private int count;
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public byte[] getImageBytes() {
         return imageBytes;

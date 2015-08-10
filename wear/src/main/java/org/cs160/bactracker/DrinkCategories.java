@@ -76,13 +76,48 @@ public class DrinkCategories extends Activity {
 
         Bitmap winecategoryimage = BitmapFactory.decodeResource(getResources(), R.drawable.wine_category, o);
         CategoryItem winecategory = new CategoryItem("Wine", winecategoryimage, WIDTH_RESIZE, HEIGHT_RESIZE);
-        
+        Bitmap gallopinotgrigioimage = BitmapFactory.decodeResource(getResources(), R.drawable.gallo_family_pinot_grigio);
+        DrinkItem gallopinotgrigio = new DrinkItem(gallopinotgrigioimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Gallo Family: Pinot Grigio", 0.6f, 1, "glass");
+        Bitmap merlotredwoodcreekimage = BitmapFactory.decodeResource(getResources(), R.drawable.merlot_redwood_creek);
+        DrinkItem merlotredwoodcreek = new DrinkItem(merlotredwoodcreekimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Redwood Creek: Merlot", 0.6f, 1, "glass");
+        Bitmap suttercabernetimage = BitmapFactory.decodeResource(getResources(), R.drawable.sutter_home_cabernet_suvignon);
+        DrinkItem suttercabernet = new DrinkItem(suttercabernetimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Sutter Home: Cabernet Suvignon", 0.6f, 1, "glass");
+
+        winecategory.drinks.add(gallopinotgrigio);
+        winecategory.drinks.add(merlotredwoodcreek);
+        winecategory.drinks.add(suttercabernet);
 
         Bitmap liquorcategoryimage = BitmapFactory.decodeResource(getResources(), R.drawable.liquor_category, o);
         CategoryItem liquorcategory = new CategoryItem("Liquor", liquorcategoryimage, WIDTH_RESIZE, HEIGHT_RESIZE);
+        Bitmap ginmareimage = BitmapFactory.decodeResource(getResources(), R.drawable.gin_mare_gin);
+        DrinkItem ginmare = new DrinkItem(ginmareimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Gin: Gin Mare", 0.6f, 1, "shot");
+        Bitmap absolutevodkaimage = BitmapFactory.decodeResource(getResources(), R.drawable.absolute_vodka);
+        DrinkItem absolutevodka = new DrinkItem(absolutevodkaimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Vodka: Absolute", 0.6f, 1, "shot");
+        Bitmap jamesonimage = BitmapFactory.decodeResource(getResources(), R.drawable.jameson_whiskey);
+        DrinkItem jameson = new DrinkItem(jamesonimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Whiskey: Jameson", 0.6f, 1, "shot");
+        Bitmap jackdanielsimage = BitmapFactory.decodeResource(getResources(), R.drawable.jack_daniels_whiskey);
+        DrinkItem jackdaniels = new DrinkItem(jackdanielsimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Whiskey: Jack Daniels", 0.6f, 1, "shot");
+
+        liquorcategory.drinks.add(ginmare);
+        liquorcategory.drinks.add(absolutevodka);
+        liquorcategory.drinks.add(jameson);
+        liquorcategory.drinks.add(jackdaniels);
 
         Bitmap cocktailcategoryimage = BitmapFactory.decodeResource(getResources(), R.drawable.cocktails_category, o);
         CategoryItem cocktailcategory = new CategoryItem("Cocktail", cocktailcategoryimage, WIDTH_RESIZE, HEIGHT_RESIZE);
+        Bitmap martiniimage = BitmapFactory.decodeResource(getResources(), R.drawable.martini);
+        DrinkItem martini = new DrinkItem(martiniimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Martini", 0.6f, 1, "glass");
+        Bitmap margeritaimage = BitmapFactory.decodeResource(getResources(), R.drawable.margerita);
+        DrinkItem margerita = new DrinkItem(margeritaimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Margerita", 0.6f, 1, "glass");
+        Bitmap ginandtonicimage = BitmapFactory.decodeResource(getResources(), R.drawable.gin_and_tonic);
+        DrinkItem ginandtonic = new DrinkItem(ginandtonicimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Gin and Tonic", 0.7f, 1, "glass");
+        Bitmap jackandcokeimage = BitmapFactory.decodeResource(getResources(), R.drawable.jack_and_coke);
+        DrinkItem jackandcoke = new DrinkItem(jackandcokeimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Jack and Coke", 0.7f, 1, "glass");
+
+        cocktailcategory.drinks.add(martini);
+        cocktailcategory.drinks.add(margerita);
+        cocktailcategory.drinks.add(ginandtonic);
+        cocktailcategory.drinks.add(jackandcoke);
 
         categoryItems = new ArrayList<CategoryItem>();
         categoryItems.add(beercategory);
