@@ -26,6 +26,7 @@ public class PhoneActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_phone, menu);
+        //return super.onCreateOptionsMenu(menu);
         return true;
     }
 
@@ -37,23 +38,23 @@ public class PhoneActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        //if (id == R.id.action_settings) {
+            //return true;
+        //}
+        switch (id) {
+            case R.id.action_add_drink:
+                break;
+            case R.id.action_profile:
+                Intent profileIntent = new Intent(this, ProfilePressedActivity.class);
+                profileIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(profileIntent);
+                break;
+            case R.id.action_info:
+                Intent dbIntent = new Intent(this, DBActivity.class);
+                startActivity(dbIntent);
+                break;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void pressProfile(View view) {
-        Intent intent = new Intent(this, ProfilePressedActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(intent);
-    }
-
-    public void pressDrinkdb(View view) {
-        Log.d(TAG, "press drink db");
-        Intent intent = new Intent(this, DBActivity.class);
-        startActivity(intent);
-
     }
 }

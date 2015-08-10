@@ -18,7 +18,7 @@ public class AddDrinkActivity extends ActionBarActivity {
     private EditText drink_calories;
     private EditText drink_ingredients;
 
-    public String TAG = "addDrink";
+    public String TAG;
 
 
     @Override

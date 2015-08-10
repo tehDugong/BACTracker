@@ -23,6 +23,7 @@ public class DBActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("TAG", "in db");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_db);
         myList = (ListView) findViewById(R.id. listView);
@@ -39,9 +40,9 @@ public class DBActivity extends Activity {
 
             }
         });
-
-
     }
+
+
 
     private void startDrinkInfo(String name){
 
