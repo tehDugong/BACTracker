@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,8 +36,8 @@ public class DrinkInfo extends Activity {
             ingredients = extras.getString("ingredients");
             category = extras.getString("category");
             //Log.d(TAG, "drinkinfo "+ category);
-            calTextView.setText(Integer.toString(cal) + " calories");
-            abvTextView.setText(Double.toString(abv) + " %");
+            calTextView.setText(Integer.toString(cal) + " Calories");
+            abvTextView.setText(Double.toString(abv) + " % Alcohol");
             ingredientsTextView.setText(ingredients);
         }
 //        getActionBar().setTitle(name);
@@ -47,6 +49,16 @@ public class DrinkInfo extends Activity {
         drinkImageView.setImageResource(id);
     }
 
+    public void removeFromMenu(View view){
+        Log.d(TAG, "removeFromMenu");
+        boolean flag = true;
+        if (flag == true) {
+            //((ImageButton) view).setBackgroundResource(R.drawable.addtomenu);
+        }
+        else{
 
+        }
+
+    }
 
 }
