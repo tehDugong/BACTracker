@@ -8,7 +8,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault" >
+        android:theme="@android:style/Theme.DeviceDefault"
+        android:largeHeap="true">
         <activity
             android:name=".BACActivity"
             android:label="@string/title_activity_bac" >
@@ -41,9 +42,10 @@
             android:label="@string/title_activity_count_drinks" />
         <activity
             android:name=".DrinkCategories"
-            android:label="@string/title_activity_drink_categories" >
+            android:label="@string/title_activity_drink_categories">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

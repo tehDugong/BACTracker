@@ -7,14 +7,13 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
-import android.util.Log;
 
 import java.util.ArrayList;
 
 public class DrinkCategories extends Activity {
 
     private WearableListView wearableListView;
-    private ArrayList<CategoryItem> categoryItems;
+    public static ArrayList<CategoryItem> categoryItems;
     private final int WIDTH_RESIZE = 50;
     private final int HEIGHT_RESIZE = 50;
     private final int dWIDTH_RESIZE = 20;
@@ -30,6 +29,9 @@ public class DrinkCategories extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
+                BitmapFactory.Options o=new BitmapFactory.Options();
+                o.inDither=false;                     //Disable Dithering mode
+                o.inSampleSize=8;
                 wearableListView = (WearableListView)stub.findViewById(R.id.drinksListView);
                 setTestCategories();
                 CategoryAdapterWearable adapter = new CategoryAdapterWearable(getApplicationContext(), categoryItems);
@@ -52,8 +54,8 @@ public class DrinkCategories extends Activity {
 
     public void setTestCategories() {
         BitmapFactory.Options o=new BitmapFactory.Options();
-        o.inSampleSize = 4;
         o.inDither=false;                     //Disable Dithering mode
+        o.inSampleSize=8;
         //BEER CATEGORY
         Bitmap beercategoryimage = BitmapFactory.decodeResource(getResources(), R.drawable.beer_category, o);
         CategoryItem beercategory = new CategoryItem("Beer", beercategoryimage, WIDTH_RESIZE,HEIGHT_RESIZE);
@@ -66,6 +68,10 @@ public class DrinkCategories extends Activity {
         DrinkItem guinness = new DrinkItem(guinnessimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Guinness", 0.5f, 1, "Pint");
         Bitmap amstellightimage = BitmapFactory.decodeResource(getResources(), R.drawable.amstel_light_beer, o);
         DrinkItem amstellight = new DrinkItem(amstellightimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Amstel Light", 0.3f, 1, "Pint");
+        Bitmap keystonelightimage = BitmapFactory.decodeResource(getResources(), R.drawable.keystone_light, o);
+        DrinkItem keystonelight = new DrinkItem(keystonelightimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Keystone Light", 0.3f, 1, "Pint");
+        Bitmap becksimage = BitmapFactory.decodeResource(getResources(), R.drawable.becks, o);
+        DrinkItem becks = new DrinkItem(becksimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Becks", 0.3f, 1, "Pint");
 
         testItem = budlight;
 
@@ -73,6 +79,8 @@ public class DrinkCategories extends Activity {
         beercategory.drinks.add(heineken);
         beercategory.drinks.add(guinness);
         beercategory.drinks.add(amstellight);
+        beercategory.drinks.add(keystonelight);
+        beercategory.drinks.add(becks);
 
         Bitmap winecategoryimage = BitmapFactory.decodeResource(getResources(), R.drawable.wine_category, o);
         CategoryItem winecategory = new CategoryItem("Wine", winecategoryimage, WIDTH_RESIZE, HEIGHT_RESIZE);
@@ -97,7 +105,6 @@ public class DrinkCategories extends Activity {
         DrinkItem jameson = new DrinkItem(jamesonimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Whiskey: Jameson", 0.6f, 1, "shot");
         Bitmap jackdanielsimage = BitmapFactory.decodeResource(getResources(), R.drawable.jack_daniels_whiskey);
         DrinkItem jackdaniels = new DrinkItem(jackdanielsimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Whiskey: Jack Daniels", 0.6f, 1, "shot");
-
         liquorcategory.drinks.add(ginmare);
         liquorcategory.drinks.add(absolutevodka);
         liquorcategory.drinks.add(jameson);
@@ -114,6 +121,7 @@ public class DrinkCategories extends Activity {
         Bitmap jackandcokeimage = BitmapFactory.decodeResource(getResources(), R.drawable.jack_and_coke);
         DrinkItem jackandcoke = new DrinkItem(jackandcokeimage, dWIDTH_RESIZE, dHEIGHT_RESIZE, "Jack and Coke", 0.7f, 1, "glass");
 
+
         cocktailcategory.drinks.add(martini);
         cocktailcategory.drinks.add(margerita);
         cocktailcategory.drinks.add(ginandtonic);
@@ -124,18 +132,35 @@ public class DrinkCategories extends Activity {
         categoryItems.add(winecategory);
         categoryItems.add(liquorcategory);
         categoryItems.add(cocktailcategory);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        recycleBitmaps();
 
+    }
+
+    public void recycleBitmaps() {
+        for (CategoryItem ci : categoryItems) {
+            ci.image.recycle();
+            ci.image = null;
+            if (ci.drinks != null &&ci.drinks.size() > 0) {
+                for (DrinkItem drink : ci.drinks) {
+                    drink.recycleImages();
+                }
+            }
+        }
     }
 
     public void onClickAction(WearableListView.ViewHolder viewHolder){
         Intent i = new Intent(DrinkCategories.this, DrinksListActivity.class);
         int currentPosition = viewHolder.getAdapterPosition();
         ArrayList<DrinkItem> drinksArray = categoryItems.get(currentPosition).drinks;
-        Log.d(TAG, Integer.toString(currentPosition));
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("drinks", drinksArray);
-        i.putExtra("drinks",bundle);
+        CategoryItem categoryItem = categoryItems.get(currentPosition);
+        String name = categoryItem.name;
+        i.putExtra("position", currentPosition);
+        i.putExtra("name", name);
         startActivity(i);
     }
 

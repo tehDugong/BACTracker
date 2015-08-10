@@ -94,6 +94,7 @@ public class DrinkItem implements Parcelable {
     public void setSize(int size) {
         this.size = size;
     }
+
     public float getAlcoholContent() {
         return alcoholContent;
     }
@@ -102,10 +103,16 @@ public class DrinkItem implements Parcelable {
         this.alcoholContent = alcoholContent;
     }
 
+    public void recycleImages() {
+        this.image.recycle();
+        this.resizeImage.recycle();
+        this.image = null;
+        this.resizeImage = null;
+    }
     public DrinkItem(Bitmap image, int resizeWidth, int resizeHeight, String name, float alcoholContent, int size, String units) {
         this.image = image;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        this.image.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        this.image.compress(Bitmap.CompressFormat.PNG, 100, out);
         this.imageBytes = out.toByteArray();
         this.resizeWidth=resizeWidth;
         this.resizeHeight=resizeHeight;

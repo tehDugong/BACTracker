@@ -13,6 +13,7 @@ public class CountDrinks extends Activity {
     private ImageView drinkImage;
     private String name;
     private int count, index;
+    private DrinkItem drink;
 
 
     @Override
@@ -27,12 +28,12 @@ public class CountDrinks extends Activity {
                 drinkCount = (TextView)stub.findViewById(R.id.drinkCount);
                 drinkImage = (ImageView)stub.findViewById(R.id.drinkImage);
                 Intent i = getIntent();
-                Bundle bundle = (Bundle)i.getExtras();
-                name = (String)bundle.get("drinkName");
-                count = (int) bundle.get("drinkCount");
-                index = (int) bundle.get("index");
+                drink = i.getParcelableExtra("drink");
+                name = drink.getName();
+                count = drink.getCount();
                 drinkName.setText(name);
                 drinkCount.setText(Integer.toString(count));
+                drinkImage.setImageBitmap(drink.getImage());
             }
         });
     }
