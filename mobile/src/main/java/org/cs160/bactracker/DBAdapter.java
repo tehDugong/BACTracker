@@ -18,7 +18,7 @@ public class DBAdapter {
 	public static final String KEY_CAL = "calories";
 	public static final String KEY_CATEGORY = "category";
 
-	public static final String[] ALL_KEYS = new String[] {KEY_NAME, KEY_INGREDIENTS, KEY_ABV};
+	public static final String[] ALL_KEYS = new String[] {KEY_NAME, KEY_INGREDIENTS, KEY_ABV, KEY_CAL, KEY_CATEGORY};
 
 	// Column Numbers for each Field Name:
 	public static final int COL_NAME = 0;
@@ -43,8 +43,8 @@ public class DBAdapter {
 					+ ");";
 
 	private final Context context;
-	private DatabaseHelper myDBHelper;
-	private SQLiteDatabase db;
+	private static DatabaseHelper myDBHelper;
+	private static SQLiteDatabase db;
 
 
 	public DBAdapter(Context ctx) {
@@ -84,6 +84,8 @@ public class DBAdapter {
 	}
 
 	public void deleteAll() {
+        Log.d(TAG, "delete all");
+        /*
 		Cursor c = getAllRows();
 		long rowId = c.getColumnIndexOrThrow(KEY_NAME);
 		if (c.moveToFirst()) {
@@ -92,6 +94,8 @@ public class DBAdapter {
 			} while (c.moveToNext());
 		}
 		c.close();
+		*/
+        db.delete(DATABASE_TABLE, null, null);
 	}
 
 	// Return all data in the database.

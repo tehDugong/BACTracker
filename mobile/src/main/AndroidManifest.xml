@@ -44,7 +44,10 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" >
         </activity>
 
-        <activity android:name=".DrinkInfo" />
+        <activity
+            android:name=".DrinkInfo"
+            android:theme="@style/PhoneTheme"/>
+
         <activity
             android:name=".AddDrinkActivity"
             android:label="Add Drink" >

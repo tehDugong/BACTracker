@@ -16,6 +16,7 @@ public class DrinkInfo extends Activity {
     double abv;
     String ingredients;
     String picturename;
+    String category;
     private static final String TAG = "DrinkInfo"; //used for logging database version changes
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +32,15 @@ public class DrinkInfo extends Activity {
             cal = extras.getInt("cal");
             abv = extras.getInt("abv");
             ingredients = extras.getString("ingredients");
+            category = extras.getString("category");
+            //Log.d(TAG, "drinkinfo "+ category);
             calTextView.setText(Integer.toString(cal) + " calories");
             abvTextView.setText(Double.toString(abv) + " %");
             ingredientsTextView.setText(ingredients);
         }
 //        getActionBar().setTitle(name);
 
-        picturename = name.replaceAll("\\s+","").toLowerCase();
+        picturename = category.replaceAll("\\s+","").toLowerCase();
         Log.i(TAG, picturename);
         Context context = drinkImageView.getContext();
         int id = context.getResources().getIdentifier(picturename, "drawable", context.getPackageName());

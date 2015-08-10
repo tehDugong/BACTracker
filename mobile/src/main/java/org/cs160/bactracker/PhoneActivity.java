@@ -31,7 +31,6 @@ public class PhoneActivity extends ActionBarActivity {
         Log.d(TAG, "first");
         categoryList = (ListView) findViewById(R.id.listCategories);
         openDB();
-
         InitializeDatabase();
         Log.d(TAG, "startPhone");
         populateListView();
@@ -43,10 +42,16 @@ public class PhoneActivity extends ActionBarActivity {
                 String name = ((TextView) view).getText().toString();
                 // start Drink Info Activity of specified drink
                 Log.d(TAG, name.toString());
-                startCategoryInfo("Wine");
+                startCategoryInfo("Beer");
 
             }
         });
+    }
+
+    public void onResume() {
+        Log.d(TAG, "onresume");
+        super.onResume();
+        openDB();
     }
 
     @Override
@@ -107,9 +112,11 @@ public class PhoneActivity extends ActionBarActivity {
     public void InitializeDatabase(){
         myDB.deleteAll();
         Log.d(TAG, "after delete");
-        myDB.insertRow("Red Wine", 1, 1.1, "Wine", "Red Wine Ingredients");
-        myDB.insertRow("White Wine", 2 , 2.2, "Wine", "White Wine Ingredients");
-        myDB.insertRow("Beer", 2, 0.5, "Beer", "Beer Ingredients");
+        myDB.insertRow("Merlot", 122, 14.5, "Red Wine", "Merlot grapes");
+        myDB.insertRow("Chardonnay", 123, 14.5, "White Wine", "Chardonnay grapes");
+        myDB.insertRow("Guinness", 125, 4.1, "Beer", "Roasted unmalted barley");
+        myDB.insertRow("Heineken", 150, 5, "Beer", "Barley malt, hops and the unique Heineken A-yeast");
+
 //        myDB.insertRow("Red Wine", 1.1 , 1, "Red Wine Ingredients");
 //        myDB.insertRow("White Wine", 2.2, 2, "White Wine Ingredients");
     }

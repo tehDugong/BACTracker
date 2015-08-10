@@ -29,7 +29,7 @@ public class DBActivity extends Activity {
         setContentView(R.layout.activity_db);
         myList = (ListView) findViewById(R.id. listView);
         openDB();
-        InitializeDatabase();
+        //InitializeDatabase();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             category = extras.getString("category");
@@ -52,7 +52,7 @@ public class DBActivity extends Activity {
     private void startDrinkInfo(String name){
 
         Cursor c = myDB.getRowByName(name);
-
+        Log.d(TAG, "startDrinkInfo"+name);
         int abvindex = c.getColumnIndex("abv");
         Log.i(TAG, "abv col index : " + Integer.toString(abvindex));
         int abv = c.getInt(c.getColumnIndex("abv"));
@@ -61,10 +61,12 @@ public class DBActivity extends Activity {
         Log.i(TAG, "ingredients col index : " + Integer.toString(ingindex));
         String ingredients = c.getString(c.getColumnIndex("ingredients"));
 
-        int calindex = c.getColumnIndex("calories") + 1;
+        int calindex = c.getColumnIndex("calories");
         Log.i(TAG, "calories col index : " + Integer.toString(calindex));
-
         int cal = c.getInt(calindex);
+
+        int catindex = c.getColumnIndex("category");
+        String category = c.getString(c.getColumnIndex("category"));
 
         // Launching DrinkInfo on selecting single Drink Item
         Intent i = new Intent(getApplicationContext(), DrinkInfo.class);
@@ -73,6 +75,7 @@ public class DBActivity extends Activity {
         i.putExtra("abv", abv);
         i.putExtra("cal", cal);
         i.putExtra("ingredients", ingredients);
+        i.putExtra("category", category);
         startActivity(i);
     }
 
@@ -89,14 +92,6 @@ public class DBActivity extends Activity {
     private void openDB(){
         myDB = new DBAdapter(this);
         myDB.open();
-    }
-
-    public void InitializeDatabase(){
-        myDB.deleteAll();
-        myDB.insertRow("Red Wine", 1, 1.1, "Wine", "Red Wine Ingredients");
-        myDB.insertRow("White Wine", 2 , 2.2, "Wine", "White Wine Ingredients");
-//        myDB.insertRow("Red Wine", 1.1 , 1, "Red Wine Ingredients");
-//        myDB.insertRow("White Wine", 2.2, 2, "White Wine Ingredients");
     }
 
     @Override
