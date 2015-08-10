@@ -30,9 +30,8 @@ public class BACActivity extends Activity
     private final String TAG = "BACActivity";
     public static GoogleApiClient mGoogleApiClient;
     public static float alcohol = 0.0f;
+    private float limit;
     private BroadcastReceiver receiver;
-    static final public String BACTRACKER_MESSAGE = "org.cs160.BACTracker" +
-            ".backend.BACService.BAC_MSG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +53,27 @@ public class BACActivity extends Activity
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.i(TAG, "Broadcast received!");
-                String s = intent.getStringExtra(BACTRACKER_MESSAGE);
-                Log.i(TAG, "Found BAC: "+s);
-                TextView view = (TextView) findViewById(R.id.current_BAC);
-                view.setText(s);
+                String s = intent.getStringExtra("bac");
+                if (s != null) {
+                    Log.i(TAG, "Found BAC: " + s);
+                    TextView view = (TextView) findViewById(R.id.current_BAC);
+                    view.setText(s);
+                }
+
+                Float new_limit = intent.getFloatExtra("limit", -1.0f);
+                if (new_limit>=0.0f){
+                    Log.i(TAG, "Limit updated: "+new_limit);
+                    limit = new_limit;
+                }
             }
         };
         registerReceiver(receiver, new IntentFilter("wat?"));
 
         // check existing BAC
         sendMessage("/check_BAC", "");
+        // check legal limit
+        limit = 0.08f;
+        sendMessage("/check_limit", "");
 
         setContentView(R.layout.activity_bac);
     }
@@ -82,16 +92,6 @@ public class BACActivity extends Activity
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.i(TAG, "Connection to GoogleAPI failed!");
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-    }
-
-    @Override
-    public void onPause(){
-        super.onPause();
     }
 
     @Override
@@ -166,7 +166,6 @@ public class BACActivity extends Activity
 
     public void toDrinksSelection(View v) {
         Intent i = new Intent(this, DrinksListActivity.class);
-        BACActivity.increment(1.0f);
         startActivity(i);
     }
 }

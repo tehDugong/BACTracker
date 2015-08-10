@@ -1,19 +1,16 @@
 package org.cs160.bactracker;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
@@ -25,31 +22,30 @@ import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
-public class PhoneListeningService extends WearableListenerService {
+public class PhoneListeningService extends WearableListenerService
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private final String TAG = "PhoneListeningService";
-    private final String PATH = "/bac";
     public static final String PREFS_NAME = "DrinksFile";
+    private GoogleApiClient googleApiClient;
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Wearable.API)
+                .build();
+        googleApiClient.connect();
+    }
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent){
         Log.i(TAG, "onMessageReceived triggered");
-
-        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .build();
-
-        ConnectionResult connectionResult =
-                googleApiClient.blockingConnect(30, TimeUnit.SECONDS);
-
-        if (!connectionResult.isSuccess()) {
-            Log.i(TAG, "Unable to connect");
-            return;
-        }
 
         SharedPreferences drinks = getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = drinks.edit();
@@ -58,25 +54,11 @@ public class PhoneListeningService extends WearableListenerService {
             Log.i(TAG, "Checking BAC");
 
             float bac = calculateBAC();
+            updateBAC(bac);
 
-            /*
-            PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
-            putDataMapReq.getDataMap().putFloat("bac", bac);
-            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-
-            PendingResult<DataApi.DataItemResult> pendingResult =
-                    Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
-
-            pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-                @Override
-                public void onResult(final DataApi.DataItemResult result) {
-                    if (result.getStatus().isSuccess()) {
-                        Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
-                    }
-                }
-            });
-            */
-            updateBAC(PATH, bac);
+            //also check legal driving limit
+            float legal_limit = drinks.getFloat("legal_limit", 0.08f);
+            updateLimit(legal_limit);
 
 
         } else if (messageEvent.getPath().equalsIgnoreCase("/reset")) {
@@ -89,28 +71,7 @@ public class PhoneListeningService extends WearableListenerService {
             editor.commit();
 
             float bac = calculateBAC(); // This should return 0. If it doesn't, something is wrong
-
-            // update new BAC and send result to watch
-            /*
-            PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
-
-            putDataMapReq.getDataMap().putFloat("bac", bac);
-            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-
-            PendingResult<DataApi.DataItemResult> pendingResult =
-                    Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
-
-            pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-                @Override
-                public void onResult(final DataApi.DataItemResult result) {
-                    if (result.getStatus().isSuccess()) {
-                        Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
-                    }
-                }
-            });
-            */
-
-            updateBAC(PATH, bac);
+            updateBAC(bac);
         }
     }
 
@@ -118,18 +79,6 @@ public class PhoneListeningService extends WearableListenerService {
     public void onDataChanged(DataEventBuffer dataEvents) {
 
         Log.i(TAG, "onDataChanged triggered!");
-
-        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .build();
-
-        ConnectionResult connectionResult =
-                googleApiClient.blockingConnect(30, TimeUnit.SECONDS);
-
-        if (!connectionResult.isSuccess()) {
-            Log.i(TAG, "Unable to connect");
-            return;
-        }
 
         SharedPreferences drinks = getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = drinks.edit();
@@ -149,32 +98,12 @@ public class PhoneListeningService extends WearableListenerService {
                 editor.commit();
 
                 float bac = calculateBAC();
-
-                // update new BAC and send result to watch
-                updateBAC(PATH, bac);
-
-                /*PutDataMapRequest putDataMapReq = PutDataMapRequest.create(PATH);
-                putDataMapReq.getDataMap().putFloat("bac", bac);
-                PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-
-                PendingResult<DataApi.DataItemResult> pendingResult =
-                        Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
-
-                pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-                    @Override
-                    public void onResult(final DataApi.DataItemResult result) {
-                        if (result.getStatus().isSuccess()) {
-                            Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
-                        }
-                    }
-                });
-                */
+                updateBAC(bac);
             }
         }
     }
 
     private float calculateBAC(){
-
         // calculate new BAC
         SharedPreferences drinks = getSharedPreferences(PREFS_NAME, 0);
 
@@ -213,32 +142,45 @@ public class PhoneListeningService extends WearableListenerService {
         return bac;
     }
 
-    private void updateBAC(final String path, final float bac){
-        final GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .build();
-
-        ConnectionResult connectionResult =
-                googleApiClient.blockingConnect(30, TimeUnit.SECONDS);
-
-        if (!connectionResult.isSuccess()) {
-            Log.i(TAG, "Unable to connect");
-            return;
-        }
-
+    private void updateBAC(final float bac){
         new Thread( new Runnable() {
             @Override
             public void run() {
-                Log.i(TAG, "Sending message: "+path);
+                Log.i(TAG, "Sending message: /bac");
                 NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(
                         googleApiClient ).await();
                 for(Node node : nodes.getNodes()) {
                     Log.i(TAG, "Node: " + node);
                     MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
-                            googleApiClient, node.getId(), path,
+                            googleApiClient, node.getId(), "/bac",
                             ByteBuffer.allocate(4).putFloat(bac).array()).await();
                 }
             }
         }).start();
+    }
+
+    private void updateLimit(final float legal_limit){
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/legal_limit");
+        putDataMapReq.getDataMap().putFloat("legal_limit", legal_limit);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
+        pendingResult.await();
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        Log.i(TAG, "Connected to GoogleAPI");
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        Log.i(TAG, "Connection to GoogleAPI suspended");
+    }
+
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.i(TAG, "Connection to GoogleAPI failed!");
     }
 }

@@ -26,11 +26,6 @@ import java.util.concurrent.TimeUnit;
 public class BACService extends WearableListenerService {
     private final String TAG = "BACService";
 
-    static final public String BACTRACKER_RESULT = "org.cs160.BACTracker" +
-            ".backend.BACService.REQUEST_PROCESSED";
-    static final public String BACTRACKER_MESSAGE = "org.cs160.BACTracker" +
-            ".backend.BACService.BAC_MSG";
-
     @Override
     public void onMessageReceived(MessageEvent messageEvent){
         Log.i(TAG, "onMessageReceived triggered!");
@@ -43,7 +38,6 @@ public class BACService extends WearableListenerService {
         }
     }
 
-    /*
     @Override
     public void onDataChanged(DataEventBuffer dataEvents){
         Log.i(TAG, "onDataChanged triggered!");
@@ -54,23 +48,25 @@ public class BACService extends WearableListenerService {
             Uri uri = event.getDataItem().getUri();
             Log.i(TAG, uri.toString());
 
-            if (uri.toString().contains("/bac")){
+            if (uri.toString().contains("/legal_limit")){
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                float bac= dataMap.getFloat("bac");
-                Log.i(TAG, "Calculated BAC: " + bac);
-                updateBAC(String.format("%.2f", bac));
+                float legal_limit = dataMap.getFloat("legal_limit");
+                updateLimit(legal_limit);
             }
         }
     }
-    */
 
-    public void updateBAC(String message) {
-        Log.i(TAG, "Sending broadcast...");
-        Intent intent = new Intent(BACTRACKER_RESULT);
-        intent.putExtra(BACTRACKER_MESSAGE, message);
+    private void updateBAC(String message) {
+        Log.i(TAG, "Sending broadcast for bac");
         getApplicationContext().sendBroadcast(new Intent("wat?")
-                .putExtra(BACTRACKER_MESSAGE, message));
+                .putExtra("bac", message));
+    }
+
+    private void updateLimit(Float message){
+        Log.i(TAG, "Sending broadcast for legal_limit");
+        getApplicationContext().sendBroadcast(new Intent("wat?")
+                .putExtra("limit", message));
     }
 
 }

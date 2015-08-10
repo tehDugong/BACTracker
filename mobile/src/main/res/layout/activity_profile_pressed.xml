@@ -94,13 +94,33 @@
             android:onClick="onRadioButtonClicked"/>
     </RadioGroup>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Limit"
+        android:id="@+id/legal_limit_text"
+        android:layout_alignBottom="@+id/legal_limit"
+        android:layout_alignStart="@+id/gender_text" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/legal_limit"
+        android:hint="Enter legal driving limit"
+        android:layout_below="@+id/radioGroup"
+        android:layout_alignParentEnd="true"
+        android:text="0.08"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"
         android:id="@+id/save_button"
         android:layout_marginTop="28dp"
-        android:layout_below="@+id/radioGroup"
+        android:layout_below="@+id/legal_limit"
         android:layout_centerHorizontal="true"
         android:onClick="pressSaveButton"/>
 
