@@ -49,7 +49,7 @@ public class PhoneActivity extends ActionBarActivity {
                 String name = ((TextView) view).getText().toString();
                 // start Drink Info Activity of specified drink
                 Log.d(TAG, name.toString());
-                startCategoryInfo("Beer");
+                startCategoryInfo(name);
 
             }
         });
@@ -96,7 +96,7 @@ public class PhoneActivity extends ActionBarActivity {
     private void populateListView() {
         Log.d(TAG, "in populateView");
         Cursor cursor = myDB.getAllRows();
-        String[] fromFieldNames = new String[] {DBAdapter.KEY_INGREDIENTS};
+        String[] fromFieldNames = new String[] {DBAdapter.KEY_CATEGORY};
         //Log.d(TAG, fromFieldNames[0]);
         int[] toViewIDs = new int[] {R.id.category_text_view};
         //Log.d(TAG, Integer.valueOf(toViewIDs[0]).toString());

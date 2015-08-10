@@ -30,7 +30,7 @@ public class DBAdapter {
 	// DataBase info:
 	public static final String DATABASE_NAME = "DrinkDatabase";
 	public static final String DATABASE_TABLE = "mainDrinkDatabase";
-	public static final int DATABASE_VERSION = 3; // The version number must be incremented each time a change to DB structure occurs.
+	public static final int DATABASE_VERSION = 4; // The version number must be incremented each time a change to DB structure occurs.
 
 	//SQL statement to create database
 	private static final String DATABASE_CREATE_SQL =
