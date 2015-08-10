@@ -11,4 +11,6 @@
     <string name="title_activity_drinks_list">DrinksListActivity</string>
     <string name="title_activity_count_drinks">CountDrinks</string>
     <string name="title_activity_drink_categories">DrinkCategories</string>
+    <string name="title_activity_sampleactivity">sampleactivity</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

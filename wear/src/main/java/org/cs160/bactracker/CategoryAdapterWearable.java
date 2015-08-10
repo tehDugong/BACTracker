@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.wearable.view.WearableListView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,6 +14,7 @@ import java.util.ArrayList;
 public class CategoryAdapterWearable extends WearableListView.Adapter{
     public ArrayList<CategoryItem> items;
     private final LayoutInflater inflater;
+    private WearableListView.ViewHolder vh;
     public CategoryAdapterWearable(Context context,ArrayList<CategoryItem> items) {
         this.items=items;
         inflater = LayoutInflater.from(context);
@@ -33,10 +33,10 @@ public class CategoryAdapterWearable extends WearableListView.Adapter{
         title.setText(item.name);
 
         TextView numberOfDrinks = (TextView)holder.itemView.findViewById(R.id.numberOfDrinks);
-        numberOfDrinks.setText(Integer.toString(items.size()));
+        numberOfDrinks.setText(Integer.toString(item.drinks.size()));
 
-        ImageView image = (ImageView)holder.itemView.findViewById(R.id.categoryImage);
-        image.setImageBitmap(item.image);
+        RoundedImageView image = (RoundedImageView)holder.itemView.findViewById(R.id.categoryImage);
+        image.setImageBitmap(RoundedImageView.getCroppedBitmap(item.image, 50));
     }
 
     @Override
