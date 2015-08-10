@@ -17,6 +17,7 @@ public class AddDrinkActivity extends ActionBarActivity {
     private EditText drink_alcohol;
     private EditText drink_calories;
     private EditText drink_ingredients;
+    DBAdapter myDB;
 
     public String TAG;
 
@@ -25,6 +26,7 @@ public class AddDrinkActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_drink);
+        openDB();
     }
 
     @Override
@@ -49,6 +51,11 @@ public class AddDrinkActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void openDB(){
+        myDB = new DBAdapter(this);
+        myDB.open();
+    }
+
     public void addDrinkPressed(View view){
         drink_name = (EditText) findViewById(R.id.drink_name);
         drink_alcohol = (EditText) findViewById(R.id.drink_alcohol);
@@ -57,13 +64,21 @@ public class AddDrinkActivity extends ActionBarActivity {
         Spinner drink_category = (Spinner) findViewById(R.id.drink_category);
         String spinVal = String.valueOf(drink_category.getSelectedItem());
 
+        String name = drink_name.getText().toString();
+        Double alcohol = Double.parseDouble(drink_alcohol.getText().toString());
+        Integer calories = Integer.parseInt(drink_calories.getText().toString());
+        String ingredients =  drink_ingredients.getText().toString();
+        Log.d("TAG", spinVal);
+
         Log.d("TAG", drink_name.getText().toString());
         Log.d("TAG", drink_alcohol.getText().toString());
         Log.d("TAG", drink_calories.getText().toString());
         Log.d("TAG", drink_ingredients.getText().toString());
         Log.d("TAG", spinVal);
 
-        Intent intent = new Intent(this, DBActivity.class);
+        myDB.insertRow(name, calories, alcohol, spinVal, ingredients);
+        Intent intent = new Intent(this, PhoneActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
 
     }

@@ -31,8 +31,15 @@ public class PhoneActivity extends ActionBarActivity {
         Log.d(TAG, "first");
         categoryList = (ListView) findViewById(R.id.listCategories);
         openDB();
-        InitializeDatabase();
+        //InitializeDatabase();
         Log.d(TAG, "startPhone");
+
+    }
+
+    public void onResume() {
+        Log.d(TAG, "onresume");
+        super.onResume();
+        openDB();
         populateListView();
         categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -46,12 +53,6 @@ public class PhoneActivity extends ActionBarActivity {
 
             }
         });
-    }
-
-    public void onResume() {
-        Log.d(TAG, "onresume");
-        super.onResume();
-        openDB();
     }
 
     @Override
