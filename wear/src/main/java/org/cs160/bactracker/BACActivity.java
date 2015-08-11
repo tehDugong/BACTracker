@@ -107,32 +107,6 @@ public class BACActivity extends Activity
         mGoogleApiClient.disconnect();
     }
 
-
-    public void increment(float alc){
-        // send dummy data to the PhoneListenerService
-        // Log.i(TAG, "Button pressed");
-
-        alcohol += alc;
-
-        // Log.i(TAG, "Sending alcohol content of " + alcohol);
-
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/alcohol");
-        putDataMapReq.getDataMap().putFloat("beer", alcohol);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-
-        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-            @Override
-            public void onResult(final DataApi.DataItemResult result) {
-                if (result.getStatus().isSuccess()) {
-                    // Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
-                }
-            }
-        });
-    }
-
     private void sendMessage(final String path, final byte[] data){
         new Thread( new Runnable() {
             @Override

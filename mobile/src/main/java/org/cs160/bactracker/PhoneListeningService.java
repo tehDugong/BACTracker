@@ -76,14 +76,15 @@ public class PhoneListeningService extends WearableListenerService
             byte[] bytes = messageEvent.getData();
             float alcohol = ByteBuffer.wrap(bytes).getFloat();
             Log.i(TAG, "Added alcohol: "+alcohol);
-            editor.putFloat("alcohol", alcohol);
+            editor.putFloat("alcohol", drinks.getFloat("alcohol", 0.0f)+alcohol);
             editor.commit();
-
+            Log.i(TAG, "Alcohol sum: "+drinks.getFloat("alcohol", 0.0f));
             float bac = calculateBAC();
             updateBAC(bac);
         }
     }
 
+    /*
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
 
@@ -111,6 +112,7 @@ public class PhoneListeningService extends WearableListenerService
             }
         }
     }
+    */
 
     private float calculateBAC(){
         // calculate new BAC

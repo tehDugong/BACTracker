@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,9 +16,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+
+import java.nio.ByteBuffer;
 
 public class CountDrinks extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     private TextView drinkName, drinkCount;
@@ -28,6 +34,7 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
     private DrinkItem drink;
     public static GoogleApiClient mGoogleApiClient;
     private BroadcastReceiver receiver;
+    private final String TAG = "CountDrinks";
 
 
     @Override
@@ -83,23 +90,9 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
             return;
         count += inc;
         drinkCount.setText(Integer.toString(count));
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/alcohol");
         float alcohol = drink.getAlcoholContent() * inc;
-        putDataMapReq.getDataMap().putFloat("beer", alcohol);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-
-        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-            @Override
-            public void onResult(final DataApi.DataItemResult result) {
-                if (result.getStatus().isSuccess()) {
-                    // Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
-                }
-            }
-        });
-
+        Log.i(TAG, "Alcohol calculated: "+alcohol);
+        sendMessage("/alcohol", ByteBuffer.allocate(4).putFloat(alcohol).array());
     }
 
     @Override
@@ -112,5 +105,20 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+    }
+
+    private void sendMessage(final String path, final byte[] data){
+        new Thread( new Runnable() {
+            @Override
+            public void run() {
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(
+                        mGoogleApiClient ).await();
+                for(Node node : nodes.getNodes()) {
+                    Log.i(TAG, "Sending message: "+path);
+                    MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
+                            mGoogleApiClient, node.getId(), path, data ).await();
+                }
+            }
+        }).start();
     }
 }
