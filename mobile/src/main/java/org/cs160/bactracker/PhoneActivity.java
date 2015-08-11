@@ -89,6 +89,8 @@ public class PhoneActivity extends ActionBarActivity {
                 startActivity(profileIntent);
                 break;
             case R.id.action_info:
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                startActivity(aboutIntent);
                 break;
         }
 
