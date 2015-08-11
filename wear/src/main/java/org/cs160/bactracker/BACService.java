@@ -15,6 +15,7 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -25,26 +26,21 @@ import java.util.concurrent.TimeUnit;
 public class BACService extends WearableListenerService {
     private final String TAG = "BACService";
 
-    static final public String BACTRACKER_RESULT = "org.cs160.BACTracker" +
-            ".backend.BACService.REQUEST_PROCESSED";
-    static final public String BACTRACKER_MESSAGE = "org.cs160.BACTracker" +
-            ".backend.BACService.BAC_MSG";
+    @Override
+    public void onMessageReceived(MessageEvent messageEvent){
+        Log.i(TAG, "onMessageReceived triggered!");
+
+        if( messageEvent.getPath().equalsIgnoreCase( "/bac" ) ) {
+            byte[] bytes = messageEvent.getData();
+            float bac = ByteBuffer.wrap(bytes).getFloat();
+            Log.i(TAG, "Calculated BAC: " + bac);
+            updateBAC(String.format("%.2f", bac));
+        }
+    }
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents){
-        Log.i(TAG, "Listener triggered!");
-
-        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .build();
-
-        ConnectionResult connectionResult =
-                googleApiClient.blockingConnect(30, TimeUnit.SECONDS);
-
-        if (!connectionResult.isSuccess()) {
-            Log.i(TAG, "Unable to connect");
-            return;
-        }
+        Log.i(TAG, "onDataChanged triggered!");
 
         // Loop through the events and send a message
         // to the node that created the data item.
@@ -52,21 +48,25 @@ public class BACService extends WearableListenerService {
             Uri uri = event.getDataItem().getUri();
             Log.i(TAG, uri.toString());
 
-            if (uri.toString().contains("/bac")){
+            if (uri.toString().contains("/legal_limit")){
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                float bac= dataMap.getFloat("bac");
-                Log.i(TAG, "Calculated BAC: " + bac);
-                updateBAC(String.format("%.2f", bac));
+                float legal_limit = dataMap.getFloat("legal_limit");
+                updateLimit(legal_limit);
             }
         }
     }
 
-    public void updateBAC(String message) {
-        Log.i(TAG, "Sending broadcast...");
-        Intent intent = new Intent(BACTRACKER_RESULT);
-        intent.putExtra(BACTRACKER_MESSAGE, message);
+    private void updateBAC(String message) {
+        Log.i(TAG, "Sending broadcast for bac");
         getApplicationContext().sendBroadcast(new Intent("wat?")
-                .putExtra(BACTRACKER_MESSAGE, message));
+                .putExtra("bac", message));
     }
+
+    private void updateLimit(Float message){
+        Log.i(TAG, "Sending broadcast for legal_limit");
+        getApplicationContext().sendBroadcast(new Intent("wat?")
+                .putExtra("limit", message));
+    }
+
 }

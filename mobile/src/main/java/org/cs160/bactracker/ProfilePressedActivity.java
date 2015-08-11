@@ -21,10 +21,12 @@ public class ProfilePressedActivity extends ActionBarActivity {
     String TAG; //del
     private EditText user_name;
     private EditText user_weight;
+    private EditText legal_limit;
     private String name = "";
     private String weightStr = "";
     private int weight;
     private Boolean gender;
+    private float limit;
     public static final String PREFS_NAME = "DrinksFile";
     SharedPreferences drinks;
     SharedPreferences.Editor editor;
@@ -166,6 +168,7 @@ public class ProfilePressedActivity extends ActionBarActivity {
 
         user_name = (EditText) findViewById(R.id.user_name);
         user_weight = (EditText) findViewById(R.id.user_weight);
+        legal_limit = (EditText) findViewById(R.id.legal_limit);
         name = user_name.getText().toString();
         weightStr = user_weight.getText().toString();
         weight = Integer.parseInt(weightStr);
@@ -173,8 +176,10 @@ public class ProfilePressedActivity extends ActionBarActivity {
         //user_weight.setText(weight);
         //Log.d(TAG, name);
         //Log.d(TAG, weight);
+        limit=Float.parseFloat(legal_limit.getText().toString());
         editor.putString("name", name);
         editor.putInt("weight", weight);
+        editor.putFloat("legal_limit", limit);
         editor.commit();
         Log.d(TAG, "in here");
         Log.d(TAG, drinks.getString("name", name));
