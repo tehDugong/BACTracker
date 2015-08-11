@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,7 @@ public class BACActivity extends Activity
     public static GoogleApiClient mGoogleApiClient;
     public static float alcohol = 0.0f;
     private float limit;
+    private float bac;
     private BroadcastReceiver receiver;
 
     @Override
@@ -56,8 +58,11 @@ public class BACActivity extends Activity
                 String s = intent.getStringExtra("bac");
                 if (s != null) {
                     Log.i(TAG, "Found BAC: " + s);
+                    bac = Float.parseFloat(s);
                     TextView view = (TextView) findViewById(R.id.current_BAC);
                     view.setText(s);
+                    Log.i(TAG, color_limit());
+                    view.setTextColor(Color.parseColor(color_limit()));
                 }
 
                 Float new_limit = intent.getFloatExtra("limit", -1.0f);
@@ -70,6 +75,7 @@ public class BACActivity extends Activity
         registerReceiver(receiver, new IntentFilter("wat?"));
 
         // check existing BAC
+        bac = 0.00f;
         sendMessage("/check_BAC", "");
         // check legal limit
         limit = 0.08f;
@@ -168,4 +174,25 @@ public class BACActivity extends Activity
         Intent i = new Intent(this, DrinksListActivity.class);
         startActivity(i);
     }
+
+    private String color_limit(){
+        // returns hex color code based on ratio between current bac and legal limit
+
+        int red;
+        int green;
+        int blue = 0;
+        double ratio = bac/limit;
+        if (ratio > 1.0){
+            ratio = 1.0;
+        }
+
+        if (ratio < 0.5f){
+            red = (int) Math.floor(ratio*255);
+            green = 255;
+        } else {
+            red = 255;
+            green = 255 - ((int) Math.floor(ratio * 255));
+        }
+        return String.format("#%02x%02x%02x", red, green, blue);
+   }
 }
