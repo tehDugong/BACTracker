@@ -66,7 +66,7 @@ public class BACActivity extends Activity
                 }
 
                 Float new_limit = intent.getFloatExtra("limit", -1.0f);
-                if (new_limit>=0.0f){
+                if (new_limit>0.0f){
                     Log.i(TAG, "Limit updated: "+new_limit);
                     limit = new_limit;
                 }
@@ -76,10 +76,10 @@ public class BACActivity extends Activity
 
         // check existing BAC
         bac = 0.00f;
-        sendMessage("/check_BAC", "");
+        sendMessage("/check_BAC", null);
         // check legal limit
         limit = 0.08f;
-        sendMessage("/check_limit", "");
+        sendMessage("/check_limit", null);
 
         setContentView(R.layout.activity_bac);
     }
@@ -103,11 +103,12 @@ public class BACActivity extends Activity
     @Override
     protected void onDestroy(){
         super.onDestroy();
+        unregisterReceiver(receiver);
         mGoogleApiClient.disconnect();
     }
 
 
-    public static void increment(float alc){
+    public static void increment(float alc) {
         // send dummy data to the PhoneListenerService
         // Log.i(TAG, "Button pressed");
 
@@ -132,7 +133,7 @@ public class BACActivity extends Activity
         });
     }
 
-    private void sendMessage(final String path, final String text){
+    private void sendMessage(final String path, final byte[] data){
         new Thread( new Runnable() {
             @Override
             public void run() {
@@ -142,7 +143,7 @@ public class BACActivity extends Activity
                 for(Node node : nodes.getNodes()) {
                     Log.i(TAG, "Node: "+node);
                     MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
-                            mGoogleApiClient, node.getId(), path, text.getBytes() ).await();
+                            mGoogleApiClient, node.getId(), path, data ).await();
                 }
             }
         }).start();
@@ -155,7 +156,7 @@ public class BACActivity extends Activity
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        sendMessage("/reset", "");
+                        sendMessage("/reset", null);
                         dialog.dismiss();
                     }
                 })
