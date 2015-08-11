@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100dp" android:layout_height="60dp" android:background="@drawable/drink_cell_borders">
+    <org.cs160.bactracker.RoundedImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/drinkGridImage"/>
+    <RelativeLayout
+        android:layout_width="45dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="none"
+            android:textColor="#FF0"
+            android:text="Gin: Gin Mare"
+            android:id="@+id/drinkTitle"
+            android:textSize="8dp"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

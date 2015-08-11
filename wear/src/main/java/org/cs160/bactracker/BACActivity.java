@@ -108,7 +108,7 @@ public class BACActivity extends Activity
     }
 
 
-    public static void increment(float alc) {
+    public void increment(float alc){
         // send dummy data to the PhoneListenerService
         // Log.i(TAG, "Button pressed");
 
@@ -170,9 +170,9 @@ public class BACActivity extends Activity
                 .create();
         ad.show();
     }
-
     public void toDrinksSelection(View v) {
-        Intent i = new Intent(this, DrinksListActivity.class);
+
+        Intent i = new Intent(this, DrinkCategories.class);
         startActivity(i);
     }
 

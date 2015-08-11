@@ -8,14 +8,16 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault" >
+        android:theme="@android:style/Theme.DeviceDefault"
+        android:largeHeap="true">
         <activity
             android:name=".BACActivity"
             android:label="@string/title_activity_bac" >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <service
@@ -26,10 +28,10 @@
         <service
             android:name=".BACService"
             android:enabled="true"
-            android:exported="true">
-        <intent-filter>
-            <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
-        </intent-filter>
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+            </intent-filter>
         </service>
 
         <activity
@@ -38,5 +40,16 @@
         <activity
             android:name=".CountDrinks"
             android:label="@string/title_activity_count_drinks" />
+        <activity
+            android:name=".DrinkCategories"
+            android:label="@string/title_activity_drink_categories">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
+
 </manifest>
