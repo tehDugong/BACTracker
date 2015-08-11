@@ -30,7 +30,7 @@ public class DBAdapter {
 	// DataBase info:
 	public static final String DATABASE_NAME = "DrinkDatabase";
 	public static final String DATABASE_TABLE = "mainDrinkDatabase";
-	public static final int DATABASE_VERSION = 4; // The version number must be incremented each time a change to DB structure occurs.
+	public static final int DATABASE_VERSION = 5; // The version number must be incremented each time a change to DB structure occurs.
 
 	//SQL statement to create database
 	private static final String DATABASE_CREATE_SQL =
@@ -153,6 +153,16 @@ public class DBAdapter {
             Log.i(TAG, "cursor moved to first");
         }
         return c;	}
+
+    public Cursor getCategories(){
+        String[] array = new String[]{KEY_NAME, KEY_CATEGORY};
+        Cursor c = db.query(true, DATABASE_TABLE, array, null, null, "category", null, null, null);
+        if (c != null){
+            c.moveToFirst();
+
+        }
+        return c;
+    }
 
 	// Change an existing row to be equal to new data.
 	public boolean updateRow(long rowId, String task, String date) {

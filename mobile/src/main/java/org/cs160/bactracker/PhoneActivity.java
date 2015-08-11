@@ -13,7 +13,11 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class PhoneActivity extends ActionBarActivity {
@@ -31,7 +35,7 @@ public class PhoneActivity extends ActionBarActivity {
         Log.d(TAG, "first");
         categoryList = (ListView) findViewById(R.id.listCategories);
         openDB();
-        //InitializeDatabase();
+        //InitializeDatabase(); //used to reset the database
         Log.d(TAG, "startPhone");
 
     }
@@ -85,8 +89,8 @@ public class PhoneActivity extends ActionBarActivity {
                 startActivity(profileIntent);
                 break;
             case R.id.action_info:
-                Intent dbIntent = new Intent(this, PhoneActivity.class);
-                startActivity(dbIntent);
+                //Intent dbIntent = new Intent(this, PhoneActivity.class);
+                //startActivity(dbIntent);
                 break;
         }
 
@@ -95,11 +99,10 @@ public class PhoneActivity extends ActionBarActivity {
 
     private void populateListView() {
         Log.d(TAG, "in populateView");
-        Cursor cursor = myDB.getAllRows();
+        //Cursor cursor = myDB.getAllRows();
+        Cursor cursor = myDB.getCategories();
         String[] fromFieldNames = new String[] {DBAdapter.KEY_CATEGORY};
-        //Log.d(TAG, fromFieldNames[0]);
         int[] toViewIDs = new int[] {R.id.category_text_view};
-        //Log.d(TAG, Integer.valueOf(toViewIDs[0]).toString());
         SimpleCursorAdapter myCursorAdapter;
         myCursorAdapter = new SimpleCursorAdapter(getBaseContext(), R.layout.category_layout, cursor, fromFieldNames, toViewIDs, 0);
         categoryList.setAdapter(myCursorAdapter);

@@ -55,8 +55,8 @@ public class AddDrinkActivity extends ActionBarActivity {
                 startActivity(profileIntent);
                 break;
             case R.id.action_info:
-                Intent dbIntent = new Intent(this, PhoneActivity.class);
-                startActivity(dbIntent);
+                //Intent dbIntent = new Intent(this, PhoneActivity.class);
+                //startActivity(dbIntent);
                 break;
         }
 
