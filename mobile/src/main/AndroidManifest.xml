@@ -10,18 +10,17 @@
         <activity
             android:name=".PhoneActivity"
             android:label="BACtracker"
-            android:theme="@style/PhoneTheme">
+            android:theme="@style/PhoneTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".DBActivity"
             android:label="BACtracker"
-            android:theme="@style/PhoneTheme">
+            android:theme="@style/PhoneTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,17 +39,17 @@
 
         <activity
             android:name=".ProfilePressedActivity"
-            android:label="@string/title_activity_profile_pressed"
-            android:theme="@style/Theme.AppCompat.NoActionBar" >
+            android:label="Profile"
+            android:theme="@style/PhoneTheme" >
         </activity>
-
-        <activity
-            android:name=".DrinkInfo"
-            android:theme="@style/PhoneTheme"/>
-
         <activity
             android:name=".AddDrinkActivity"
-            android:label="Add Drink" >
+            android:label="Add Drink"
+            android:theme="@style/PhoneTheme">
+        </activity>
+        <activity
+            android:name=".DrinkInfoActivity"
+            android:theme="@style/PhoneTheme">
         </activity>
     </application>
 

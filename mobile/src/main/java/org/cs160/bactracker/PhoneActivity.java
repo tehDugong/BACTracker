@@ -85,7 +85,7 @@ public class PhoneActivity extends ActionBarActivity {
                 startActivity(profileIntent);
                 break;
             case R.id.action_info:
-                Intent dbIntent = new Intent(this, DBActivity.class);
+                Intent dbIntent = new Intent(this, PhoneActivity.class);
                 startActivity(dbIntent);
                 break;
         }
@@ -141,7 +141,7 @@ public class PhoneActivity extends ActionBarActivity {
         int cal = c.getInt(calindex);
         */
 
-        // Launching DrinkInfo on selecting single Drink Item
+        // Launching DrinkInfoActivity on selecting single Drink Item
         Intent i = new Intent(getApplicationContext(), DBActivity.class);
         // sending data to new activity
         i.putExtra("category", category);

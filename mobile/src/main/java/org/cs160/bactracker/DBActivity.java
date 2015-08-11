@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +16,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 
-public class DBActivity extends Activity {
+public class DBActivity extends ActionBarActivity {
     DBAdapter myDB;
     ListView myList;
     final String TAG = "MainActivity";
@@ -34,6 +35,8 @@ public class DBActivity extends Activity {
         if (extras != null) {
             category = extras.getString("category");
         }
+        getSupportActionBar().setTitle("List of " + category);
+
         populateListView(category);
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -68,8 +71,8 @@ public class DBActivity extends Activity {
         int catindex = c.getColumnIndex("category");
         String category = c.getString(c.getColumnIndex("category"));
 
-        // Launching DrinkInfo on selecting single Drink Item
-        Intent i = new Intent(getApplicationContext(), DrinkInfo.class);
+        // Launching DrinkInfoActivity on selecting single Drink Item
+        Intent i = new Intent(getApplicationContext(), DrinkInfoActivity.class);
         // sending data to new activity
         i.putExtra("name", name);
         i.putExtra("abv", abv);
@@ -110,8 +113,20 @@ public class DBActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_add_drink:
+                Intent addDrinkIntent = new Intent(this, AddDrinkActivity.class);
+                startActivity(addDrinkIntent);
+                break;
+            case R.id.action_profile:
+                Intent profileIntent = new Intent(this, ProfilePressedActivity.class);
+                profileIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(profileIntent);
+                break;
+            case R.id.action_info:
+                Intent dbIntent = new Intent(this, DBActivity.class);
+                startActivity(dbIntent);
+                break;
         }
 
         return super.onOptionsItemSelected(item);

@@ -44,8 +44,20 @@ public class AddDrinkActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_add_drink:
+                Intent addDrinkIntent = new Intent(this, AddDrinkActivity.class);
+                startActivity(addDrinkIntent);
+                break;
+            case R.id.action_profile:
+                Intent profileIntent = new Intent(this, ProfilePressedActivity.class);
+                profileIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(profileIntent);
+                break;
+            case R.id.action_info:
+                Intent dbIntent = new Intent(this, PhoneActivity.class);
+                startActivity(dbIntent);
+                break;
         }
 
         return super.onOptionsItemSelected(item);

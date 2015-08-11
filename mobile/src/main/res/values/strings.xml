@@ -11,5 +11,6 @@
         <item>White Wine</item>
         <item>Cocktail</item>
     </string-array>
+    <string name="title_activity_drink_info">DrinkInfoActivity</string>
 
 </resources>

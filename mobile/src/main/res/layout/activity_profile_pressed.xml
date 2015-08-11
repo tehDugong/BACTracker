@@ -10,16 +10,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="PROFILE"
-        android:id="@+id/profile_text"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/user_name"
-        android:layout_marginTop="20dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Name"
         android:id="@+id/name_text"
