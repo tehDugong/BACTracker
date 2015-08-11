@@ -13,5 +13,6 @@
         <item>My Drinks</item>
     </string-array>
     <string name="title_activity_drink_info">DrinkInfoActivity</string>
+    <string name="title_activity_about">AboutActivity</string>
 
 </resources>

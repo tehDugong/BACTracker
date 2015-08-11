@@ -36,6 +36,7 @@ public class DBActivity extends ActionBarActivity {
             category = extras.getString("category");
         }
         getSupportActionBar().setTitle("List of " + category);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         populateListView(category);
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -114,6 +115,9 @@ public class DBActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         switch (id) {
+            case android.R.id.home:
+                this.finish();
+                return true;
             case R.id.action_add_drink:
                 Intent addDrinkIntent = new Intent(this, AddDrinkActivity.class);
                 startActivity(addDrinkIntent);
@@ -124,8 +128,8 @@ public class DBActivity extends ActionBarActivity {
                 startActivity(profileIntent);
                 break;
             case R.id.action_info:
-                //Intent dbIntent = new Intent(this, PhoneActivity.class);
-                //startActivity(dbIntent);
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                startActivity(aboutIntent);
                 break;
         }
 

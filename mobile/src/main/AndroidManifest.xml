@@ -45,10 +45,15 @@
         <activity
             android:name=".AddDrinkActivity"
             android:label="Add Drink"
-            android:theme="@style/PhoneTheme">
+            android:theme="@style/PhoneTheme" >
         </activity>
         <activity
             android:name=".DrinkInfoActivity"
+            android:theme="@style/PhoneTheme" >
+        </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/title_activity_about"
             android:theme="@style/PhoneTheme">
         </activity>
     </application>

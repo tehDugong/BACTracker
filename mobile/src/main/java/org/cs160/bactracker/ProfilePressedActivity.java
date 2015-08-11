@@ -46,6 +46,7 @@ public class ProfilePressedActivity extends ActionBarActivity {
         */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_pressed);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         /*
         user_name = (EditText)findViewById(R.id.user_name);
 
@@ -92,18 +93,18 @@ public class ProfilePressedActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         switch (id) {
+            case android.R.id.home:
+                this.finish();
+                return true;
             case R.id.action_add_drink:
                 Intent addDrinkIntent = new Intent(this, AddDrinkActivity.class);
                 startActivity(addDrinkIntent);
                 break;
             case R.id.action_profile:
-                Intent profileIntent = new Intent(this, ProfilePressedActivity.class);
-                profileIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(profileIntent);
                 break;
             case R.id.action_info:
-                //Intent dbIntent = new Intent(this, PhoneActivity.class);
-                //startActivity(dbIntent);
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                startActivity(aboutIntent);
                 break;
         }
 

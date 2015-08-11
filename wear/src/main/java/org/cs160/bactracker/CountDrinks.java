@@ -30,7 +30,7 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
     private Button plusButton, minusButton;
     private ImageView drinkImage;
     private String name;
-    private int count, index;
+    private int count;
     private DrinkItem drink;
     public static GoogleApiClient mGoogleApiClient;
     private final String TAG = "CountDrinks";

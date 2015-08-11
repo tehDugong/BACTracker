@@ -17,7 +17,6 @@ public class DrinksListActivity extends Activity {
     private TextView titleView;
     public ArrayList<DrinkItem> drinks;
     private String categoryName;
-    private int selectedPosition;
     private final String TAG = "DrinksListActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
