@@ -33,7 +33,6 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
     private int count, index;
     private DrinkItem drink;
     public static GoogleApiClient mGoogleApiClient;
-    private BroadcastReceiver receiver;
     private final String TAG = "CountDrinks";
 
 

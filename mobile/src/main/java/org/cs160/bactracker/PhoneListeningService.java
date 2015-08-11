@@ -84,36 +84,6 @@ public class PhoneListeningService extends WearableListenerService
         }
     }
 
-    /*
-    @Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
-
-        Log.i(TAG, "onDataChanged triggered!");
-
-        SharedPreferences drinks = getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = drinks.edit();
-
-        // Loop through the events and send a message
-        // to the node that created the data item.
-        for (DataEvent event : dataEvents) {
-            Uri uri = event.getDataItem().getUri();
-            Log.i(TAG, uri.toString());
-
-            if (uri.toString().contains("/alcohol")) {
-                DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
-                Log.i(TAG, "Datamap: " + item.getDataMap().toString());
-                float beer = item.getDataMap().getFloat("beer");
-                Log.i(TAG, "Alcohol added: " + beer);
-                editor.putFloat("alcohol", drinks.getFloat("alcohol", 0.0f) + beer);
-                editor.commit();
-
-                float bac = calculateBAC();
-                updateBAC(bac);
-            }
-        }
-    }
-    */
-
     private float calculateBAC(){
         // calculate new BAC
         SharedPreferences drinks = getSharedPreferences(PREFS_NAME, 0);
