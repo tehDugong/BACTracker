@@ -4,4 +4,14 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_profile_pressed">ProfilePressedActivity</string>
+    <string name="title_activity_add_drink">AddDrinkActivity</string>
+    <string-array name="categories_spinner">
+        <item>Beer</item>
+        <item>Red Wine</item>
+        <item>White Wine</item>
+        <item>Cocktail</item>
+        <item>My Drinks</item>
+    </string-array>
+    <string name="title_activity_drink_info">DrinkInfoActivity</string>
+
 </resources>

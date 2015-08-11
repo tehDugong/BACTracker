@@ -22,8 +22,8 @@ public class ProfilePressedActivity extends ActionBarActivity {
     private EditText user_name;
     private EditText user_weight;
     private EditText legal_limit;
-    private String name;
-    private String weightStr;
+    private String name = "";
+    private String weightStr = "";
     private int weight;
     private Boolean gender;
     private float limit;
@@ -34,6 +34,7 @@ public class ProfilePressedActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Log.d(TAG, "profile onCreate");
         drinks = getSharedPreferences(PREFS_NAME, 0);
         editor = drinks.edit();
 
@@ -56,6 +57,24 @@ public class ProfilePressedActivity extends ActionBarActivity {
         */
 
     }
+    /*
+    public void onResume(){
+        super.onResume();
+        Log.d(TAG, "profile on resume");
+        user_name = (EditText) findViewById(R.id.user_name);
+        user_weight = (EditText) findViewById(R.id.user_weight);
+        user_name.setText(name);
+        user_weight.setText(weight);
+
+        //male_button = (RadioButton) findViewById(R.id.male_button);
+
+
+        //if (gender = true){
+          //  set
+        //}
+
+    }
+    */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -72,9 +91,22 @@ public class ProfilePressedActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_add_drink:
+                Intent addDrinkIntent = new Intent(this, AddDrinkActivity.class);
+                startActivity(addDrinkIntent);
+                break;
+            case R.id.action_profile:
+                Intent profileIntent = new Intent(this, ProfilePressedActivity.class);
+                profileIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(profileIntent);
+                break;
+            case R.id.action_info:
+                //Intent dbIntent = new Intent(this, PhoneActivity.class);
+                //startActivity(dbIntent);
+                break;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
