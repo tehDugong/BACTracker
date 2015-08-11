@@ -29,7 +29,7 @@
         android:layout_below="@id/current_BAC"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:background="@drawable/arrowleft"
+        android:background="@drawable/menu"
         android:onClick="toDrinksSelection"/>
 
     <ImageButton
@@ -38,7 +38,7 @@
         android:layout_height="40dp"
         android:layout_below="@id/current_BAC"
         android:layout_toLeftOf="@id/menu_button"
-        android:background="@drawable/reset"
+        android:background="@drawable/reset_icon"
         android:onClick="reset"/>
 
     <ImageButton
@@ -47,7 +47,7 @@
         android:layout_height="40dp"
         android:layout_below="@id/current_BAC"
         android:layout_toRightOf="@id/menu_button"
-        android:background="@drawable/arrowright"/>
+        android:background="@drawable/exit"/>
 
 
 </RelativeLayout>
