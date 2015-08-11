@@ -10,6 +10,7 @@
         <item>Red Wine</item>
         <item>White Wine</item>
         <item>Cocktail</item>
+        <item>My Drinks</item>
     </string-array>
     <string name="title_activity_drink_info">DrinkInfoActivity</string>
 
