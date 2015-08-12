@@ -1,19 +1,52 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".PhoneActivity">
+<RelativeLayout
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ListView
+
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listCategories"
-        android:layout_gravity="bottom"
-        android:layout_weight="1"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/beerButton"
+        android:src="@drawable/beergrid"
+        android:background="@color/colorRed"
 
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="35dp"
+        android:onClick="pressBeer"/>
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cocktailButton"
+        android:src="@drawable/cocktailgrid"
+        android:background="@color/colorRed"
 
+        android:layout_marginStart="195dp"
+        android:layout_marginTop="40dp"
+        android:onClick="pressCocktail"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/liquorButton"
+        android:src="@drawable/liquorgrid"
+        android:layout_below="@+id/beerButton"
+        android:background="@color/colorRed"
+
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="30dp"
+        android:onClick="pressLiquor"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/wineButton"
+        android:src="@drawable/winegrid"
+        android:background="@color/colorRed"
+        android:layout_below="@+id/cocktailButton"
+        android:layout_alignBottom="@id/liquorButton"
+        android:layout_marginStart="195dp"
+        android:layout_marginTop="30dp"
+        android:onClick="pressWine"/>
 </RelativeLayout>

@@ -3,6 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"/>
 
+
     <style name="PhoneTheme" parent ="Theme.AppCompat.Light">
         <item name="android:actionBarStyle">@style/PhoneActionBar</item>
         <item name="actionBarStyle">@style/PhoneActionBar</item>
