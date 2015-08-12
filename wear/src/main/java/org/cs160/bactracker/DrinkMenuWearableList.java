@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public class DrinkMenuWearableList extends Activity {
     private static ArrayList<String> mNames;
+    private static ArrayList<Integer> mIcons;
     private TextView mHeader;
     public ArrayList<DrinkItem> drinks;
 
@@ -33,8 +34,10 @@ public class DrinkMenuWearableList extends Activity {
         }
 
         mNames = new ArrayList<String>();
+        mIcons = new ArrayList<Integer>();
         drinks = MenuWearableList.categoryItems.get(position).drinks;
         for (DrinkItem d : drinks){
+            mIcons.add(R.drawable.beer);
             mNames.add(d.getName());
         }
 
@@ -42,7 +45,7 @@ public class DrinkMenuWearableList extends Activity {
         mHeader = (TextView) findViewById(R.id.header_drink_menu);
         WearableListView wearableListView =
                 (WearableListView) findViewById(R.id.wearable_List);
-        wearableListView.setAdapter(new DrinkMenuAdapter(this, mNames));
+        wearableListView.setAdapter(new MenuAdapter(this, mIcons, mNames));
         wearableListView.setClickListener(mClickListener);
         wearableListView.addOnScrollListener(mOnScrollListener);
         mHeader.setText(header);
