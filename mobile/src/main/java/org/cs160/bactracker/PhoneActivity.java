@@ -34,16 +34,12 @@ public class PhoneActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //ActionBar bar = getActionBar();
         setContentView(R.layout.activity_phone);
-        //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#f16c68")));
-        //bar.setCustomView(R.layout.actionbar_custom_view_home);
-        //bar.setDisplayShowTitleEnabled(false);
 
         Log.d(TAG, "first");
         categoryList = (ListView) findViewById(R.id.listCategories);
         openDB();
-        InitializeDatabase(); //used to reset the database
+        //InitializeDatabase(); //used to reset the database
         Log.d(TAG, "startPhone");
 
     }
@@ -112,14 +108,14 @@ public class PhoneActivity extends ActionBarActivity {
     private void populateListView() {
         Log.d(TAG, "in populateView");
 
-
+        /*
         Integer[] imageId = {
                 R.drawable.beericon,
                 R.drawable.cocktailicon,
                 R.drawable.liquoricon,
                 R.drawable.wineicon
         };
-        
+        */
 
         Cursor cursor = myDB.getCategories();
         String[] fromFieldNames = new String[] {DBAdapter.KEY_CATEGORY};
@@ -129,11 +125,14 @@ public class PhoneActivity extends ActionBarActivity {
         categoryList.setAdapter(myCursorAdapter);
 
         /*
+        ImageView imageView = null;
         int position = 0;
-        ImageView imageView = (ImageView) categoryList.findViewById(R.id.wineImage);
+        Log.d(TAG, Integer.valueOf(position).toString());
         cursor.moveToFirst();
         while (!cursor.isLast()) {
             position = cursor.getPosition();
+            View childView = categoryList.getChildAt(position);
+            imageView = (ImageView) childView.findViewById(R.id.wineImage);
             Log.d(TAG, "here" + position);
             imageView.setImageResource(imageId[position]);
             cursor.moveToNext();
