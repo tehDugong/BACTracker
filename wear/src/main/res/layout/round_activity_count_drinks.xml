@@ -14,7 +14,7 @@
         android:background="#ffeb3b"
         android:text="+"
         android:textColor="@color/black"
-        android:textSize="15dp"
+        android:textSize="30dp"
         android:id="@+id/plusButton"/>
     <Button
         android:layout_width="fill_parent"
@@ -22,7 +22,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
         android:background="#ffeb3b"
-        android:textSize="20dp"
+        android:textSize="40dp"
         android:text="-"
         android:textColor="@color/black"
         android:id="@+id/minusButton">
@@ -45,6 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:layout_toLeftOf="@id/drinkImage"
+            android:layout_centerVertical="true"
             android:textColor="@color/white"
             android:text="Absolute Vodka"
             android:id="@+id/drinkName"
