@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -37,10 +38,12 @@ public class PhoneActivity extends ActionBarActivity {
         setContentView(R.layout.activity_phone);
 
         Log.d(TAG, "first");
-        categoryList = (ListView) findViewById(R.id.listCategories);
+        //categoryList = (ListView) findViewById(R.id.listCategories);
         openDB();
         //InitializeDatabase(); //used to reset the database
         Log.d(TAG, "startPhone");
+
+
 
     }
 
@@ -48,6 +51,7 @@ public class PhoneActivity extends ActionBarActivity {
         Log.d(TAG, "onresume");
         super.onResume();
         openDB();
+        /*
         populateListView();
         categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -65,6 +69,18 @@ public class PhoneActivity extends ActionBarActivity {
 
             }
         });
+        */
+        /*
+        GridView gridview = (GridView) findViewById(R.id.gridview);
+        gridview.setAdapter(new ImageAdapter(this));
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+
+            }
+        });
+        */
     }
 
     @Override
@@ -192,6 +208,22 @@ public class PhoneActivity extends ActionBarActivity {
         */
         startActivity(i);
     }
+
+    public void pressBeer(View view){
+        startCategoryInfo("Beer");
+    }
+
+    public void pressCocktail(View view){
+        startCategoryInfo("Cocktail");
+    }
+
+    public void pressLiquor(View view){
+        startCategoryInfo("Liquor");
+    }
+    public void pressWine(View view){
+        startCategoryInfo("Wine");
+    }
+
 
 
 }
