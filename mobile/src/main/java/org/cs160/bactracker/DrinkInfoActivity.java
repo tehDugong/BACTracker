@@ -1,10 +1,16 @@
 package org.cs160.bactracker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
+import android.database.Cursor;
+
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -50,6 +56,7 @@ public class DrinkInfoActivity extends ActionBarActivity {
             ingredientsTextView.setText(ingredients);
         }
         getSupportActionBar().setTitle(name);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //picturename = category.replaceAll("\\s+","").toLowerCase();
         picturename = name.replaceAll("\\s+","").toLowerCase();
@@ -89,6 +96,9 @@ public class DrinkInfoActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         switch (id) {
+            case android.R.id.home:
+                this.finish();
+                return true;
             case R.id.action_add_drink:
                 Intent addDrinkIntent = new Intent(this, AddDrinkActivity.class);
                 startActivity(addDrinkIntent);
@@ -99,8 +109,8 @@ public class DrinkInfoActivity extends ActionBarActivity {
                 startActivity(profileIntent);
                 break;
             case R.id.action_info:
-                //Intent dbIntent = new Intent(this, PhoneActivity.class);
-                //startActivity(dbIntent);
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                startActivity(aboutIntent);
                 break;
         }
 
@@ -116,7 +126,40 @@ public class DrinkInfoActivity extends ActionBarActivity {
         else{
 
         }
-
     }
 
+    public void deleteFromDB(View view) {
+        AlertDialog ad = new AlertDialog.Builder(this)
+                .setMessage("Are you sure you want to delete this drink?")
+                .setTitle("Delete?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteOperation();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        ad.show();
+    }
+
+    private void deleteOperation(){
+        DBAdapter myDB = new DBAdapter(this);
+        myDB.open();
+        Cursor c = myDB.getRowByName(name);
+        String id = "'"+c.getString(0)+"'";
+        Log.i(TAG, id);
+        myDB.deleteRow(id);
+        Intent PhoneIntent = new Intent(this, PhoneActivity.class);
+        startActivity(PhoneIntent);
+        myDB.close();
+        this.finish();
+    }
 }

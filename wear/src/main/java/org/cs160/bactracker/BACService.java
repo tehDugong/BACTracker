@@ -1,27 +1,18 @@
 package org.cs160.bactracker;
 
-import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.MessageEvent;
-import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.concurrent.TimeUnit;
 
 public class BACService extends WearableListenerService {
     private final String TAG = "BACService";

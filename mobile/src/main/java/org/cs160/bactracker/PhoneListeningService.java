@@ -57,6 +57,12 @@ public class PhoneListeningService extends WearableListenerService
             Log.i(TAG, "Checking BAC");
 
             float bac = calculateBAC();
+            // if bac is 0, restart the timer
+            Calendar c= Calendar.getInstance();
+            int current_time = c.get(Calendar.SECOND);
+            editor.putInt("start_time", current_time);
+            editor.commit();
+
             updateBAC(bac);
 
             //also check legal driving limit
@@ -66,43 +72,18 @@ public class PhoneListeningService extends WearableListenerService
 
         } else if (messageEvent.getPath().equalsIgnoreCase("/reset")) {
             editor.putFloat("alcohol", 0.0f);
-
-            // Note that reset is called when "Start drinking" is pressed
-            Calendar c= Calendar.getInstance();
-            int current_time = c.get(Calendar.SECOND);
-            editor.putInt("start_time", current_time);
             editor.commit();
-
             float bac = calculateBAC(); // This should return 0. If it doesn't, something is wrong
             updateBAC(bac);
-        }
-    }
-
-    @Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
-
-        Log.i(TAG, "onDataChanged triggered!");
-
-        SharedPreferences drinks = getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = drinks.edit();
-
-        // Loop through the events and send a message
-        // to the node that created the data item.
-        for (DataEvent event : dataEvents) {
-            Uri uri = event.getDataItem().getUri();
-            Log.i(TAG, uri.toString());
-
-            if (uri.toString().contains("/alcohol")) {
-                DataMapItem item = DataMapItem.fromDataItem(event.getDataItem());
-                Log.i(TAG, "Datamap: " + item.getDataMap().toString());
-                float beer = item.getDataMap().getFloat("beer");
-                Log.i(TAG, "Alcohol added: " + beer);
-                editor.putFloat("alcohol", drinks.getFloat("alcohol", 0.0f) + beer);
-                editor.commit();
-
-                float bac = calculateBAC();
-                updateBAC(bac);
-            }
+        } else if (messageEvent.getPath().equalsIgnoreCase("/alcohol")) {
+            byte[] bytes = messageEvent.getData();
+            float alcohol = ByteBuffer.wrap(bytes).getFloat();
+            Log.i(TAG, "Added alcohol: "+alcohol);
+            editor.putFloat("alcohol", drinks.getFloat("alcohol", 0.0f)+alcohol);
+            editor.commit();
+            Log.i(TAG, "Alcohol sum: "+drinks.getFloat("alcohol", 0.0f));
+            float bac = calculateBAC();
+            updateBAC(bac);
         }
     }
 
@@ -119,14 +100,20 @@ public class PhoneListeningService extends WearableListenerService
         }
         int weight = drinks.getInt("weight", 1);
         float alcohol = drinks.getFloat("alcohol", 0.0f);
-        int start_time = drinks.getInt("start_time", 0);
 
+        // if alcohol is 0.0, reset start_time
         Calendar c= Calendar.getInstance();
         int current_time = c.get(Calendar.SECOND);
 
+        if (alcohol == 0.0f){
+            SharedPreferences.Editor editor = drinks.edit();
+            editor.putInt("start_time", current_time);
+        }
+
+        int start_time = drinks.getInt("start_time", 0);
         float hours = ((float) current_time - start_time)/3600 ;
 
-        hours = 0.5f;   // hard coded in
+        hours = 2.0f;   // hard coded in
 
         Log.i(TAG, "Ratio: "+ratio);
         Log.i(TAG, "Weight: "+weight);

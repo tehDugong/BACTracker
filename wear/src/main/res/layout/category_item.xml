@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="100dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/category_cell_layout">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/categoryName"
+            android:text="Cocktails"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:textSize="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/category_title_color"/>
+        <org.cs160.bactracker.RoundedImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/categoryImage"
+            android:layout_marginLeft="5dp"
+            android:cropToPadding="true"
+            />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:id="@+id/numberOfDrinks"
+                android:textSize="10dp"
+                android:textColor="@color/category_text_color"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/numberOfDrinks"
+                android:text=" drinks on the menu"
+                android:textSize="10dp"
+                android:textColor="@color/category_text_color"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

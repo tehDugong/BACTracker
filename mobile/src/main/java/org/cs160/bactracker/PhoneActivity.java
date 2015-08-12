@@ -84,6 +84,10 @@ public class PhoneActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed(){
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_phone, menu);
@@ -113,8 +117,8 @@ public class PhoneActivity extends ActionBarActivity {
                 startActivity(profileIntent);
                 break;
             case R.id.action_info:
-                //Intent dbIntent = new Intent(this, PhoneActivity.class);
-                //startActivity(dbIntent);
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                startActivity(aboutIntent);
                 break;
         }
 

@@ -5,6 +5,6 @@ package org.cs160.bactracker;
  */
 public interface Item {
 
-    public boolean isSection();
+    public boolean isCategory();
 
 }
