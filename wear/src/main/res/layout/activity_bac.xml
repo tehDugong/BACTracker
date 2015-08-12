@@ -42,7 +42,7 @@
         android:layout_height="40dp"
         android:layout_below="@id/current_BAC"
         android:layout_toLeftOf="@id/menu_button"
-        android:background="@drawable/reset_icon"
+        android:background="@drawable/reset"
         android:onClick="reset"/>
 
     <ImageButton
