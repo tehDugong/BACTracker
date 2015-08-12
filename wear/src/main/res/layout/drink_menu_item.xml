@@ -14,6 +14,6 @@
         android:textColor="@color/white"
         android:textSize="25sp"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </org.cs160.bactracker.MenuItemLayout>
