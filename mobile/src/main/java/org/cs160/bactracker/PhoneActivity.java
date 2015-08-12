@@ -40,7 +40,7 @@ public class PhoneActivity extends ActionBarActivity {
         Log.d(TAG, "first");
         //categoryList = (ListView) findViewById(R.id.listCategories);
         openDB();
-        //InitializeDatabase(); //used to reset the database
+        InitializeDatabase(); //used to reset the database
         Log.d(TAG, "startPhone");
 
 
