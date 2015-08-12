@@ -7,10 +7,9 @@
     <string name="title_activity_add_drink">AddDrinkActivity</string>
     <string-array name="categories_spinner">
         <item>Beer</item>
-        <item>Red Wine</item>
-        <item>White Wine</item>
+        <item>Wine</item>
         <item>Cocktail</item>
-        <item>My Drinks</item>
+        <item>Liquor</item>
     </string-array>
     <string name="title_activity_drink_info">DrinkInfoActivity</string>
 

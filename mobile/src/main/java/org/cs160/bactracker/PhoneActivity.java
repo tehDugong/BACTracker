@@ -1,7 +1,10 @@
 package org.cs160.bactracker;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -30,12 +34,16 @@ public class PhoneActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //ActionBar bar = getActionBar();
         setContentView(R.layout.activity_phone);
+        //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#f16c68")));
+        //bar.setCustomView(R.layout.actionbar_custom_view_home);
+        //bar.setDisplayShowTitleEnabled(false);
 
         Log.d(TAG, "first");
         categoryList = (ListView) findViewById(R.id.listCategories);
         openDB();
-        //InitializeDatabase(); //used to reset the database
+        InitializeDatabase(); //used to reset the database
         Log.d(TAG, "startPhone");
 
     }
@@ -48,11 +56,15 @@ public class PhoneActivity extends ActionBarActivity {
         categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
+
                 Log.d(TAG, "category list click");
-                // get selected drink name
-                String name = ((TextView) view).getText().toString();
-                // start Drink Info Activity of specified drink
-                Log.d(TAG, name.toString());
+                //String name = ((TextView) view).getText().toString();
+                Cursor c = (Cursor)categoryList.getItemAtPosition(position);
+                String name = c.getString(c.getColumnIndex("category"));
+
+
+                Log.d(TAG, name);
                 startCategoryInfo(name);
 
             }
@@ -99,13 +111,36 @@ public class PhoneActivity extends ActionBarActivity {
 
     private void populateListView() {
         Log.d(TAG, "in populateView");
-        //Cursor cursor = myDB.getAllRows();
+
+
+        Integer[] imageId = {
+                R.drawable.beericon,
+                R.drawable.cocktailicon,
+                R.drawable.liquoricon,
+                R.drawable.wineicon
+        };
+        
+
         Cursor cursor = myDB.getCategories();
         String[] fromFieldNames = new String[] {DBAdapter.KEY_CATEGORY};
         int[] toViewIDs = new int[] {R.id.category_text_view};
         SimpleCursorAdapter myCursorAdapter;
         myCursorAdapter = new SimpleCursorAdapter(getBaseContext(), R.layout.category_layout, cursor, fromFieldNames, toViewIDs, 0);
         categoryList.setAdapter(myCursorAdapter);
+
+        /*
+        int position = 0;
+        ImageView imageView = (ImageView) categoryList.findViewById(R.id.wineImage);
+        cursor.moveToFirst();
+        while (!cursor.isLast()) {
+            position = cursor.getPosition();
+            Log.d(TAG, "here" + position);
+            imageView.setImageResource(imageId[position]);
+            cursor.moveToNext();
+        }
+        imageView.setImageResource(imageId[position]);
+        */
+
     }
 
     private void openDB(){
@@ -116,10 +151,12 @@ public class PhoneActivity extends ActionBarActivity {
     public void InitializeDatabase(){
         myDB.deleteAll();
         Log.d(TAG, "after delete");
-        myDB.insertRow("Merlot", 122, 14.5, "Red Wine", "Merlot grapes");
-        myDB.insertRow("Chardonnay", 123, 14.5, "White Wine", "Chardonnay grapes");
+        myDB.insertRow("Merlot", 122, 14.5, "Wine", "Merlot grapes");
+        myDB.insertRow("Chardonnay", 123, 14.5, "Wine", "Chardonnay grapes");
         myDB.insertRow("Guinness", 125, 4.1, "Beer", "Roasted unmalted barley");
         myDB.insertRow("Heineken", 150, 5, "Beer", "Barley malt, hops and the unique Heineken A-yeast");
+        myDB.insertRow("Long Island Iced Tea", 780, 22, "Cocktail", "Gin, Tequila, Vodka, Run, Triple sec");
+        myDB.insertRow("Vodka", 64, 40, "Liquor", "Water, ethanol");
 
 //        myDB.insertRow("Red Wine", 1.1 , 1, "Red Wine Ingredients");
 //        myDB.insertRow("White Wine", 2.2, 2, "White Wine Ingredients");

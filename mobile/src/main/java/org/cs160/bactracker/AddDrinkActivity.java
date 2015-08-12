@@ -1,6 +1,11 @@
 package org.cs160.bactracker;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +13,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 
 public class AddDrinkActivity extends ActionBarActivity {
@@ -20,6 +33,11 @@ public class AddDrinkActivity extends ActionBarActivity {
     DBAdapter myDB;
 
     public String TAG;
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private Uri uriSavedImage;
+    ImageView imageView;
+    protected static File imagesFolder;
+    protected static File image;
 
 
     @Override
@@ -63,12 +81,12 @@ public class AddDrinkActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void openDB(){
+    private void openDB() {
         myDB = new DBAdapter(this);
         myDB.open();
     }
 
-    public void addDrinkPressed(View view){
+    public void addDrinkPressed(View view) {
         drink_name = (EditText) findViewById(R.id.drink_name);
         drink_alcohol = (EditText) findViewById(R.id.drink_alcohol);
         drink_calories = (EditText) findViewById(R.id.drink_calories);
@@ -79,7 +97,7 @@ public class AddDrinkActivity extends ActionBarActivity {
         String name = drink_name.getText().toString();
         Double alcohol = Double.parseDouble(drink_alcohol.getText().toString());
         Integer calories = Integer.parseInt(drink_calories.getText().toString());
-        String ingredients =  drink_ingredients.getText().toString();
+        String ingredients = drink_ingredients.getText().toString();
         Log.d("TAG", spinVal);
 
         Log.d("TAG", drink_name.getText().toString());
@@ -89,9 +107,51 @@ public class AddDrinkActivity extends ActionBarActivity {
         Log.d("TAG", spinVal);
 
         myDB.insertRow(name, calories, alcohol, spinVal, ingredients);
+        name.replaceAll("\\s+","").toLowerCase();
+        Log.d(TAG, "insideOnActivity" + name);
+        File newFile = new File(imagesFolder, name+".jpg");
+        image.renameTo(newFile);
+
         Intent intent = new Intent(this, PhoneActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
 
+    }
+
+    public void takePhoto(View view) {
+        String name = "newdrink";
+
+        imageView = (ImageView)findViewById(R.id.takenPhoto);
+
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        imagesFolder = new File(Environment.getExternalStorageDirectory(), "MyImages");
+        imagesFolder.mkdir();
+        image = new File(imagesFolder, name+".jpg");
+        uriSavedImage = Uri.fromFile(image);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
+
+        startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Bitmap bitmap = null;
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 100) {
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriSavedImage);
+
+                } catch (FileNotFoundException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                imageView.setImageBitmap(bitmap);
+            }
+        }
     }
 }

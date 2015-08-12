@@ -51,10 +51,12 @@ public class DBAdapter {
 		this.context = ctx;
 		myDBHelper = new DatabaseHelper(context);
         db = myDBHelper.getWritableDatabase();
-        this.insertRow("Merlot", 122, 14.5, "Red Wine", "Merlot grapes");
-        this.insertRow("Chardonnay", 123, 14.5, "White Wine", "Chardonnay grapes");
+        this.insertRow("Merlot", 122, 14.5, "Wine", "Merlot grapes");
+        this.insertRow("Chardonnay", 123, 14.5, "Wine", "Chardonnay grapes");
         this.insertRow("Guinness", 125, 4.1, "Beer", "Roasted unmalted barley");
         this.insertRow("Heineken", 150, 5, "Beer", "Barley malt, hops and the unique Heineken A-yeast");
+        this.insertRow("Long Island Iced Tea", 780, 22, "Cocktail", "Gin, Tequila, Vodka, Run, Triple sec");
+        this.insertRow("Vodka", 64, 40, "Liquor", "Water, ethanol");
 	}
 
 	// Open the database connection.
