@@ -60,13 +60,11 @@ public class MenuWearableList extends Activity {
             new WearableListView.ClickListener() {
                 @Override
                 public void onClick(WearableListView.ViewHolder viewHolder) {
-                    String drink = mNames.get(viewHolder.getLayoutPosition());
                     Intent i = new Intent(getApplicationContext(), DrinkMenuWearableList.class);
                     int currentPosition = viewHolder.getAdapterPosition();
-                    ArrayList<DrinkItem> drinksArray = categoryItems.get(currentPosition).drinks;
                     CategoryItem categoryItem = categoryItems.get(currentPosition);
                     String name = categoryItem.name;
-                    i.putExtra("position", currentPosition);
+                    i.putExtra("categoryIndex", currentPosition);
                     i.putExtra("name", name);
                     startActivity(i);
                 }
