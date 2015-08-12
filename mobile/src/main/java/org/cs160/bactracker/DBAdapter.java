@@ -1,11 +1,16 @@
 package org.cs160.bactracker;
 
+import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class DBAdapter {
 
@@ -176,8 +181,43 @@ public class DBAdapter {
 		return db.update(DATABASE_TABLE, newValues, where, null) != 0;
 	}
 
+    /*
+    public JSONObject getJSON() throws JSONException {
+        ClipData.Item[] item = null;
+        JSONObject pl = new JSONObject();
+        Cursor cursor = this.getAllRows();
+        int count = cursor.getCount();
+        //myDBHelper.close();
+        int i=0;
+        JSONArray jsonArray = new JSONArray();
+        for(i=0; i<count; i++){
+            JSONObject val = new JSONObject();
+            try {
+                val.put("_id", cursor.getString(cursor.getColumnIndex("_id")));
+                val.put("ingredients", cursor.getString(cursor.getColumnIndex("ingredients")));
+                val.put("abv", cursor.getString(cursor.getColumnIndex("abv")));
+                val.put("calories", cursor.getString(cursor.getColumnIndex("calories")));
+                val.put("category", cursor.getString(cursor.getColumnIndex("category")));
+                jsonArray.put(val);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            pl.put(String.valueOf(i), jsonArray);
+        }
 
-	private static class DatabaseHelper extends SQLiteOpenHelper
+        if(jsonArray.length()<1){
+            pl.put(String.valueOf(i),new JSONArray());
+        }
+
+        JSONObject result = new JSONObject();
+        result.put("data",pl);
+        return result;
+    }
+    */
+
+
+	protected static class DatabaseHelper extends SQLiteOpenHelper
 	{
 		DatabaseHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
