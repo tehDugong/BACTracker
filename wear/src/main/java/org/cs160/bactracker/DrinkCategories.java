@@ -1,12 +1,18 @@
 package org.cs160.bactracker;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -20,6 +26,8 @@ public class DrinkCategories extends Activity {
     private final int dHEIGHT_RESIZE = 20;
     private final String TAG = "DrinkCategories";
     private DrinkItem testItem;
+    private SQLiteDatabase db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +55,11 @@ public class DrinkCategories extends Activity {
 
                     }
                 });
-
+                initDB();
+                createAndInsertIntoDB();
+                Log.d(TAG, Integer.toString(selectDB("Heineken")));
+                Log.d(TAG, getDatabasePath("counts").toString());
+                Log.d(TAG, Boolean.toString(checkDataBase("/data/data/org.cs160.bactracker/databases/Counts")));
             }
         });
     }
@@ -138,7 +150,6 @@ public class DrinkCategories extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         recycleBitmaps();
-
     }
 
     public void recycleBitmaps() {
@@ -159,10 +170,53 @@ public class DrinkCategories extends Activity {
         ArrayList<DrinkItem> drinksArray = categoryItems.get(currentPosition).drinks;
         CategoryItem categoryItem = categoryItems.get(currentPosition);
         String name = categoryItem.name;
-        i.putExtra("position", currentPosition);
+        i.putExtra("categoryIndex", currentPosition);
         i.putExtra("name", name);
         startActivity(i);
     }
-
-
+    public void initDB() {
+        db = openOrCreateDatabase("Counts", Context.MODE_PRIVATE, null);
+        db.execSQL("CREATE TABLE IF NOT EXISTS counts(name VARCAR, count INT, id INT);");
+    }
+    public void insertIntoDB (String name, int count, int id) {
+        ContentValues values = new ContentValues();
+        values.put("name", "Heineken");
+        values.put("count", 0);
+        values.put("id", 0);
+        db.insert("counts", null, values);
+    }
+    public void deleteFromDB (String name) {
+        db.execSQL("DELETE FROM counts WHERE name='"+name+"'");
+    }
+    public void updateDB (String name, int count) {
+        db.execSQL("UPDATE counts SET count='" + count + "' WHERE name='" + name + "'");
+    }
+    public int selectDB (String name) {
+        Cursor c=db.rawQuery("SELECT * FROM counts WHERE name='"+name+"'", null);
+        if(c.moveToFirst()) {
+            return Integer.parseInt(c.getString(2).toString());
+        } else {
+            return 123;
+        }
+    }
+    private boolean checkDataBase(String name) {
+        SQLiteDatabase checkDB = null;
+        try {
+            checkDB = SQLiteDatabase.openDatabase(name, null,
+                    SQLiteDatabase.OPEN_READONLY);
+            checkDB.close();
+        } catch (SQLiteException e) {
+            // database doesn't exist yet.
+        }
+        return checkDB != null;
+    }
+    public void createAndInsertIntoDB() {
+        initDB();
+        int i = 0;
+        for (CategoryItem ci : categoryItems) {
+            for(DrinkItem di : ci.drinks) {
+                this.insertIntoDB(di.getName(), di.getCount(), i);
+            }
+        }
+    }
 }

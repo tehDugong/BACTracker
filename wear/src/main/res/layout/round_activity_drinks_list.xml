@@ -23,7 +23,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:numColumns="2"
-        android:background="@drawable/rough_paper_background"
+        android:background="@drawable/menu_background"
         android:layout_marginTop="10dp"
         android:id="@+id/drinksGridView"
         android:horizontalSpacing="10dp"

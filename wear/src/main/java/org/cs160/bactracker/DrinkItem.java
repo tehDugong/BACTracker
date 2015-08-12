@@ -21,6 +21,7 @@ public class DrinkItem implements Parcelable {
     private int resizeHeight;
     private final String TAG = "DrinkItem";
     private int count;
+    private byte[] imageBytes;
 
     public int getCount() {
         return count;
@@ -38,8 +39,6 @@ public class DrinkItem implements Parcelable {
         this.imageBytes = imageBytes;
     }
 
-    private byte[] imageBytes;
-
     public int getResizeWidth() {
         return resizeWidth;
     }
@@ -56,7 +55,6 @@ public class DrinkItem implements Parcelable {
         this.resizeHeight = resizeHeight;
     }
 
-
     public Bitmap getImage() {
         return image;
     }
@@ -64,6 +62,7 @@ public class DrinkItem implements Parcelable {
     public void setImage(Bitmap image) {
         this.image = image;
     }
+
     public String getName() {
         return name;
     }
@@ -79,6 +78,7 @@ public class DrinkItem implements Parcelable {
     public void setResizeImage(Bitmap resizeImage) {
         this.resizeImage = resizeImage;
     }
+
     public String getUnits() {
         return units;
     }

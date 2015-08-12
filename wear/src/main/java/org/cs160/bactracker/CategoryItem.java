@@ -12,6 +12,7 @@ public class CategoryItem implements Item{
     public String name;
     public ArrayList<DrinkItem> drinks;
 
+
     public CategoryItem() {
         this.drinks = new ArrayList<DrinkItem>();
     }

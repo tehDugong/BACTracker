@@ -27,7 +27,7 @@
         android:layout_height="fill_parent"
         android:layout_below="@id/plusButton"
         android:layout_above="@id/minusButton"
-        android:background="@drawable/rough_paper_background">
+        android:background="@drawable/menu_background">
 
         <ImageView
             android:layout_width="75dp"

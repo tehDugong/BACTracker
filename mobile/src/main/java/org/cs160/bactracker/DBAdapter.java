@@ -164,7 +164,5 @@ public class DBAdapter {
 			onCreate(_db);
 		}
 	}
-
-
 }
 

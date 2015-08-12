@@ -17,14 +17,14 @@ public class DrinksListActivity extends Activity {
     private TextView titleView;
     public ArrayList<DrinkItem> drinks;
     private String categoryName;
-    private int selectedPosition;
+    private int categoryIndex, drinkIndex;
     private final String TAG = "DrinksListActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_drinks_list);
-        int position = (int)getIntent().getExtras().get("position");
-        drinks = DrinkCategories.categoryItems.get(position).drinks;
+        categoryIndex = (int)getIntent().getExtras().get("categoryIndex");
+        drinks = DrinkCategories.categoryItems.get(categoryIndex).drinks;
         for (DrinkItem drink : drinks) {
             Log.d(TAG, "name = " + drink.getName());
         }
@@ -52,9 +52,9 @@ public class DrinksListActivity extends Activity {
     public void onClickAction(int selectedPosition) {
         DrinkItem item = drinks.get(selectedPosition);
         Intent i = new Intent(DrinksListActivity.this, CountDrinks.class);
+        i.putExtra("categoryIndex", categoryIndex);
+        i.putExtra("drinkIndex", selectedPosition);
         i.putExtra("drink", item);
         startActivity(i);
     }
-
-
 }
