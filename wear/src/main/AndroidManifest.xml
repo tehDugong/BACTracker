@@ -10,6 +10,13 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.DeviceDefault"
         android:largeHeap="true">
+
+        <activity
+            android:name=".MenuWearableList"
+            android:label="WearableList" />
+        <activity android:name=".DrinkMenuWearableList"
+            android:label="DrinkMenuWearableList"/>
+
         <activity
             android:name=".BACActivity"
             android:label="BACtracker" >
@@ -42,6 +49,8 @@
         <activity
             android:name=".DrinkCategories"
             android:label="@string/title_activity_drink_categories"/>
+
+
     </application>
 
 </manifest>

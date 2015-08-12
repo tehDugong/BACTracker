@@ -146,7 +146,7 @@ public class BACActivity extends Activity
     }
     public void toDrinksSelection(View v) {
 
-        Intent i = new Intent(this, DrinkCategories.class);
+        Intent i = new Intent(this, MenuWearableList.class);
         startActivity(i);
     }
 

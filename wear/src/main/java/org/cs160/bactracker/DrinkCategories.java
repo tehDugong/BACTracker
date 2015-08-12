@@ -138,7 +138,6 @@ public class DrinkCategories extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         recycleBitmaps();
-
     }
 
     public void recycleBitmaps() {
