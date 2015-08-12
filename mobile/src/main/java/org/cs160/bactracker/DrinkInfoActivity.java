@@ -5,7 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import android.database.Cursor;
+
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -15,6 +20,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
 
 /**
  * Created by mwaliman on 8/1/15.
@@ -51,11 +58,26 @@ public class DrinkInfoActivity extends ActionBarActivity {
         getSupportActionBar().setTitle(name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        picturename = category.replaceAll("\\s+","").toLowerCase();
+        //picturename = category.replaceAll("\\s+","").toLowerCase();
+        picturename = name.replaceAll("\\s+","").toLowerCase();
         Log.i(TAG, picturename);
         Context context = drinkImageView.getContext();
         int id = context.getResources().getIdentifier(picturename, "drawable", context.getPackageName());
-        drinkImageView.setImageResource(id);
+        Log.d(TAG, "drinkInfo"+id);
+        if (id == 0) {
+            String drinkPictureName = name.replaceAll("\\s+","").toLowerCase();
+            Log.d(TAG, "drinkPicName" + drinkPictureName);
+            File imgFile = AddDrinkActivity.imagesFolder;
+
+            if(imgFile.exists()){
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath()+"/"+drinkPictureName+".jpg");
+                drinkImageView.setImageBitmap(myBitmap);
+
+            }
+        }
+        else {
+            drinkImageView.setImageResource(id);
+        }
     }
 
     @Override

@@ -30,7 +30,6 @@ public class DBActivity extends ActionBarActivity {
         setContentView(R.layout.activity_db);
         myList = (ListView) findViewById(R.id. listView);
         openDB();
-        //InitializeDatabase();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             category = extras.getString("category");
