@@ -1,8 +1,11 @@
 package org.cs160.bactracker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -101,7 +104,40 @@ public class DrinkInfoActivity extends ActionBarActivity {
         else{
 
         }
-
     }
 
+    public void deleteFromDB(View view) {
+        AlertDialog ad = new AlertDialog.Builder(this)
+                .setMessage("Are you sure you want to delete this drink?")
+                .setTitle("Delete?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteOperation();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        ad.show();
+    }
+
+    private void deleteOperation(){
+        DBAdapter myDB = new DBAdapter(this);
+        myDB.open();
+        Cursor c = myDB.getRowByName(name);
+        String id = "'"+c.getString(0)+"'";
+        Log.i(TAG, id);
+        myDB.deleteRow(id);
+        Intent PhoneIntent = new Intent(this, PhoneActivity.class);
+        startActivity(PhoneIntent);
+        myDB.close();
+        this.finish();
+    }
 }

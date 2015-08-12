@@ -83,7 +83,7 @@ public class DBAdapter {
 	}
 
 	// Delete a row from the database, by rowId (primary key)
-	public boolean deleteRow(long rowId) {
+	public boolean deleteRow(String rowId) {
 		String where = KEY_NAME + "=" + rowId;
 		return db.delete(DATABASE_TABLE, where, null) != 0;
 	}

@@ -52,7 +52,6 @@ public class DBActivity extends ActionBarActivity {
     }
 
 
-
     private void startDrinkInfo(String name){
 
         Cursor c = myDB.getRowByName(name);

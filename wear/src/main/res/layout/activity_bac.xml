@@ -5,21 +5,25 @@
     android:layout_height="fill_parent">
 
     <TextView
+        android:id="@+id/bac_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="Your Current BAC is" />
+
+    <TextView
         android:id="@+id/current_BAC"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_below="@id/bac_text"
+        android:layout_marginBottom="0dp"
         android:text="0.00"
-        android:textSize="60dp"
+        android:textSize="85dp"
         android:textColor="#00ff00"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_above="@id/current_BAC"
-        android:text="Your Current BAC is"
-        android:layout_centerHorizontal="true"/>
+
 
     <ImageButton
         android:id="@+id/menu_button"
@@ -27,8 +31,8 @@
         android:layout_height="40dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/current_BAC"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:background="@drawable/menu"
         android:onClick="toDrinksSelection"/>
 
