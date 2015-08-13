@@ -6,7 +6,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/drinkImageView"
-        android:src="@drawable/redwine"
+        android:src="@drawable/merlot"
         android:layout_alignParentTop="true"
         android:padding="20dp"
         android:adjustViewBounds="true"
@@ -54,7 +54,9 @@
         android:layout_marginBottom="10dp"
         android:onClick="removeFromMenu"
         android:layout_below="@id/ingredientsTextView"
-        android:layout_toStartOf="@+id/remove_text" />
+        android:layout_toStartOf="@+id/remove_text"
+        android:maxWidth="20dp"
+        android:maxHeight="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -73,7 +75,10 @@
         android:layout_alignParentRight="true"
         android:src="@drawable/addtomenu"
         android:background="@null"
-        android:onClick="deleteFromDB"/>
+        android:onClick="deleteFromDB"
+        android:layout_margin="15dp"
+        android:maxHeight="20dp"
+        android:maxWidth="20dp" />
 
 
 </RelativeLayout>

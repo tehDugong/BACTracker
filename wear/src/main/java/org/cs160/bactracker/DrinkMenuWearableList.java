@@ -5,6 +5,7 @@ package org.cs160.bactracker;
  */
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WearableListView;
 import android.widget.TextView;
@@ -14,7 +15,9 @@ import java.util.ArrayList;
 
 public class DrinkMenuWearableList extends Activity {
     private static ArrayList<String> mNames;
+    private static ArrayList<Integer> mIcons;
     private TextView mHeader;
+    public ArrayList<DrinkItem> drinks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,24 +25,27 @@ public class DrinkMenuWearableList extends Activity {
         setContentView(R.layout.activity_drink_menu);
 
         String header = "Unknown";
+        int position = 0;
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             header = extras.getString("name");
+            position = extras.getInt("position");
         }
 
-        // names for the list, currently populated with false data...
         mNames = new ArrayList<String>();
-        mNames.add("Beer 1");
-        mNames.add("Beer 2");
-        mNames.add("Beer 3");
-        mNames.add("Beer 4");
+        mIcons = new ArrayList<Integer>();
+        drinks = MenuWearableList.categoryItems.get(position).drinks;
+        for (DrinkItem d : drinks){
+            mIcons.add(R.drawable.beer);
+            mNames.add(d.getName());
+        }
 
         // This is our list header
         mHeader = (TextView) findViewById(R.id.header_drink_menu);
         WearableListView wearableListView =
                 (WearableListView) findViewById(R.id.wearable_List);
-        wearableListView.setAdapter(new DrinkMenuAdapter(this, mNames));
+        wearableListView.setAdapter(new MenuAdapter(this, mIcons, mNames));
         wearableListView.setClickListener(mClickListener);
         wearableListView.addOnScrollListener(mOnScrollListener);
         mHeader.setText(header);
@@ -50,10 +56,10 @@ public class DrinkMenuWearableList extends Activity {
             new WearableListView.ClickListener() {
                 @Override
                 public void onClick(WearableListView.ViewHolder viewHolder) {
-                    Toast.makeText(DrinkMenuWearableList.this,
-                            String.format("You selected item #%s",
-                                    viewHolder.getLayoutPosition()+1),
-                            Toast.LENGTH_SHORT).show();
+                    DrinkItem item = drinks.get(viewHolder.getLayoutPosition());
+                    Intent i = new Intent(getApplicationContext(), CountDrinks.class);
+                    i.putExtra("drink", item);
+                    startActivity(i);
                 }
 
                 @Override

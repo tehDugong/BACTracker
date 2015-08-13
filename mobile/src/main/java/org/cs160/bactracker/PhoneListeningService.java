@@ -21,6 +21,9 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.nio.ByteBuffer;
 import java.util.Calendar;
 
@@ -155,10 +158,21 @@ public class PhoneListeningService extends WearableListenerService
         pendingResult.await();
     }
 
+
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "Connected to GoogleAPI");
+        /*
+        DBAdapter dbJson = new DBAdapter(PhoneListeningService.this);
+        try {
+            JSONObject json = dbJson.getJSON();
+            new SendToDataLayerThread("/path", json.toString()).start();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        */
     }
+
 
     @Override
     public void onConnectionSuspended(int cause) {
