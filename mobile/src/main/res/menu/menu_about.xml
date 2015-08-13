@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="org.cs160.bactracker.AboutActivity">
+
+    <item android:id="@+id/action_add_drink"
+        android:icon="@drawable/adddrink"
+        android:title="Add Drink"
+        app:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/action_profile"
+        android:icon="@drawable/profile"
+        android:title="Profile"
+        app:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/action_info"
+        android:icon="@drawable/info"
+        android:title="Information"
+        app:showAsAction="ifRoom|withText" />
+</menu>

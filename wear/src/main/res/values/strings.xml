@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BACTracker</string>
+    <string name="app_name">BACtracker</string>
     <string name="title_activity_bac">BACActivity</string>
     <string name="plus_beer">+1 Beer</string>
     <string name="current_BAC">0.00</string>

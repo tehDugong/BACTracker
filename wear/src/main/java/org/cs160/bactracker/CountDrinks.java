@@ -19,22 +19,36 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+import java.nio.ByteBuffer;
+>>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
 
 public class CountDrinks extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     private TextView drinkName, drinkCount;
     private Button plusButton, minusButton;
     private ImageView drinkImage;
     private String name;
+<<<<<<< HEAD
     private int count, categoryIndex, drinkIndex;
+=======
+    private int count;
+>>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
     private DrinkItem drink;
     private SQLiteDatabase db;
     public static GoogleApiClient mGoogleApiClient;
+<<<<<<< HEAD
     private BroadcastReceiver receiver;
+=======
+>>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
     private final String TAG = "CountDrinks";
 
 
@@ -95,25 +109,15 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
             return;
         count += inc;
         drinkCount.setText(Integer.toString(count));
+<<<<<<< HEAD
         ArrayList<DrinkItem> categoryItem = DrinkCategories.categoryItems.get(categoryIndex).drinks;
         categoryItem.get(drinkIndex).setCount(count + inc);
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/alcohol");
+=======
+>>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
         float alcohol = drink.getAlcoholContent() * inc;
-        putDataMapReq.getDataMap().putFloat("beer", alcohol);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-
-        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-            @Override
-            public void onResult(final DataApi.DataItemResult result) {
-                if (result.getStatus().isSuccess()) {
-                    // Log.i(TAG, "Data item set: " + result.getDataItem().getUri());
-                }
-            }
-        });
-
+        Log.i(TAG, "Alcohol calculated: "+alcohol);
+        sendMessage("/alcohol", ByteBuffer.allocate(4).putFloat(alcohol).array());
     }
 
     public void openDB(){
@@ -159,6 +163,7 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
     }
+<<<<<<< HEAD
     @Override
     protected void onDestroy(){
         super.onDestroy();
@@ -214,4 +219,21 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
     }
 
 
+=======
+
+    private void sendMessage(final String path, final byte[] data){
+        new Thread( new Runnable() {
+            @Override
+            public void run() {
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(
+                        mGoogleApiClient ).await();
+                for(Node node : nodes.getNodes()) {
+                    Log.i(TAG, "Sending message: "+path);
+                    MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
+                            mGoogleApiClient, node.getId(), path, data ).await();
+                }
+            }
+        }).start();
+    }
+>>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
 }

@@ -1,11 +1,16 @@
 package org.cs160.bactracker;
 
+import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class DBAdapter {
 
@@ -16,9 +21,9 @@ public class DBAdapter {
 	public static final String KEY_INGREDIENTS = "ingredients";
 	public static final String KEY_ABV = "abv";
 	public static final String KEY_CAL = "calories";
-//	public static final String KEY_CATEGORY = "category";
+	public static final String KEY_CATEGORY = "category";
 
-	public static final String[] ALL_KEYS = new String[] {KEY_NAME, KEY_INGREDIENTS, KEY_ABV};
+	public static final String[] ALL_KEYS = new String[] {KEY_NAME, KEY_INGREDIENTS, KEY_ABV, KEY_CAL, KEY_CATEGORY};
 
 	// Column Numbers for each Field Name:
 	public static final int COL_NAME = 0;
@@ -30,7 +35,7 @@ public class DBAdapter {
 	// DataBase info:
 	public static final String DATABASE_NAME = "DrinkDatabase";
 	public static final String DATABASE_TABLE = "mainDrinkDatabase";
-	public static final int DATABASE_VERSION = 1; // The version number must be incremented each time a change to DB structure occurs.
+	public static final int DATABASE_VERSION = 5; // The version number must be incremented each time a change to DB structure occurs.
 
 	//SQL statement to create database
 	private static final String DATABASE_CREATE_SQL =
@@ -38,18 +43,25 @@ public class DBAdapter {
 					+ " (" + KEY_NAME + " TEXT, "
 					+ KEY_INGREDIENTS + " TEXT, "
 					+ KEY_CAL + " INT, "
-					+ KEY_ABV + " DECIMAL(10,5) "
-//					+ KEY_CATEGORY + " TEXT"
+					+ KEY_ABV + " DECIMAL(10,5), "
+					+ KEY_CATEGORY + " TEXT "
 					+ ");";
 
 	private final Context context;
-	private DatabaseHelper myDBHelper;
-	private SQLiteDatabase db;
+	private static DatabaseHelper myDBHelper;
+	private static SQLiteDatabase db;
 
 
 	public DBAdapter(Context ctx) {
 		this.context = ctx;
 		myDBHelper = new DatabaseHelper(context);
+        db = myDBHelper.getWritableDatabase();
+        this.insertRow("Merlot", 122, 14.5, "Wine", "Merlot grapes");
+        this.insertRow("Chardonnay", 123, 14.5, "Wine", "Chardonnay grapes");
+        this.insertRow("Guinness", 125, 4.1, "Beer", "Roasted unmalted barley");
+        this.insertRow("Heineken", 150, 5, "Beer", "Barley malt, hops and the unique Heineken A-yeast");
+        this.insertRow("Long Island Iced Tea", 780, 22, "Cocktail", "Gin, Tequila, Vodka, Run, Triple sec");
+        this.insertRow("Vodka", 64, 40, "Liquor", "Water, ethanol");
 	}
 
 	// Open the database connection.
@@ -64,13 +76,13 @@ public class DBAdapter {
 	}
 
 	// Add a new set of values to be inserted into the database.
-//	public long insertRow(String name, int abv, double cal, String category, String ingredients) {
-	public long insertRow(String name, double abv, int cal, String ingredients) {
+	public long insertRow(String name, int cal, double abv, String category, String ingredients) {
+//	public long insertRow(String name, double abv, int cal, String ingredients) {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_INGREDIENTS, ingredients);
 		initialValues.put(KEY_ABV, abv);
 		initialValues.put(KEY_CAL, cal);
-//		initialValues.put(KEY_CATEGORY, category);
+		initialValues.put(KEY_CATEGORY, category);
 		initialValues.put(KEY_NAME, name);
 
 		// Insert the data into the database.
@@ -78,12 +90,14 @@ public class DBAdapter {
 	}
 
 	// Delete a row from the database, by rowId (primary key)
-	public boolean deleteRow(long rowId) {
+	public boolean deleteRow(String rowId) {
 		String where = KEY_NAME + "=" + rowId;
 		return db.delete(DATABASE_TABLE, where, null) != 0;
 	}
 
 	public void deleteAll() {
+        Log.d(TAG, "delete all");
+        /*
 		Cursor c = getAllRows();
 		long rowId = c.getColumnIndexOrThrow(KEY_NAME);
 		if (c.moveToFirst()) {
@@ -92,6 +106,8 @@ public class DBAdapter {
 			} while (c.moveToNext());
 		}
 		c.close();
+		*/
+        db.delete(DATABASE_TABLE, null, null);
 	}
 
 	// Return all data in the database.
@@ -130,6 +146,31 @@ public class DBAdapter {
 		}
 		return c;	}
 
+    public Cursor getRowByCategory(String cat){
+        String predicate = KEY_CATEGORY + "= '" + cat + "'";
+
+//		String predicate = "name = ?";
+//		String[] predicate_values = {name};
+        Cursor c = 	db.query(true, DATABASE_TABLE, ALL_KEYS,
+                predicate, null, null, null, null, null);
+//		Cursor c = 	db.query(true, DATABASE_TABLE, ALL_KEYS,
+//				predicate, predicate_values, null, null, null, null);
+        if (c != null) {
+            c.moveToFirst();
+            Log.i(TAG, "cursor moved to first");
+        }
+        return c;	}
+
+    public Cursor getCategories(){
+        String[] array = new String[]{KEY_NAME, KEY_CATEGORY};
+        Cursor c = db.query(true, DATABASE_TABLE, array, null, null, "category", null, null, null);
+        if (c != null){
+            c.moveToFirst();
+
+        }
+        return c;
+    }
+
 	// Change an existing row to be equal to new data.
 	public boolean updateRow(long rowId, String task, String date) {
 		String where = KEY_NAME + "=" + rowId;
@@ -140,8 +181,43 @@ public class DBAdapter {
 		return db.update(DATABASE_TABLE, newValues, where, null) != 0;
 	}
 
+    /*
+    public JSONObject getJSON() throws JSONException {
+        ClipData.Item[] item = null;
+        JSONObject pl = new JSONObject();
+        Cursor cursor = this.getAllRows();
+        int count = cursor.getCount();
+        //myDBHelper.close();
+        int i=0;
+        JSONArray jsonArray = new JSONArray();
+        for(i=0; i<count; i++){
+            JSONObject val = new JSONObject();
+            try {
+                val.put("_id", cursor.getString(cursor.getColumnIndex("_id")));
+                val.put("ingredients", cursor.getString(cursor.getColumnIndex("ingredients")));
+                val.put("abv", cursor.getString(cursor.getColumnIndex("abv")));
+                val.put("calories", cursor.getString(cursor.getColumnIndex("calories")));
+                val.put("category", cursor.getString(cursor.getColumnIndex("category")));
+                jsonArray.put(val);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            pl.put(String.valueOf(i), jsonArray);
+        }
 
-	private static class DatabaseHelper extends SQLiteOpenHelper
+        if(jsonArray.length()<1){
+            pl.put(String.valueOf(i),new JSONArray());
+        }
+
+        JSONObject result = new JSONObject();
+        result.put("data",pl);
+        return result;
+    }
+    */
+
+
+	protected static class DatabaseHelper extends SQLiteOpenHelper
 	{
 		DatabaseHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);

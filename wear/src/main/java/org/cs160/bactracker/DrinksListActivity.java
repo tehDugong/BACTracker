@@ -17,7 +17,10 @@ public class DrinksListActivity extends Activity {
     private TextView titleView;
     public ArrayList<DrinkItem> drinks;
     private String categoryName;
+<<<<<<< HEAD
     private int categoryIndex, drinkIndex;
+=======
+>>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
     private final String TAG = "DrinksListActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,4 +60,10 @@ public class DrinksListActivity extends Activity {
         i.putExtra("drink", item);
         startActivity(i);
     }
+<<<<<<< HEAD
 }
+=======
+
+
+}
+>>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477

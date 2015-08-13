@@ -21,10 +21,12 @@ public class ProfilePressedActivity extends ActionBarActivity {
     String TAG; //del
     private EditText user_name;
     private EditText user_weight;
-    private String name;
-    private String weightStr;
+    private EditText legal_limit;
+    private String name = "";
+    private String weightStr = "";
     private int weight;
     private Boolean gender;
+    private float limit;
     public static final String PREFS_NAME = "DrinksFile";
     SharedPreferences drinks;
     SharedPreferences.Editor editor;
@@ -32,6 +34,7 @@ public class ProfilePressedActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Log.d(TAG, "profile onCreate");
         drinks = getSharedPreferences(PREFS_NAME, 0);
         editor = drinks.edit();
 
@@ -43,6 +46,7 @@ public class ProfilePressedActivity extends ActionBarActivity {
         */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_pressed);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         /*
         user_name = (EditText)findViewById(R.id.user_name);
 
@@ -54,6 +58,24 @@ public class ProfilePressedActivity extends ActionBarActivity {
         */
 
     }
+    /*
+    public void onResume(){
+        super.onResume();
+        Log.d(TAG, "profile on resume");
+        user_name = (EditText) findViewById(R.id.user_name);
+        user_weight = (EditText) findViewById(R.id.user_weight);
+        user_name.setText(name);
+        user_weight.setText(weight);
+
+        //male_button = (RadioButton) findViewById(R.id.male_button);
+
+
+        //if (gender = true){
+          //  set
+        //}
+
+    }
+    */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,9 +92,22 @@ public class ProfilePressedActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            case R.id.action_add_drink:
+                Intent addDrinkIntent = new Intent(this, AddDrinkActivity.class);
+                startActivity(addDrinkIntent);
+                break;
+            case R.id.action_profile:
+                break;
+            case R.id.action_info:
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                startActivity(aboutIntent);
+                break;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -134,6 +169,7 @@ public class ProfilePressedActivity extends ActionBarActivity {
 
         user_name = (EditText) findViewById(R.id.user_name);
         user_weight = (EditText) findViewById(R.id.user_weight);
+        legal_limit = (EditText) findViewById(R.id.legal_limit);
         name = user_name.getText().toString();
         weightStr = user_weight.getText().toString();
         weight = Integer.parseInt(weightStr);
@@ -141,8 +177,10 @@ public class ProfilePressedActivity extends ActionBarActivity {
         //user_weight.setText(weight);
         //Log.d(TAG, name);
         //Log.d(TAG, weight);
+        limit=Float.parseFloat(legal_limit.getText().toString());
         editor.putString("name", name);
         editor.putInt("weight", weight);
+        editor.putFloat("legal_limit", limit);
         editor.commit();
         Log.d(TAG, "in here");
         Log.d(TAG, drinks.getString("name", name));
