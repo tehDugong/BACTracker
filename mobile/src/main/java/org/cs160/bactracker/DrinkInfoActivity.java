@@ -174,7 +174,7 @@ public class DrinkInfoActivity extends ActionBarActivity {
     public void deleteFromDB(View view) {
         if (Arrays.asList(DBAdapter.genericDrinks).contains(name)) {
             AlertDialog ad = new AlertDialog.Builder(this)
-                    .setMessage("Generic Drinks cannot be deleted")
+                    .setMessage("Common Drinks cannot be deleted")
                     .setTitle("Alert")
                     .setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
                         @Override

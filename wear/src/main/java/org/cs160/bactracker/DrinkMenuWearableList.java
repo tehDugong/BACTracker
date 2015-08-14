@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +38,14 @@ public class DrinkMenuWearableList extends Activity {
         mIcons = new ArrayList<Integer>();
         drinks = MenuWearableList.categoryItems.get(categoryIndex).drinks;
         for (DrinkItem d : drinks){
-            mIcons.add(R.drawable.beer);
+            if (categoryIndex == 0)
+                mIcons.add(R.drawable.beer);
+            else if (categoryIndex == 1)
+                mIcons.add(R.drawable.wine);
+            else if (categoryIndex == 2)
+                mIcons.add(R.drawable.liquor);
+            else
+                mIcons.add(R.drawable.cocktail);
             mNames.add(d.getName());
         }
 
