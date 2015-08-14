@@ -31,7 +31,7 @@ public class AddDrinkActivity extends ActionBarActivity {
     private EditText drink_alcohol;
     private EditText drink_calories;
     private EditText drink_ingredients;
-    DBAdapter myDB;
+    DBAdapter myDB = PhoneActivity.myDB;
 
 
     public String TAG;
@@ -88,7 +88,7 @@ public class AddDrinkActivity extends ActionBarActivity {
     }
 
     private void openDB() {
-        myDB = new DBAdapter(this);
+        //myDB = new DBAdapter(this);
         myDB.open();
     }
 
@@ -117,8 +117,10 @@ public class AddDrinkActivity extends ActionBarActivity {
         Log.d(TAG, "insideOnActivity" + name);
 
         File newFile = new File(imagesFolder, name+".jpg");
-        image.renameTo(newFile);
-        mCurrentPhotoPath = image.getAbsolutePath();
+        if (image.exists()) {
+            image.renameTo(newFile);
+            mCurrentPhotoPath = image.getAbsolutePath();
+        }
 
         Intent intent = new Intent(this, PhoneActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -133,12 +135,12 @@ public class AddDrinkActivity extends ActionBarActivity {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Log.d(TAG, "here");
 
-        if (cameraIntent.resolveActivity(getPackageManager()) != null){
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
 
             imagesFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             image = new File(imagesFolder, "newdrink.jpg");
-
         }
+
         mCurrentPhotoPath = image.getAbsolutePath();
         uriSavedImage = Uri.fromFile(image);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);

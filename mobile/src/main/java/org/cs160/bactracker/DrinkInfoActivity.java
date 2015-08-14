@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Created by mwaliman on 8/1/15.
@@ -35,6 +36,7 @@ public class DrinkInfoActivity extends ActionBarActivity {
     String picturename;
     String category;
     private static final String TAG = "DrinkInfoActivity"; //used for logging database version changes
+    DBAdapter myDB = PhoneActivity.myDB;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,11 +72,12 @@ public class DrinkInfoActivity extends ActionBarActivity {
         if (id == 0) {
             String drinkPictureName = name.replaceAll("\\s+","").toLowerCase();
             File imgFile = AddDrinkActivity.imagesFolder;
-            String mCurrentPhotoPath = imgFile.getAbsolutePath()+"/"+drinkPictureName+".jpg";
+
             Log.d(TAG, "drinkPicName" + drinkPictureName);
 
 
             if(imgFile.exists()){
+                String mCurrentPhotoPath = imgFile.getAbsolutePath()+"/"+drinkPictureName+".jpg";
                 // Get the dimensions of the bitmap
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                 bmOptions.inJustDecodeBounds = true;
@@ -147,29 +150,46 @@ public class DrinkInfoActivity extends ActionBarActivity {
     }
 
     public void deleteFromDB(View view) {
-        AlertDialog ad = new AlertDialog.Builder(this)
-                .setMessage("Are you sure you want to delete this drink?")
-                .setTitle("Delete?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteOperation();
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                        dialog.dismiss();
-                    }
-                })
-                .create();
-        ad.show();
+        if (Arrays.asList(DBAdapter.genericDrinks).contains(name)) {
+            AlertDialog ad = new AlertDialog.Builder(this)
+                    .setMessage("Generic Drinks cannot be deleted")
+                    .setTitle("Alert")
+                    .setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            ad.show();
+
+        }
+        else{
+            AlertDialog ad = new AlertDialog.Builder(this)
+                    .setMessage("Are you sure you want to delete this drink?")
+                    .setTitle("Delete?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteOperation();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            ad.show();
+        }
+
     }
 
     private void deleteOperation(){
-        DBAdapter myDB = new DBAdapter(this);
+        //DBAdapter myDB = new DBAdapter(this);
         myDB.open();
         Cursor c = myDB.getRowByName(name);
         String id = "'"+c.getString(0)+"'";

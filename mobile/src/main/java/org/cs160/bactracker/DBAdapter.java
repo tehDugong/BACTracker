@@ -51,11 +51,17 @@ public class DBAdapter {
 	private static DatabaseHelper myDBHelper;
 	private static SQLiteDatabase db;
 
+	protected static final String[] genericDrinks = new String[] {"Merlot", "Chardonnay", "Guinness",
+	"Heineken", "Long Island Iced Tea", "Vodka"};
+
 
 	public DBAdapter(Context ctx) {
 		this.context = ctx;
 		myDBHelper = new DatabaseHelper(context);
         db = myDBHelper.getWritableDatabase();
+
+
+
         this.insertRow("Merlot", 122, 14.5, "Wine", "Merlot grapes");
         this.insertRow("Chardonnay", 123, 14.5, "Wine", "Chardonnay grapes");
         this.insertRow("Guinness", 125, 4.1, "Beer", "Roasted unmalted barley");

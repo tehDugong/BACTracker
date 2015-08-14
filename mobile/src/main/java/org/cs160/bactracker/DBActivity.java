@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 
 public class DBActivity extends ActionBarActivity {
-    DBAdapter myDB;
+    DBAdapter myDB = PhoneActivity.myDB;
     ListView myList;
     final String TAG = "MainActivity";
     String category;
@@ -92,7 +92,7 @@ public class DBActivity extends ActionBarActivity {
     }
 
     private void openDB(){
-        myDB = new DBAdapter(this);
+        //myDB = new DBAdapter(this);
         myDB.open();
     }
 

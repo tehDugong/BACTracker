@@ -28,7 +28,7 @@ import java.util.Set;
 public class PhoneActivity extends ActionBarActivity {
 
     public static final String PREFS_NAME = "DrinksFile";
-    DBAdapter myDB;
+    protected static DBAdapter myDB;
     String TAG;
     ListView categoryList;
 
@@ -38,12 +38,9 @@ public class PhoneActivity extends ActionBarActivity {
         setContentView(R.layout.activity_phone);
 
         Log.d(TAG, "first");
-        //categoryList = (ListView) findViewById(R.id.listCategories);
-        openDB();
-        InitializeDatabase(); //used to reset the database
+        //openDB(); //used to reset database
+        //InitializeDatabase(); //used to reset the database
         Log.d(TAG, "startPhone");
-
-
 
     }
 
