@@ -38,7 +38,8 @@
         android:background="@color/black"
         android:layout_toLeftOf="@id/call_taxi"
         android:layout_below="@id/unsafe_text"
-        android:padding="5dp"/>
+        android:padding="5dp"
+        android:onClick="messageContact"/>
 
     <ImageButton
         android:id="@+id/call_emergency"
@@ -49,6 +50,7 @@
         android:background="@color/black"
         android:layout_toRightOf="@id/call_taxi"
         android:layout_below="@id/unsafe_text"
-        android:padding="5dp"/>
+        android:padding="5dp"
+        android:onClick="messageEmergency"/>
 
 </RelativeLayout>

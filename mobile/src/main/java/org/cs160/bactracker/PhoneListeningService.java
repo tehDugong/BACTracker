@@ -1,8 +1,10 @@
 package org.cs160.bactracker;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -84,7 +86,18 @@ public class PhoneListeningService extends WearableListenerService
             Log.i(TAG, "Alcohol sum: "+drinks.getFloat("alcohol", 0.0f));
             float bac = calculateBAC();
             updateBAC(bac);
+        }else if (messageEvent.getPath().equalsIgnoreCase("/emergency")) {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("tel:911"));
+            startActivity(intent);
+        }else if (messageEvent.getPath().equalsIgnoreCase("/contact")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+
         }
+
     }
 
     private float calculateBAC(){
