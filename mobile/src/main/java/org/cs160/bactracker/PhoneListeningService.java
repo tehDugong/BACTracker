@@ -113,7 +113,7 @@ public class PhoneListeningService extends WearableListenerService
         int start_time = drinks.getInt("start_time", 0);
         float hours = ((float) current_time - start_time)/3600 ;
 
-        hours = 2.0f;   // hard coded in
+        hours = 1.0f;   // hard coded in
 
         Log.i(TAG, "Ratio: "+ratio);
         Log.i(TAG, "Weight: "+weight);

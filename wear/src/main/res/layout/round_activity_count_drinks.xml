@@ -14,19 +14,27 @@
         android:background="#ffeb3b"
         android:text="+"
         android:textColor="@color/black"
-        android:textSize="15dp"
+        android:textSize="30dp"
+
         android:id="@+id/plusButton"/>
+    <!--android:textSize="15dp"-->
+
     <Button
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
+
+        android:layout_marginBottom="25dp"
         android:background="#ffeb3b"
-        android:textSize="20dp"
+        android:textSize="40dp"
         android:text="-"
         android:textColor="@color/black"
         android:id="@+id/minusButton">
     </Button>
+
+    <!--android:layout_marginBottom="20dp"-->
+    <!--android:textSize="20dp"-->
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -39,26 +47,36 @@
             android:layout_height="80dp"
             android:layout_centerInParent="true"
             android:id="@+id/drinkImage"
-            android:src="@drawable/gin_and_tonic"/>
+            android:src="@drawable/gin_and_tonic"
+            android:layout_marginEnd="28dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
             android:layout_toLeftOf="@id/drinkImage"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:text="Absolute Vodka"
+            android:gravity="center"
             android:id="@+id/drinkName"
-            android:layout_centerHorizontal="true"/>
+            android:textSize="15dp"
+            android:layout_alignTop="@+id/drinkImage"
+            android:layout_toStartOf="@+id/drinkImage"
+            android:layout_marginTop="5dp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="25dp"
             android:text="1"
-            android:textColor="@color/dark_red"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/drinkImage"
-            android:layout_centerVertical="true"
-            android:id="@+id/drinkCount"/>
+            android:gravity="center"
+            android:textColor="#ffeb3b"
+            android:layout_marginRight="10dp"
+            android:id="@+id/drinkCount"
+            android:layout_alignBottom="@+id/drinkImage"
+            android:layout_alignStart="@+id/drinkName"
+            android:layout_marginStart="42dp" />
 
     </RelativeLayout>
 </RelativeLayout>
