@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 
 import android.database.Cursor;
 
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -58,19 +59,36 @@ public class DrinkInfoActivity extends ActionBarActivity {
         getSupportActionBar().setTitle(name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //picturename = category.replaceAll("\\s+","").toLowerCase();
+        //try to get form drawable
         picturename = name.replaceAll("\\s+","").toLowerCase();
         Log.i(TAG, picturename);
         Context context = drinkImageView.getContext();
         int id = context.getResources().getIdentifier(picturename, "drawable", context.getPackageName());
         Log.d(TAG, "drinkInfo"+id);
+
+        //cannot find in drawable
         if (id == 0) {
             String drinkPictureName = name.replaceAll("\\s+","").toLowerCase();
-            Log.d(TAG, "drinkPicName" + drinkPictureName);
             File imgFile = AddDrinkActivity.imagesFolder;
+            String mCurrentPhotoPath = imgFile.getAbsolutePath()+"/"+drinkPictureName+".jpg";
+            Log.d(TAG, "drinkPicName" + drinkPictureName);
+
 
             if(imgFile.exists()){
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath()+"/"+drinkPictureName+".jpg");
+                // Get the dimensions of the bitmap
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                bmOptions.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+
+                // Decode the image file into a Bitmap sized to fill the View
+                bmOptions.inJustDecodeBounds = false;
+                bmOptions.inSampleSize = 8;
+
+                Bitmap myBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+                myBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
+
                 drinkImageView.setImageBitmap(myBitmap);
 
             }
