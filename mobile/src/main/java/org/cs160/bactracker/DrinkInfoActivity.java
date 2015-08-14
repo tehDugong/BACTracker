@@ -50,10 +50,10 @@ public class DrinkInfoActivity extends ActionBarActivity {
         if (extras != null) {
             name = extras.getString("name");
             cal = extras.getInt("cal");
-            abv = extras.getInt("abv");
+            abv = extras.getDouble("abv");
             ingredients = extras.getString("ingredients");
             category = extras.getString("category");
-            //Log.d(TAG, "drinkinfo "+ category);
+            Log.d(TAG, "check abv "+ Double.toString(abv));
             calTextView.setText(Integer.toString(cal) + " Calories");
             abvTextView.setText(Double.toString(abv) + " % Alcohol");
             ingredientsTextView.setText(ingredients);
