@@ -3,6 +3,7 @@ package org.cs160.bactracker;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -39,6 +40,7 @@ public class AddDrinkActivity extends ActionBarActivity {
     ImageView imageView;
     protected static File imagesFolder;
     protected static File image;
+    protected static String mCurrentPhotoPath;
 
 
 
@@ -113,8 +115,10 @@ public class AddDrinkActivity extends ActionBarActivity {
         myDB.insertRow(name, calories, alcohol, spinVal, ingredients);
         name.replaceAll("\\s+","").toLowerCase();
         Log.d(TAG, "insideOnActivity" + name);
+
         File newFile = new File(imagesFolder, name+".jpg");
         image.renameTo(newFile);
+        mCurrentPhotoPath = image.getAbsolutePath();
 
         Intent intent = new Intent(this, PhoneActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -122,30 +126,38 @@ public class AddDrinkActivity extends ActionBarActivity {
 
     }
 
-    public void takePhoto(View view) {
-        String name = "newdrink";
+    public void takePhoto(View view){
 
         imageView = (ImageView)findViewById(R.id.takenPhoto);
 
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        imagesFolder = new File(Environment.getExternalStorageDirectory(), "MyImages");
-        imagesFolder.mkdir();
-        image = new File(imagesFolder, name+".jpg");
+        Log.d(TAG, "here");
+
+        if (cameraIntent.resolveActivity(getPackageManager()) != null){
+
+            imagesFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            image = new File(imagesFolder, "newdrink.jpg");
+
+        }
+        mCurrentPhotoPath = image.getAbsolutePath();
         uriSavedImage = Uri.fromFile(image);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
-
         startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "taken");
         Bitmap bitmap = null;
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == 100) {
                 try {
+                    Log.d(TAG, "before");
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriSavedImage);
+                    Log.d(TAG, "after");
 
                 } catch (FileNotFoundException e1) {
                     // TODO Auto-generated catch block
@@ -154,6 +166,21 @@ public class AddDrinkActivity extends ActionBarActivity {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
+
+                // Get the dimensions of the bitmap
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                bmOptions.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+
+                // Decode the image file into a Bitmap sized to fill the View
+                bmOptions.inJustDecodeBounds = false;
+                bmOptions.inSampleSize = 8;
+
+                bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
                 imageView.setImageBitmap(bitmap);
             }
         }
