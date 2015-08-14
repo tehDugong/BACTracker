@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ public class DrinkMenuWearableList extends Activity {
     private static ArrayList<Integer> mIcons;
     private TextView mHeader;
     public ArrayList<DrinkItem> drinks;
+    private int categoryIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,19 +27,25 @@ public class DrinkMenuWearableList extends Activity {
         setContentView(R.layout.activity_drink_menu);
 
         String header = "Unknown";
-        int position = 0;
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             header = extras.getString("name");
-            position = extras.getInt("position");
+            categoryIndex = extras.getInt("categoryIndex");
         }
 
         mNames = new ArrayList<String>();
         mIcons = new ArrayList<Integer>();
-        drinks = MenuWearableList.categoryItems.get(position).drinks;
+        drinks = MenuWearableList.categoryItems.get(categoryIndex).drinks;
         for (DrinkItem d : drinks){
-            mIcons.add(R.drawable.beer);
+            if (categoryIndex == 0)
+                mIcons.add(R.drawable.beer);
+            else if (categoryIndex == 1)
+                mIcons.add(R.drawable.wine);
+            else if (categoryIndex == 2)
+                mIcons.add(R.drawable.liquor);
+            else
+                mIcons.add(R.drawable.cocktail);
             mNames.add(d.getName());
         }
 
@@ -58,6 +66,8 @@ public class DrinkMenuWearableList extends Activity {
                 public void onClick(WearableListView.ViewHolder viewHolder) {
                     DrinkItem item = drinks.get(viewHolder.getLayoutPosition());
                     Intent i = new Intent(getApplicationContext(), CountDrinks.class);
+                    i.putExtra("categoryIndex", categoryIndex);
+                    i.putExtra("drinkIndex", viewHolder.getLayoutPosition());
                     i.putExtra("drink", item);
                     startActivity(i);
                 }

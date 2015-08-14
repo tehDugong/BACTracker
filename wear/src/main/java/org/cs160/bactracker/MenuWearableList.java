@@ -32,16 +32,17 @@ public class MenuWearableList extends Activity {
         // Icons for the list
         mIcons = new ArrayList<Integer>();
         mIcons.add(R.drawable.beer);
-        mIcons.add(R.drawable.cocktail);
-        mIcons.add(R.drawable.liquor);
         mIcons.add(R.drawable.wine);
+        mIcons.add(R.drawable.liquor);
+
+        mIcons.add(R.drawable.cocktail);
 
         // names for the list
         mNames = new ArrayList<String>();
         mNames.add("Beer");
-        mNames.add("Cocktail");
-        mNames.add("Liquor");
         mNames.add("Wine");
+        mNames.add("Liquor");
+        mNames.add("Cocktail");
 
         // This is our list header
         mHeader = (TextView) findViewById(R.id.header_menu);
@@ -60,13 +61,11 @@ public class MenuWearableList extends Activity {
             new WearableListView.ClickListener() {
                 @Override
                 public void onClick(WearableListView.ViewHolder viewHolder) {
-                    String drink = mNames.get(viewHolder.getLayoutPosition());
                     Intent i = new Intent(getApplicationContext(), DrinkMenuWearableList.class);
                     int currentPosition = viewHolder.getAdapterPosition();
-                    ArrayList<DrinkItem> drinksArray = categoryItems.get(currentPosition).drinks;
                     CategoryItem categoryItem = categoryItems.get(currentPosition);
                     String name = categoryItem.name;
-                    i.putExtra("position", currentPosition);
+                    i.putExtra("categoryIndex", currentPosition);
                     i.putExtra("name", name);
                     startActivity(i);
                 }

@@ -2,26 +2,28 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.cs160.bactracker" >
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-feature android:name="android.hardware.type.watch" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault"
-        android:largeHeap="true">
-
+        android:largeHeap="true"
+        android:theme="@android:style/Theme.DeviceDefault" >
         <activity
             android:name=".MenuWearableList"
             android:label="WearableList" />
-        <activity android:name=".DrinkMenuWearableList"
-            android:label="DrinkMenuWearableList"/>
-
+        <activity
+            android:name=".DrinkMenuWearableList"
+            android:label="DrinkMenuWearableList" />
         <activity
             android:name=".BACActivity"
             android:label="BACtracker" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -48,9 +50,11 @@
             android:label="@string/title_activity_count_drinks" />
         <activity
             android:name=".DrinkCategories"
-            android:label="@string/title_activity_drink_categories"/>
-
-
+            android:label="@string/title_activity_drink_categories" />
+        <activity
+            android:name=".ExitActivity"
+            android:label="@string/title_activity_exit" >
+        </activity>
     </application>
 
 </manifest>

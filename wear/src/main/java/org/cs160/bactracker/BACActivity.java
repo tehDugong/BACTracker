@@ -150,6 +150,17 @@ public class BACActivity extends Activity
         startActivity(i);
     }
 
+    public void toExitActivity (View v) {
+        Intent i = new Intent(getApplicationContext(), ExitActivity.class);
+        Log.i(TAG, "Exitting with BAC "+bac+" and limit "+limit);
+        if (bac < limit) {
+            i.putExtra("safe", true);
+        } else {
+            i.putExtra("safe", false);
+        }
+        startActivity(i);
+    }
+
     private String color_limit(){
         // returns hex color code based on ratio between current bac and legal limit
 

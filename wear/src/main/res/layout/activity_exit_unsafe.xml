@@ -1,0 +1,56 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@color/black"
+    tools:context="org.cs160.bactracker.ExitActivity">
+
+    <TextView
+        android:id="@+id/unsafe_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:padding="20dp"
+        android:text="Your BAC is over the legal driving limit"
+        android:textSize="15dp"
+        android:gravity="center"/>
+
+    <ImageButton
+        android:id="@+id/call_taxi"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:src="@drawable/taxi"
+        android:scaleType="fitCenter"
+        android:background="@color/black"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/unsafe_text"
+        android:padding="5dp"/>
+
+    <ImageButton
+        android:id="@+id/call_friend"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:src="@drawable/phone"
+        android:scaleType="fitCenter"
+        android:background="@color/black"
+        android:layout_toLeftOf="@id/call_taxi"
+        android:layout_below="@id/unsafe_text"
+        android:padding="5dp"
+        android:onClick="messageContact"/>
+
+    <ImageButton
+        android:id="@+id/call_emergency"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:src="@drawable/hospital"
+        android:scaleType="fitCenter"
+        android:background="@color/black"
+        android:layout_toRightOf="@id/call_taxi"
+        android:layout_below="@id/unsafe_text"
+        android:padding="5dp"
+        android:onClick="messageEmergency"/>
+
+</RelativeLayout>
