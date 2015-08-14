@@ -2,6 +2,7 @@ package org.cs160.bactracker;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -95,7 +96,20 @@ public class PhoneListeningService extends WearableListenerService
             Intent intent = new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-
+        }else if (messageEvent.getPath().equalsIgnoreCase("/taxi")){
+            //try {
+                //PackageManager pm = getPackageManager();
+                //pm.getPackageInfo("com.ubercab", PackageManager.GET_ACTIVITIES);
+                String uri = "uber://?action=setPickup&pickup=my_location";
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse(uri));
+                //Log.d(TAG, "in uber?");
+                startActivity(intent);
+            //} catch (PackageManager.NameNotFoundException e) {
+                // No Uber app! Open Mobile Website.
+                //Log.d(TAG, "no uber app?");
+            //}
         }
 
     }

@@ -88,6 +88,9 @@ public class ExitActivity extends Activity implements GoogleApiClient.Connection
         sendMessage("/contact",null);
 
     }
+    public void messageTaxi(View view){
+        sendMessage("/taxi", null);
+    }
 
 
     @Override
