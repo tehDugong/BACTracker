@@ -55,16 +55,6 @@
         android:layout_below="@+id/calories_text"
         android:layout_alignStart="@+id/category_text" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Take A Photo"
-        android:id="@+id/button"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/ingredients_text"
-        android:layout_alignParentStart="true"
-        android:onClick="takePhoto"/>
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -124,6 +114,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/takenPhoto"
-        android:layout_alignTop="@+id/button"
-        android:layout_alignStart="@+id/drink_ingredients" />
+        android:layout_marginLeft="180dp"
+        android:layout_below="@+id/ingredients_text"
+        android:layout_marginTop="20dp"/>
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Take a Photo "
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/photoSwitch"
+        android:layout_alignTop="@+id/takenPhoto"
+        android:layout_alignParentStart="true"
+        android:checked="false"
+        android:switchMinWidth="45dp"/>
 </RelativeLayout>

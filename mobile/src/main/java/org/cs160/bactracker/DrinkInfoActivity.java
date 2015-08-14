@@ -68,37 +68,59 @@ public class DrinkInfoActivity extends ActionBarActivity {
         int id = context.getResources().getIdentifier(picturename, "drawable", context.getPackageName());
         Log.d(TAG, "drinkInfo"+id);
 
-        //cannot find in drawable
-        if (id == 0) {
-            String drinkPictureName = name.replaceAll("\\s+","").toLowerCase();
-            File imgFile = AddDrinkActivity.imagesFolder;
-
-            Log.d(TAG, "drinkPicName" + drinkPictureName);
-
-
-            if(imgFile.exists()){
-                String mCurrentPhotoPath = imgFile.getAbsolutePath()+"/"+drinkPictureName+".jpg";
-                // Get the dimensions of the bitmap
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                bmOptions.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-
-                // Decode the image file into a Bitmap sized to fill the View
-                bmOptions.inJustDecodeBounds = false;
-                bmOptions.inSampleSize = 8;
-
-                Bitmap myBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-                myBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
-
-                drinkImageView.setImageBitmap(myBitmap);
-
-            }
-        }
-        else {
+        //Found drawable
+        if (id != 0) {
             drinkImageView.setImageResource(id);
         }
+        else if (id == 0){
+            String drinkPictureName = name.replaceAll("\\s+","").toLowerCase();
+            File imgFile = PhoneActivity.imagesFolder;
+
+            Log.d(TAG, "drinkPicName " + drinkPictureName);
+
+            //if (imgFile != null) {
+
+
+                String mCurrentPhotoPath = imgFile.getAbsolutePath() + "/" + drinkPictureName + ".jpg";
+                Bitmap checkValidPath = BitmapFactory.decodeFile(mCurrentPhotoPath);
+
+                if (checkValidPath != null) {
+                    // Get the dimensions of the bitmap
+                    Log.d(TAG, "photo path is not null");
+                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                    bmOptions.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+
+                    // Decode the image file into a Bitmap sized to fill the View
+                    bmOptions.inJustDecodeBounds = false;
+                    bmOptions.inSampleSize = 12;
+
+                    Bitmap myBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(90);
+                    myBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
+
+                    drinkImageView.setImageBitmap(myBitmap);
+                } else {
+                    //User didn't take a photo, use category one
+                    Log.d(TAG, "photo path is null");
+                    picturename = category.replaceAll("\\s+", "").toLowerCase() + "icon";
+                    context = drinkImageView.getContext();
+                    id = context.getResources().getIdentifier(picturename, "drawable", context.getPackageName());
+                    drinkImageView.setImageResource(id);
+                }
+            }
+        /*
+            else {
+                //User didn't take a photo, use category one
+                Log.d(TAG, "image file is null");
+                picturename = category.replaceAll("\\s+", "").toLowerCase() + "icon";
+                context = drinkImageView.getContext();
+                id = context.getResources().getIdentifier(picturename, "drawable", context.getPackageName());
+                drinkImageView.setImageResource(id);
+            }
+            */
+       // }
     }
 
     @Override

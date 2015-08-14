@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -31,6 +33,7 @@ public class PhoneActivity extends ActionBarActivity {
     protected static DBAdapter myDB;
     String TAG;
     ListView categoryList;
+    protected static File imagesFolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class PhoneActivity extends ActionBarActivity {
         //openDB(); //used to reset database
         //InitializeDatabase(); //used to reset the database
         Log.d(TAG, "startPhone");
+        imagesFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
     }
 
