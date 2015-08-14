@@ -34,7 +34,7 @@ public class DBActivity extends ActionBarActivity {
         if (extras != null) {
             category = extras.getString("category");
         }
-        getSupportActionBar().setTitle("List of " + category);
+        getSupportActionBar().setTitle(category);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         populateListView(category);

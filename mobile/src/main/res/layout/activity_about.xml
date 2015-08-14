@@ -9,11 +9,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="25dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="BACtracker is not intended as a scientific tool to measure your blood alcohol concentration the result is only indicative!  Your actual blood alcohol concentration depends on a variety of additional factors, like genetic makeup, personal health, and recent food consumption. These results are rough estimates for an average person only.
+        android:text="Warning: BACtracker is not intended as a scientific tool to measure your blood alcohol concentration the result is only indicative!  Your actual blood alcohol concentration depends on a variety of additional factors, like genetic makeup, personal health, and recent food consumption. These results are rough estimates for an average person only."
+        android:layout_alignParentTop="true"
+        android:id="@+id/textView" />
 
-Blood alcohol content (BAC) or blood alcohol level is the concentration of alcohol in the bloodstream. It is usually measured as mass per volume. For example, a BAC of 0.04% means 0.04 grams of alcohol per 100 grams of individual's blood. " />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text = "BAC: The concentration of alcohol in the bloodstream. It is usually measured as mass per volume. For example, a BAC of 0.04% means 0.04 grams of alcohol per 100 grams of individual's blood. "
+        android:id="@+id/textView2"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView"
+        android:layout_marginTop="25dp" />
 </RelativeLayout>

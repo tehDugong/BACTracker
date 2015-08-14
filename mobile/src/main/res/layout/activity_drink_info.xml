@@ -54,7 +54,9 @@
         android:layout_marginBottom="10dp"
         android:onClick="removeFromMenu"
         android:layout_below="@id/ingredientsTextView"
-        android:layout_toStartOf="@+id/remove_text" />
+        android:layout_toStartOf="@+id/remove_text"
+        android:maxWidth="20dp"
+        android:maxHeight="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -73,7 +75,10 @@
         android:layout_alignParentRight="true"
         android:src="@drawable/addtomenu"
         android:background="@null"
-        android:onClick="deleteFromDB"/>
+        android:onClick="deleteFromDB"
+        android:layout_margin="15dp"
+        android:maxHeight="20dp"
+        android:maxWidth="20dp" />
 
 
 </RelativeLayout>
