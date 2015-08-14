@@ -13,9 +13,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,17 +33,17 @@ public class AddDrinkActivity extends ActionBarActivity {
     private EditText drink_alcohol;
     private EditText drink_calories;
     private EditText drink_ingredients;
-    DBAdapter myDB;
+    DBAdapter myDB = PhoneActivity.myDB;
 
 
     public String TAG;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Uri uriSavedImage;
     ImageView imageView;
-    protected static File imagesFolder;
+    protected static File imagesFolder = PhoneActivity.imagesFolder;
     protected static File image;
     protected static String mCurrentPhotoPath;
-
+    protected static Switch photoSwitch;
 
 
     @Override
@@ -50,6 +52,16 @@ public class AddDrinkActivity extends ActionBarActivity {
         setContentView(R.layout.activity_add_drink);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         openDB();
+
+        photoSwitch = (Switch) findViewById(R.id.photoSwitch);
+        photoSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    takePhoto();
+                }
+            }
+        });
     }
 
     @Override
@@ -88,7 +100,7 @@ public class AddDrinkActivity extends ActionBarActivity {
     }
 
     private void openDB() {
-        myDB = new DBAdapter(this);
+        //myDB = new DBAdapter(this);
         myDB.open();
     }
 
@@ -116,9 +128,14 @@ public class AddDrinkActivity extends ActionBarActivity {
         name.replaceAll("\\s+","").toLowerCase();
         Log.d(TAG, "insideOnActivity" + name);
 
-        File newFile = new File(imagesFolder, name+".jpg");
-        image.renameTo(newFile);
-        mCurrentPhotoPath = image.getAbsolutePath();
+        String reName = name.replaceAll("\\s+","").toLowerCase();
+        File newFile = new File(imagesFolder, reName+".jpg");
+
+        if (photoSwitch.isChecked()) {
+            Log.d(TAG, "photo renamed as "+ reName);
+            image.renameTo(newFile);
+            mCurrentPhotoPath = image.getAbsolutePath();
+        }
 
         Intent intent = new Intent(this, PhoneActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -126,19 +143,17 @@ public class AddDrinkActivity extends ActionBarActivity {
 
     }
 
-    public void takePhoto(View view){
+    public void takePhoto(){
 
         imageView = (ImageView)findViewById(R.id.takenPhoto);
-
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Log.d(TAG, "here");
 
-        if (cameraIntent.resolveActivity(getPackageManager()) != null){
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
 
-            imagesFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            //imagesFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             image = new File(imagesFolder, "newdrink.jpg");
-
         }
+
         mCurrentPhotoPath = image.getAbsolutePath();
         uriSavedImage = Uri.fromFile(image);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
@@ -174,7 +189,7 @@ public class AddDrinkActivity extends ActionBarActivity {
 
                 // Decode the image file into a Bitmap sized to fill the View
                 bmOptions.inJustDecodeBounds = false;
-                bmOptions.inSampleSize = 8;
+                bmOptions.inSampleSize = 12;
 
                 bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
                 Matrix matrix = new Matrix();

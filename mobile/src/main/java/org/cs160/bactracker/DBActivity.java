@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 
 public class DBActivity extends ActionBarActivity {
-    DBAdapter myDB;
+    DBAdapter myDB = PhoneActivity.myDB;
     ListView myList;
     final String TAG = "MainActivity";
     String category;
@@ -57,7 +57,7 @@ public class DBActivity extends ActionBarActivity {
         Log.d(TAG, "startDrinkInfo"+name);
         int abvindex = c.getColumnIndex("abv");
         Log.i(TAG, "abv col index : " + Integer.toString(abvindex));
-        int abv = c.getInt(c.getColumnIndex("abv"));
+        Double abv = c.getDouble(c.getColumnIndex("abv"));
 
         int ingindex = c.getColumnIndex("ingredients");
         Log.i(TAG, "ingredients col index : " + Integer.toString(ingindex));
@@ -92,7 +92,7 @@ public class DBActivity extends ActionBarActivity {
     }
 
     private void openDB(){
-        myDB = new DBAdapter(this);
+        //myDB = new DBAdapter(this);
         myDB.open();
     }
 
