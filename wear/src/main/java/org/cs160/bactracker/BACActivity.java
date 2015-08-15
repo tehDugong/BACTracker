@@ -7,23 +7,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class BACActivity extends Activity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -33,13 +33,26 @@ public class BACActivity extends Activity
     public static float alcohol = 0.0f;
     private float limit;
     private float bac;
-    private BroadcastReceiver receiver;
+    private BroadcastReceiver receiver, menuReceiver;
+    private ImageButton menuButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         Log.i(TAG, "BACActivity started!");
 
+
         super.onCreate(savedInstanceState);
+        DBAdapterWearable dbAdapter = new DBAdapterWearable(this);
+        try {
+            dbAdapter.openToWrite();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        dbAdapter.deleteAll();
+        dbAdapter.close();
+        Intent i = new Intent(this, SignalForMenu.class);
+        startService(i);
 
         mGoogleApiClient= new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -72,7 +85,14 @@ public class BACActivity extends Activity
                 }
             }
         };
+        menuReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "Menu Recieved");
+            }
+        };
         registerReceiver(receiver, new IntentFilter("wat?"));
+        registerReceiver(menuReceiver, new IntentFilter("menuRetrieved"));
 
         // check existing BAC
         bac = 0.00f;
@@ -84,6 +104,7 @@ public class BACActivity extends Activity
         setContentView(R.layout.activity_bac);
     }
 
+
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "Connected to GoogleAPI");
@@ -94,7 +115,6 @@ public class BACActivity extends Activity
         Log.i(TAG, "Connection to GoogleAPI suspended");
     }
 
-
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.i(TAG, "Connection to GoogleAPI failed!");
@@ -104,7 +124,9 @@ public class BACActivity extends Activity
     protected void onDestroy(){
         super.onDestroy();
         unregisterReceiver(receiver);
+        unregisterReceiver(menuReceiver);
         mGoogleApiClient.disconnect();
+
     }
 
     private void sendMessage(final String path, final byte[] data){
@@ -143,6 +165,28 @@ public class BACActivity extends Activity
                 })
                 .create();
         ad.show();
+        DBAdapterWearable dbAdapterWearable = new DBAdapterWearable(this);
+        try {
+            dbAdapterWearable.openToRead();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Cursor c = dbAdapterWearable.getAllRows();
+        ArrayList<String> names = new ArrayList<String>();
+        while (!c.isAfterLast()) {
+            String name = c.getString(DBAdapterWearable.COL_NAME);
+            names.add(name);
+        }
+        dbAdapterWearable.close();
+        try {
+            dbAdapterWearable.openToWrite();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        for (String name : names) {
+            dbAdapterWearable.updateRow(name, 0);
+        }
+        dbAdapterWearable.close();
     }
     public void toDrinksSelection(View v) {
 
@@ -152,7 +196,6 @@ public class BACActivity extends Activity
 
     private String color_limit(){
         // returns hex color code based on ratio between current bac and legal limit
-
         int red;
         int green;
         int blue = 0;
@@ -170,4 +213,7 @@ public class BACActivity extends Activity
         }
         return String.format("#%02x%02x%02x", red, green, blue);
    }
+    public void toMenu(View v) {
+        startActivity(new Intent(this, MenuWearableList.class));
+    }
 }

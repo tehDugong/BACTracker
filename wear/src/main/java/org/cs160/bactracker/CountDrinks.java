@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
@@ -16,39 +15,24 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
-<<<<<<< HEAD
-import java.util.ArrayList;
-=======
 import java.nio.ByteBuffer;
->>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
 
 public class CountDrinks extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     private TextView drinkName, drinkCount;
     private Button plusButton, minusButton;
     private ImageView drinkImage;
     private String name;
-<<<<<<< HEAD
-    private int count, categoryIndex, drinkIndex;
-=======
     private int count;
->>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
     private DrinkItem drink;
     private SQLiteDatabase db;
     public static GoogleApiClient mGoogleApiClient;
-<<<<<<< HEAD
     private BroadcastReceiver receiver;
-=======
->>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
     private final String TAG = "CountDrinks";
 
 
@@ -64,12 +48,8 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
                 drinkCount = (TextView) stub.findViewById(R.id.drinkCount);
                 drinkImage = (ImageView) stub.findViewById(R.id.drinkImage);
                 Intent i = getIntent();
-                drinkIndex = (int) i.getExtras().get("drinkIndex");
-                categoryIndex = (int) i.getExtras().get("categoryIndex");
                 drink = i.getParcelableExtra("drink");
                 name = drink.getName();
-                openDB();
-                count = selectDB(name);
                 drinkName.setText(name);
                 drinkImage.setImageBitmap(drink.getImage());
                 plusButton = (Button) stub.findViewById(R.id.plusButton);
@@ -86,7 +66,7 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
                         increment(-1);
                     }
                 });
-
+                count = drink.getCount();
                 drinkCount.setText(Integer.toString(count));
             }
         });
@@ -109,47 +89,18 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
             return;
         count += inc;
         drinkCount.setText(Integer.toString(count));
-<<<<<<< HEAD
-        ArrayList<DrinkItem> categoryItem = DrinkCategories.categoryItems.get(categoryIndex).drinks;
-        categoryItem.get(drinkIndex).setCount(count + inc);
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/alcohol");
-=======
->>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
         float alcohol = drink.getAlcoholContent() * inc;
-        Log.i(TAG, "Alcohol calculated: "+alcohol);
+        Log.i(TAG, "Alcohol calculated: " + alcohol);
         sendMessage("/alcohol", ByteBuffer.allocate(4).putFloat(alcohol).array());
-    }
-
-    public void openDB(){
-        db = SQLiteDatabase.openDatabase("/data/data/org.cs160.bactracker/databases/Counts", null, SQLiteDatabase.OPEN_READWRITE);
-    }
-    public void insertIntoDB (String name, int count, int id) {
-        db.execSQL("INSERT INTO counts VALUES('" + name + "','" + Integer.toString(count) + "','" + Integer.toString(id) + "');");
-    }
-    public void deleteFromDB (String name) {
-        db.execSQL("DELETE FROM counts WHERE name='" + name + "'");
-    }
-    public void updateDB (String name, int count) {
-        db.execSQL("UPDATE counts SET count='"+count+"' WHERE name='"+name+"';");
-    }
-    public int selectDB (String name) {
-        Cursor c=db.rawQuery("SELECT * FROM counts WHERE name='"+name+"'", null);
-        if(c.moveToFirst()) {
-            return Integer.parseInt(c.getString(1).toString());
-        } else {
-            return 123;
+        DBAdapterWearable dbAdapterWearable = new DBAdapterWearable(this);
+        Log.d(TAG, Boolean.toString(dbAdapterWearable.updateRow(drink.getName(), count)));
+        Cursor c = dbAdapterWearable.getAllRows();
+        while (!c.isAfterLast()) {
+            Log.d(TAG, c.getString(DBAdapterWearable.COL_NAME) + ":"+ c.getInt(DBAdapterWearable.COL_COUNT));
+            c.moveToNext();
         }
-    }
-    private boolean checkDataBase() {
-        SQLiteDatabase checkDB = null;
-        try {
-            checkDB = SQLiteDatabase.openDatabase("/data/data/org.cs160.bactracker/databases/Counts", null,
-                    SQLiteDatabase.OPEN_READONLY);
-            checkDB.close();
-        } catch (SQLiteException e) {
-            Log.d(TAG, "does not exist");
-        }
-        return checkDB != null;
+        dbAdapterWearable.close();
     }
 
     @Override
@@ -163,13 +114,9 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
     }
-<<<<<<< HEAD
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        Log.d(TAG, Integer.toString(count));
-        updateDB(name, count);
-        Log.d(TAG, Integer.toString(selectDB(name)));
     }
     @Override
     public void onResume() {
@@ -183,12 +130,8 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
                 drinkCount = (TextView) stub.findViewById(R.id.drinkCount);
                 drinkImage = (ImageView) stub.findViewById(R.id.drinkImage);
                 Intent i = getIntent();
-                drinkIndex = (int) i.getExtras().get("drinkIndex");
-                categoryIndex = (int) i.getExtras().get("categoryIndex");
                 drink = i.getParcelableExtra("drink");
                 name = drink.getName();
-                openDB();
-                count = selectDB(name);
                 drinkName.setText(name);
                 drinkImage.setImageBitmap(drink.getImage());
                 plusButton = (Button) stub.findViewById(R.id.plusButton);
@@ -205,7 +148,7 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
                         increment(-1);
                     }
                 });
-
+                count = drink.getCount();
                 drinkCount.setText(Integer.toString(count));
             }
         });
@@ -217,9 +160,6 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
 
         mGoogleApiClient.connect();
     }
-
-
-=======
 
     private void sendMessage(final String path, final byte[] data){
         new Thread( new Runnable() {
@@ -235,5 +175,4 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
             }
         }).start();
     }
->>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
 }

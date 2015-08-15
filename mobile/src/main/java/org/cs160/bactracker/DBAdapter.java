@@ -1,6 +1,5 @@
 package org.cs160.bactracker;
 
-import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,9 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.sql.SQLException;
 
 public class DBAdapter {
 
@@ -28,9 +25,9 @@ public class DBAdapter {
 	// Column Numbers for each Field Name:
 	public static final int COL_NAME = 0;
 	public static final int COL_INGREDIENTS = 1;
-	public static final int COL_ABV = 2;
-	public static final int COL_CAL = 3;
-	public static final int COL_CATEGORY = 7;
+	public static final int COL_CAL = 2;
+	public static final int COL_ABV = 3;
+	public static final int COL_CATEGORY = 4;
 
 	// DataBase info:
 	public static final String DATABASE_NAME = "DrinkDatabase";
@@ -51,22 +48,37 @@ public class DBAdapter {
 	private static DatabaseHelper myDBHelper;
 	private static SQLiteDatabase db;
 
-
 	public DBAdapter(Context ctx) {
 		this.context = ctx;
-		myDBHelper = new DatabaseHelper(context);
-        db = myDBHelper.getWritableDatabase();
-        this.insertRow("Merlot", 122, 14.5, "Wine", "Merlot grapes");
-        this.insertRow("Chardonnay", 123, 14.5, "Wine", "Chardonnay grapes");
-        this.insertRow("Guinness", 125, 4.1, "Beer", "Roasted unmalted barley");
-        this.insertRow("Heineken", 150, 5, "Beer", "Barley malt, hops and the unique Heineken A-yeast");
-        this.insertRow("Long Island Iced Tea", 780, 22, "Cocktail", "Gin, Tequila, Vodka, Run, Triple sec");
-        this.insertRow("Vodka", 64, 40, "Liquor", "Water, ethanol");
 	}
+
 
 	// Open the database connection.
 	public DBAdapter open() {
+		myDBHelper = new DatabaseHelper(context);
 		db = myDBHelper.getWritableDatabase();
+		this.insertRowNoDups("Merlot", 122, 14.5, "Wine", "Merlot grapes");
+		this.insertRowNoDups("Chardonnay", 123, 14.5, "Wine", "Chardonnay grapes");
+		this.insertRowNoDups("Guinness", 125, 4.1, "Beer", "Roasted unmalted barley");
+		this.insertRowNoDups("Heineken", 150, 5, "Beer", "Barley malt, hops and the unique Heineken A-yeast");
+		this.insertRowNoDups("Long Island Iced Tea", 780, 22, "Cocktail", "Gin, Tequila, Vodka, Run, Triple sec");
+		this.insertRowNoDups("Vodka", 64, 40, "Liquor", "Water, ethanol");
+		this.insertRowNoDups("Whiskey", 64, 40, "Liquor", "Water, ethanol");
+		return this;
+	}
+	public DBAdapter openToRead() throws SQLException {
+		try {
+			myDBHelper = new DatabaseHelper(context);
+			db = myDBHelper.getReadableDatabase();
+		} catch (Exception e){}
+		return this;
+	}
+
+	public DBAdapter openToWrite() throws SQLException {
+		try {
+			myDBHelper = new DatabaseHelper(context);
+			db = myDBHelper.getWritableDatabase();
+		} catch (Exception e){}
 		return this;
 	}
 
@@ -87,6 +99,21 @@ public class DBAdapter {
 
 		// Insert the data into the database.
 		return db.insert(DATABASE_TABLE, null, initialValues);
+	}
+
+	public void insertRowNoDups(String name, int cal, double abv, String category, String ingredients)
+	{
+		String where = KEY_NAME + "= '" + name + "' AND " + KEY_CATEGORY + " = '" +category +"'" ;
+		Cursor c = 	db.query(true, DATABASE_TABLE, ALL_KEYS,
+				where, null, null, null, null, null);
+		if (this.existsInDatabase(name, category))
+			this.insertRow( name,  cal,  abv,  category,  ingredients);
+	}
+	public boolean existsInDatabase(String name, String category) {
+		String where = KEY_NAME + "= '" + name + "' AND " + KEY_CATEGORY + " = '" +category +"'" ;
+		Cursor c = 	db.query(true, DATABASE_TABLE, ALL_KEYS,
+				where, null, null, null, null, null);
+		return c.getCount() > 0;
 	}
 
 	// Delete a row from the database, by rowId (primary key)
@@ -112,11 +139,17 @@ public class DBAdapter {
 
 	// Return all data in the database.
 	public Cursor getAllRows() {
+		try {
+			this.openToRead();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		String where = null;
 		Cursor c = 	db.query(true, DATABASE_TABLE, ALL_KEYS, where, null, null, null, null, null);
 		if (c != null) {
 			c.moveToFirst();
 		}
+		this.close();
 		return c;
 	}
 
@@ -147,18 +180,19 @@ public class DBAdapter {
 		return c;	}
 
     public Cursor getRowByCategory(String cat){
+		try {
+			this.openToRead();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
         String predicate = KEY_CATEGORY + "= '" + cat + "'";
-
-//		String predicate = "name = ?";
-//		String[] predicate_values = {name};
         Cursor c = 	db.query(true, DATABASE_TABLE, ALL_KEYS,
                 predicate, null, null, null, null, null);
-//		Cursor c = 	db.query(true, DATABASE_TABLE, ALL_KEYS,
-//				predicate, predicate_values, null, null, null, null);
         if (c != null) {
             c.moveToFirst();
             Log.i(TAG, "cursor moved to first");
         }
+		close();
         return c;	}
 
     public Cursor getCategories(){
@@ -180,41 +214,6 @@ public class DBAdapter {
 		// Insert it into the database.
 		return db.update(DATABASE_TABLE, newValues, where, null) != 0;
 	}
-
-    /*
-    public JSONObject getJSON() throws JSONException {
-        ClipData.Item[] item = null;
-        JSONObject pl = new JSONObject();
-        Cursor cursor = this.getAllRows();
-        int count = cursor.getCount();
-        //myDBHelper.close();
-        int i=0;
-        JSONArray jsonArray = new JSONArray();
-        for(i=0; i<count; i++){
-            JSONObject val = new JSONObject();
-            try {
-                val.put("_id", cursor.getString(cursor.getColumnIndex("_id")));
-                val.put("ingredients", cursor.getString(cursor.getColumnIndex("ingredients")));
-                val.put("abv", cursor.getString(cursor.getColumnIndex("abv")));
-                val.put("calories", cursor.getString(cursor.getColumnIndex("calories")));
-                val.put("category", cursor.getString(cursor.getColumnIndex("category")));
-                jsonArray.put(val);
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            pl.put(String.valueOf(i), jsonArray);
-        }
-
-        if(jsonArray.length()<1){
-            pl.put(String.valueOf(i),new JSONArray());
-        }
-
-        JSONObject result = new JSONObject();
-        result.put("data",pl);
-        return result;
-    }
-    */
 
 
 	protected static class DatabaseHelper extends SQLiteOpenHelper

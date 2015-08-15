@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="100dp" android:layout_height="60dp" android:background="@drawable/drink_cell_borders">
+    android:layout_width="100dp" android:layout_height="60dp" android:background="@color/black">
     <org.cs160.bactracker.RoundedImageView
         android:layout_width="30dp"
         android:layout_height="30dp"

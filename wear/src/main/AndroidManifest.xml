@@ -8,20 +8,20 @@
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault"
-        android:largeHeap="true">
-
+        android:largeHeap="true"
+        android:theme="@android:style/Theme.DeviceDefault" >
         <activity
             android:name=".MenuWearableList"
             android:label="WearableList" />
-        <activity android:name=".DrinkMenuWearableList"
-            android:label="DrinkMenuWearableList"/>
-
+        <activity
+            android:name=".DrinkMenuWearableList"
+            android:label="DrinkMenuWearableList" />
         <activity
             android:name=".BACActivity"
             android:label="BACtracker" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -41,16 +41,22 @@
         </service>
 
         <activity
-            android:name=".DrinksListActivity"
-            android:label="@string/title_activity_drinks_list" />
-        <activity
             android:name=".CountDrinks"
             android:label="@string/title_activity_count_drinks" />
-        <activity
-            android:name=".DrinkCategories"
-            android:label="@string/title_activity_drink_categories"/>
 
-
+        <service
+            android:name=".SignalForMenu"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+        <service
+            android:name=".ListenForMenuService"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

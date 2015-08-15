@@ -34,7 +34,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/menu"
-        android:onClick="toDrinksSelection"/>
+        android:onClick="toMenu"/>
 
     <ImageButton
         android:id="@+id/reset_button"

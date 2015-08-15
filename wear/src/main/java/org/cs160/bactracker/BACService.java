@@ -37,7 +37,8 @@ public class BACService extends WearableListenerService {
         // to the node that created the data item.
         for (DataEvent event : dataEvents) {
             Uri uri = event.getDataItem().getUri();
-            Log.i(TAG, uri.toString());
+            String path = uri!=null ? uri.getPath() : null;
+            Log.d(TAG, path);
 
             if (uri.toString().contains("/legal_limit")){
                 DataItem item = event.getDataItem();

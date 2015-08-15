@@ -5,11 +5,15 @@ package org.cs160.bactracker;
  */
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -17,27 +21,32 @@ public class DrinkMenuWearableList extends Activity {
     private static ArrayList<String> mNames;
     private static ArrayList<Integer> mIcons;
     private TextView mHeader;
+    private String category;
     public ArrayList<DrinkItem> drinks;
+    private BroadcastReceiver retrieveMenu;
+    private final String TAG = "DrinkMenuList";
+    private int res;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drink_menu);
-
-        String header = "Unknown";
+    public void configure() {
         int position = 0;
-
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            header = extras.getString("name");
-            position = extras.getInt("position");
-        }
+        category = extras.getString("category");
+        drinks = getDrinks(category);
 
         mNames = new ArrayList<String>();
         mIcons = new ArrayList<Integer>();
-        drinks = MenuWearableList.categoryItems.get(position).drinks;
-        for (DrinkItem d : drinks){
-            mIcons.add(R.drawable.beer);
+        res = 0;
+        if (category.equals("Beer")) {
+            res = R.drawable.beer;
+        } else if (category.equals("Wine")) {
+            res = R.drawable.wine;
+        } else if (category.equals("Liquor")) {
+            res = R.drawable.liquor;
+        } else if (category.equals("Cocktail")) {
+            res = R.drawable.cocktail;
+        }
+        for (DrinkItem d : drinks) {
+            mIcons.add(res);
             mNames.add(d.getName());
         }
 
@@ -48,8 +57,57 @@ public class DrinkMenuWearableList extends Activity {
         wearableListView.setAdapter(new MenuAdapter(this, mIcons, mNames));
         wearableListView.setClickListener(mClickListener);
         wearableListView.addOnScrollListener(mOnScrollListener);
-        mHeader.setText(header);
+        mHeader.setText(category);
     }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_drink_menu);
+        Intent i = new Intent(this, SignalForMenu.class);
+        startService(i);
+        retrieveMenu = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "menuRetrieved");
+                configure();
+            }
+        };
+        registerReceiver(retrieveMenu, new IntentFilter("menu"));
+        Log.d(TAG, "Received");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setContentView(R.layout.activity_drink_menu);
+        configure();
+    }
+
+    public ArrayList<DrinkItem> getDrinks(String category) {
+        ArrayList<DrinkItem> drinks = new ArrayList<DrinkItem>();
+        DBAdapterWearable dbAdapterWearable = new DBAdapterWearable(this);
+        try {
+            dbAdapterWearable.openToRead();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Cursor c = dbAdapterWearable.getRowByCategory(category);
+        while (!c.isAfterLast()) {
+            DrinkItem drink = new DrinkItem();
+            drink.setName(c.getString(DBAdapterWearable.COL_NAME));
+            drink.setCount(c.getInt(DBAdapterWearable.COL_COUNT));
+            drink.setIngredients(c.getString(DBAdapterWearable.COL_INGREDIENTS));
+            drink.setCalories(c.getInt(DBAdapterWearable.COL_CAL));
+            drink.setCategory(category);
+            drinks.add(drink);
+            c.moveToNext();
+        }
+        dbAdapterWearable.close();
+        return drinks;
+    }
+
 
     // Handle our Wearable List's click events
     private WearableListView.ClickListener mClickListener =
@@ -96,4 +154,13 @@ public class DrinkMenuWearableList extends Activity {
                     // Placeholder
                 }
             };
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            unregisterReceiver(retrieveMenu);
+        } catch (Exception e) {
+
+        }
+    }
 }

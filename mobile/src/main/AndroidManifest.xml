@@ -3,11 +3,11 @@
     package="org.cs160.bactracker" >
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL" />
 
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true"/>
-
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -20,6 +20,7 @@
             android:theme="@style/PhoneTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -54,8 +55,17 @@
         <activity
             android:name=".AboutActivity"
             android:label="@string/title_activity_about"
-            android:theme="@style/PhoneTheme">
+            android:theme="@style/PhoneTheme" >
         </activity>
+
+        <service
+            android:name=".MenuSignalListenerService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

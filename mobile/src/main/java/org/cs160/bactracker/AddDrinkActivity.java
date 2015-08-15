@@ -1,13 +1,13 @@
 package org.cs160.bactracker;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,21 +16,27 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.Wearable;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 
-public class AddDrinkActivity extends ActionBarActivity {
+public class AddDrinkActivity extends ActionBarActivity{
 
     private EditText drink_name;
     private EditText drink_alcohol;
     private EditText drink_calories;
     private EditText drink_ingredients;
     DBAdapter myDB;
+    GoogleApiClient mGoogleApiClient;
 
 
     public String TAG;
@@ -47,7 +53,6 @@ public class AddDrinkActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_drink);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        openDB();
     }
 
     @Override
@@ -85,23 +90,18 @@ public class AddDrinkActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void openDB() {
-        myDB = new DBAdapter(this);
-        myDB.open();
-    }
-
     public void addDrinkPressed(View view) {
         drink_name = (EditText) findViewById(R.id.drink_name);
         drink_alcohol = (EditText) findViewById(R.id.drink_alcohol);
         drink_calories = (EditText) findViewById(R.id.drink_calories);
         drink_ingredients = (EditText) findViewById(R.id.drink_ingredients);
         Spinner drink_category = (Spinner) findViewById(R.id.drink_category);
-        String spinVal = String.valueOf(drink_category.getSelectedItem());
+        final String spinVal = String.valueOf(drink_category.getSelectedItem());
 
-        String name = drink_name.getText().toString();
-        Double alcohol = Double.parseDouble(drink_alcohol.getText().toString());
-        Integer calories = Integer.parseInt(drink_calories.getText().toString());
-        String ingredients = drink_ingredients.getText().toString();
+        final String name = drink_name.getText().toString();
+        final Double alcohol = Double.parseDouble(drink_alcohol.getText().toString());
+        final Integer calories = Integer.parseInt(drink_calories.getText().toString());
+        final String ingredients = drink_ingredients.getText().toString();
         Log.d("TAG", spinVal);
 
         Log.d("TAG", drink_name.getText().toString());
@@ -109,12 +109,81 @@ public class AddDrinkActivity extends ActionBarActivity {
         Log.d("TAG", drink_calories.getText().toString());
         Log.d("TAG", drink_ingredients.getText().toString());
         Log.d("TAG", spinVal);
+        myDB = new DBAdapter(this);
+        try {
+            myDB.openToWrite();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        myDB.insertRow(name, calories.intValue(), alcohol.doubleValue(), spinVal, ingredients);
+        myDB.close();
+        try {
+            myDB.openToRead();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Cursor c = myDB.getAllRows();
+        while (!c.isAfterLast()) {
+            Log.d(TAG, c.getString(DBAdapter.COL_NAME));
+            c.moveToNext();
+        }
 
-        myDB.insertRow(name, calories, alcohol, spinVal, ingredients);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle connectionHint) {
+                        Log.d(TAG, "Connected");
+                        final PutDataMapRequest putRequest = PutDataMapRequest.create("/menu");
+                        final DataMap map = putRequest.getDataMap();
+                        DBAdapter dbAdapter = new DBAdapter(getApplicationContext());
+                        try {
+                            dbAdapter.openToRead();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        ArrayList<DataMap> dataMaps = new ArrayList<DataMap>();
+                        Cursor c = dbAdapter.getAllRows();
+                        while (!c.isAfterLast()) {
+                            DataMap m = new DataMap();
+                            m.putString("name", c.getString(0));
+                            m.putString("ingredients", c.getString(1));
+                            m.putInt("calories", c.getInt(3));
+                            m.putDouble("abv", c.getInt(2));
+                            m.putString("category", c.getString(4));
+                            dataMaps.add(m);
+                            c.moveToNext();
+                        }
+                        map.putDataMapArrayList("dataMaps", dataMaps);
+                        Long time = System.currentTimeMillis();
+                        map.putLong("time", time);
+                        Log.d(TAG, putRequest.asPutDataRequest().getUri().getPath());
+                        Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
+                        dbAdapter.close();
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int cause) {
+                    }
+                })
+                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult result) {
+                        Log.d(TAG, "Connection Failed");
+                        Log.d(TAG, result.toString());
+                    }
+                })
+                .addApi(Wearable.API)
+                .build();
+        mGoogleApiClient.connect();
+        myDB.close();
         name.replaceAll("\\s+","").toLowerCase();
         Log.d(TAG, "insideOnActivity" + name);
-        File newFile = new File(imagesFolder, name+".jpg");
-        image.renameTo(newFile);
+        try {
+            File newFile = new File(imagesFolder, name + ".jpg");
+            image.renameTo(newFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Intent intent = new Intent(this, PhoneActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);

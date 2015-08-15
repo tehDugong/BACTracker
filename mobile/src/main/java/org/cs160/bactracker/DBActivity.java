@@ -1,6 +1,5 @@
 package org.cs160.bactracker;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -25,11 +24,11 @@ public class DBActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        myDB = new DBAdapter(this);
         Log.d("TAG", "in db");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_db);
         myList = (ListView) findViewById(R.id. listView);
-        openDB();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             category = extras.getString("category");
@@ -52,7 +51,11 @@ public class DBActivity extends ActionBarActivity {
 
 
     private void startDrinkInfo(String name){
-
+        try {
+            myDB.openToRead();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Cursor c = myDB.getRowByName(name);
         Log.d(TAG, "startDrinkInfo"+name);
         int abvindex = c.getColumnIndex("abv");
@@ -78,6 +81,7 @@ public class DBActivity extends ActionBarActivity {
         i.putExtra("cal", cal);
         i.putExtra("ingredients", ingredients);
         i.putExtra("category", category);
+        myDB.close();
         startActivity(i);
     }
 
@@ -91,10 +95,6 @@ public class DBActivity extends ActionBarActivity {
         myList.setAdapter(myCursorAdapter);
     }
 
-    private void openDB(){
-        myDB = new DBAdapter(this);
-        myDB.open();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

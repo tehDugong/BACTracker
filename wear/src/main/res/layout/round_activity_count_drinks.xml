@@ -31,12 +31,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@id/plusButton"
-        android:layout_above="@id/minusButton"
-<<<<<<< HEAD
-        android:background="@drawable/menu_background">
-=======
-        >
->>>>>>> 3a69c26a746793ce3ad81465927b02df18e1c477
+        android:layout_above="@id/minusButton">
 
         <ImageView
             android:layout_width="75dp"
@@ -55,8 +50,6 @@
             android:gravity="center"
             android:id="@+id/drinkName"
             android:textSize="15dp"
-            android:layout_alignTop="@+id/drinkImage"
-            android:layout_toStartOf="@+id/drinkImage"
             android:layout_marginTop="5dp" />
         <TextView
             android:layout_width="wrap_content"
@@ -67,10 +60,10 @@
             android:textColor="#ffeb3b"
             android:layout_marginRight="10dp"
             android:id="@+id/drinkCount"
-            android:layout_alignBottom="@+id/drinkImage"
-            android:layout_alignStart="@+id/drinkName"
+            android:layout_below="@id/drinkName"
             android:layout_marginStart="42dp" />
 
     </RelativeLayout>
 </RelativeLayout>
+
 
