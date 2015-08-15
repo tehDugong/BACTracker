@@ -153,7 +153,9 @@ public class PhoneActivity extends ActionBarActivity {
         myDB.insertRow("Guinness", 125, 4.1, "Beer", "Roasted unmalted barley");
         myDB.insertRow("Heineken", 150, 5, "Beer", "Barley malt, hops and the unique Heineken A-yeast");
         myDB.insertRow("Long Island Iced Tea", 780, 22, "Cocktail", "Gin, Tequila, Vodka, Run, Triple sec");
+        myDB.insertRow("Margarita", 153, 22, "Cocktail", "Tequila, triple sec, lime, lemon");
         myDB.insertRow("Vodka", 64, 40, "Liquor", "Water, ethanol");
+        myDB.insertRow("Whisky", 70, 40, "Liquor", "Fermented grain mash");
 
 //        myDB.insertRow("Red Wine", 1.1 , 1, "Red Wine Ingredients");
 //        myDB.insertRow("White Wine", 2.2, 2, "White Wine Ingredients");

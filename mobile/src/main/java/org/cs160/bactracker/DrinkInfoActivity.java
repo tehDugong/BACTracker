@@ -160,17 +160,6 @@ public class DrinkInfoActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void removeFromMenu(View view){
-        Log.d(TAG, "removeFromMenu");
-        boolean flag = true;
-        if (flag == true) {
-            //((ImageButton) view).setBackgroundResource(R.drawable.addtomenu);
-        }
-        else{
-
-        }
-    }
-
     public void deleteFromDB(View view) {
         if (Arrays.asList(DBAdapter.genericDrinks).contains(name)) {
             AlertDialog ad = new AlertDialog.Builder(this)

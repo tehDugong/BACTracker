@@ -43,29 +43,6 @@
         android:layout_below="@+id/abvTextView"
         android:layout_centerHorizontal="true" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/removeFromMenuButton"
-        android:src="@drawable/addtomenu"
-        android:background="@null"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginBottom="10dp"
-        android:onClick="removeFromMenu"
-        android:layout_below="@id/ingredientsTextView"
-        android:layout_toStartOf="@+id/remove_text"
-        android:maxWidth="20dp"
-        android:maxHeight="20dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text=" Remove from Menu"
-        android:id="@+id/remove_text"
-        android:layout_alignBottom="@+id/removeFromMenuButton"
-        android:layout_centerHorizontal="true" />
 
     <ImageButton
         android:layout_width="wrap_content"

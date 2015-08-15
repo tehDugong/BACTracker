@@ -51,7 +51,7 @@ public class DBAdapter {
 
 
 	protected static final String[] genericDrinks = new String[] {"Merlot", "Chardonnay", "Guinness",
-	"Heineken", "Long Island Iced Tea", "Vodka"};
+	"Heineken", "Long Island Iced Tea", "Margarita", "Vodka", "Whisky"};
 
 
 	public DBAdapter(Context ctx) {
@@ -66,7 +66,9 @@ public class DBAdapter {
         this.insertRow("Guinness", 125, 4.1, "Beer", "Roasted unmalted barley");
         this.insertRow("Heineken", 150, 5, "Beer", "Barley malt, hops and the unique Heineken A-yeast");
         this.insertRow("Long Island Iced Tea", 780, 22, "Cocktail", "Gin, Tequila, Vodka, Run, Triple sec");
+		this.insertRow("Margarita", 153, 22, "Cocktail", "Tequila, triple sec, lime, lemon");
         this.insertRow("Vodka", 64, 40, "Liquor", "Water, ethanol");
+		this.insertRow("Whisky", 70, 40, "Liquor", "Fermented grain mash");
 	}
 
 
@@ -79,8 +81,9 @@ public class DBAdapter {
 		this.insertRowNoDups("Guinness", 125, 4.1, "Beer", "Roasted unmalted barley");
 		this.insertRowNoDups("Heineken", 150, 5, "Beer", "Barley malt, hops and the unique Heineken A-yeast");
 		this.insertRowNoDups("Long Island Iced Tea", 780, 22, "Cocktail", "Gin, Tequila, Vodka, Run, Triple sec");
+		this.insertRowNoDups("Margarita", 153, 22, "Cocktail", "Tequila, triple sec, lime, lemon");
 		this.insertRowNoDups("Vodka", 64, 40, "Liquor", "Water, ethanol");
-		this.insertRowNoDups("Whiskey", 64, 40, "Liquor", "Water, ethanol");
+		this.insertRowNoDups("Whisky", 70, 40, "Liquor", "Fermented grain mash");
 		return this;
 	}
 	public DBAdapter openToRead() throws SQLException {
