@@ -1,17 +1,16 @@
 package org.cs160.bactracker;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
@@ -20,9 +19,6 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
 import java.util.Calendar;
@@ -84,7 +80,31 @@ public class PhoneListeningService extends WearableListenerService
             Log.i(TAG, "Alcohol sum: "+drinks.getFloat("alcohol", 0.0f));
             float bac = calculateBAC();
             updateBAC(bac);
+        }else if (messageEvent.getPath().equalsIgnoreCase("/emergency")) {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("tel:911"));
+            startActivity(intent);
+        }else if (messageEvent.getPath().equalsIgnoreCase("/contact")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }else if (messageEvent.getPath().equalsIgnoreCase("/taxi")){
+            //try {
+                //PackageManager pm = getPackageManager();
+                //pm.getPackageInfo("com.ubercab", PackageManager.GET_ACTIVITIES);
+                String uri = "uber://?action=setPickup&pickup=my_location";
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse(uri));
+                //Log.d(TAG, "in uber?");
+                startActivity(intent);
+            //} catch (PackageManager.NameNotFoundException e) {
+                // No Uber app! Open Mobile Website.
+                //Log.d(TAG, "no uber app?");
+            //}
         }
+
     }
 
     private float calculateBAC(){

@@ -13,4 +13,5 @@
     <string name="title_activity_drink_categories">DrinkCategories</string>
     <string name="title_activity_sampleactivity">sampleactivity</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_exit">ExitActivity</string>
 </resources>

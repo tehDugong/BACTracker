@@ -1,36 +1,27 @@
 package org.cs160.bactracker;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
-
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.File;
 
 
 public class PhoneActivity extends ActionBarActivity {
 
     public static final String PREFS_NAME = "DrinksFile";
-    DBAdapter myDB;
+    protected static DBAdapter myDB;
     String TAG;
     ListView categoryList;
+    protected static File imagesFolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +29,10 @@ public class PhoneActivity extends ActionBarActivity {
         setContentView(R.layout.activity_phone);
 
         Log.d(TAG, "first");
-        //categoryList = (ListView) findViewById(R.id.listCategories);
-        openDB();
-        InitializeDatabase(); //used to reset the database
+        //openDB(); //used to reset database
+        //InitializeDatabase(); //used to reset the database
         Log.d(TAG, "startPhone");
-
-
+        imagesFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
     }
 
@@ -66,17 +55,6 @@ public class PhoneActivity extends ActionBarActivity {
 
                 Log.d(TAG, name);
                 startCategoryInfo(name);
-
-            }
-        });
-        */
-        /*
-        GridView gridview = (GridView) findViewById(R.id.gridview);
-        gridview.setAdapter(new ImageAdapter(this));
-
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
 
             }
         });

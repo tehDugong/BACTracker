@@ -33,6 +33,8 @@ public class DBAdapterWearable {
     public static final int COL_IMAGE = 5;
     public static final int COL_CATEGORY = 6;
 
+    private static DBAdapterWearable sInstance;
+
     // DataBase info:
     public static final String DATABASE_NAME = "DrinkDatabase";
     public static final String DATABASE_TABLE = "databaseTable";
@@ -59,10 +61,17 @@ public class DBAdapterWearable {
         myDBHelper = new DatabaseHelperWearable(ctx);
         db = myDBHelper.getWritableDatabase();
     }
+    public static synchronized DBAdapterWearable getInstance(Context context) {
 
-    public void init() {
-
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (sInstance == null) {
+            sInstance = new DBAdapterWearable(context.getApplicationContext());
+        }
+        return sInstance;
     }
+
 
     public DBAdapterWearable openToRead() throws SQLException {
         try {
@@ -90,6 +99,7 @@ public class DBAdapterWearable {
 
     // Add a new set of values to be inserted into the database.
     public long insertRow(String name, String ingredients, int cal, double abv, int count, String image, String category) {
+
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_INGREDIENTS, ingredients);
         initialValues.put(KEY_ABV, abv);
@@ -100,13 +110,17 @@ public class DBAdapterWearable {
         initialValues.put(KEY_IMAGE, image);
 
         // Insert the data into the database.
-        return db.insert(DATABASE_TABLE, null, initialValues);
+        long ret = 0;
+
+        ret = db.insert(DATABASE_TABLE, null, initialValues);
+        return ret;
     }
 
     // Delete a row from the database, by rowId (primary key)
     public boolean deleteRow(String rowId) {
         String where = KEY_NAME + "=" + rowId;
-        return db.delete(DATABASE_TABLE, where, null) != 0;
+        boolean ret = db.delete(DATABASE_TABLE, where, null) != 0;
+        return ret;
     }
 
     public void deleteAll() {
@@ -115,11 +129,6 @@ public class DBAdapterWearable {
     }
 
     public boolean deleteTable() {
-        try {
-            openToWrite();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         db.execSQL("delete from " + DATABASE_TABLE);
         return true;
     }
@@ -132,6 +141,13 @@ public class DBAdapterWearable {
             c.moveToFirst();
         }
         return c;
+    }
+    public void printAllRows(String tag) {
+        Cursor c = getAllRows();
+        while(!c.isAfterLast()) {
+            Log.d(tag, c.getString(COL_NAME));
+            c.moveToNext();
+        }
     }
 
     // Get a specific row (by rowId)
@@ -161,6 +177,7 @@ public class DBAdapterWearable {
         Cursor cursor = db.rawQuery(Query, null);
         if(cursor.getCount() <= 0){
             cursor.close();
+            close();
             return false;
         }
         cursor.close();
@@ -168,11 +185,6 @@ public class DBAdapterWearable {
     }
 
     public Cursor getRowByCategory(String cat) {
-        try {
-            this.openToRead();
-        } catch  (Exception e){
-            e.printStackTrace();
-        }
         String where = KEY_CATEGORY + " = '" + cat + "'";
         Cursor c = db.query(DATABASE_TABLE, ALL_KEYS, where, null, null, null, null, null);
         if (c != null) {
@@ -198,7 +210,8 @@ public class DBAdapterWearable {
         ContentValues newValues = new ContentValues();
         newValues.put(KEY_COUNT, count);
         // Insert it into the database.
-        return db.update(DATABASE_TABLE, newValues, where, null) != 0;
+        boolean b = db.update(DATABASE_TABLE, newValues, where, null) != 0;
+        return b;
     }
 
     protected static class DatabaseHelperWearable extends SQLiteOpenHelper {

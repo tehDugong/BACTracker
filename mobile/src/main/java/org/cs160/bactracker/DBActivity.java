@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 
 public class DBActivity extends ActionBarActivity {
-    DBAdapter myDB;
     ListView myList;
     final String TAG = "MainActivity";
     String category;
@@ -24,7 +23,8 @@ public class DBActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        myDB = new DBAdapter(this);
+        DBAdapter myDB = new DBAdapter(this);
+
         Log.d("TAG", "in db");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_db);
@@ -51,6 +51,7 @@ public class DBActivity extends ActionBarActivity {
 
 
     private void startDrinkInfo(String name){
+        DBAdapter myDB = new DBAdapter(this);
         try {
             myDB.openToRead();
         } catch (Exception e) {
@@ -60,7 +61,7 @@ public class DBActivity extends ActionBarActivity {
         Log.d(TAG, "startDrinkInfo"+name);
         int abvindex = c.getColumnIndex("abv");
         Log.i(TAG, "abv col index : " + Integer.toString(abvindex));
-        int abv = c.getInt(c.getColumnIndex("abv"));
+        Double abv = c.getDouble(c.getColumnIndex("abv"));
 
         int ingindex = c.getColumnIndex("ingredients");
         Log.i(TAG, "ingredients col index : " + Integer.toString(ingindex));
@@ -86,7 +87,7 @@ public class DBActivity extends ActionBarActivity {
     }
 
     private void populateListView(String category) {
-
+        DBAdapter myDB = new DBAdapter(this);
         Cursor cursor = myDB.getRowByCategory(category);
         String[] fromFieldNames = new String[] {DBAdapter.KEY_NAME};
         int[] toViewIDs = new int[] {R.id.name};

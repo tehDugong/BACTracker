@@ -44,12 +44,29 @@ public class DBAdapter {
 					+ KEY_CATEGORY + " TEXT "
 					+ ");";
 
-	private final Context context;
+	private Context context;
 	private static DatabaseHelper myDBHelper;
 	private static SQLiteDatabase db;
 
+
+
+	protected static final String[] genericDrinks = new String[] {"Merlot", "Chardonnay", "Guinness",
+	"Heineken", "Long Island Iced Tea", "Vodka"};
+
+
 	public DBAdapter(Context ctx) {
 		this.context = ctx;
+		myDBHelper = new DatabaseHelper(context);
+        db = myDBHelper.getWritableDatabase();
+
+
+
+        this.insertRow("Merlot", 122, 14.5, "Wine", "Merlot grapes");
+        this.insertRow("Chardonnay", 123, 14.5, "Wine", "Chardonnay grapes");
+        this.insertRow("Guinness", 125, 4.1, "Beer", "Roasted unmalted barley");
+        this.insertRow("Heineken", 150, 5, "Beer", "Barley malt, hops and the unique Heineken A-yeast");
+        this.insertRow("Long Island Iced Tea", 780, 22, "Cocktail", "Gin, Tequila, Vodka, Run, Triple sec");
+        this.insertRow("Vodka", 64, 40, "Liquor", "Water, ethanol");
 	}
 
 
@@ -80,6 +97,13 @@ public class DBAdapter {
 			db = myDBHelper.getWritableDatabase();
 		} catch (Exception e){}
 		return this;
+	}
+	public void printAllRows(String tag) {
+		Cursor c = getAllRows();
+		while (!c.isAfterLast()) {
+			Log.d(tag, c.getString(COL_NAME));
+			c.moveToNext();
+		}
 	}
 
 	// Close the database connection.

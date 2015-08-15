@@ -46,7 +46,7 @@
         <activity
             android:name=".AddDrinkActivity"
             android:label="Add Drink"
-            android:theme="@style/PhoneTheme" >
+            android:theme="@style/PhoneTheme">
         </activity>
         <activity
             android:name=".DrinkInfoActivity"

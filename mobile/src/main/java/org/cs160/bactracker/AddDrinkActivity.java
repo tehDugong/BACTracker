@@ -3,6 +3,10 @@ package org.cs160.bactracker;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,9 +16,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,17 +41,18 @@ public class AddDrinkActivity extends ActionBarActivity{
     private EditText drink_alcohol;
     private EditText drink_calories;
     private EditText drink_ingredients;
-    DBAdapter myDB;
     GoogleApiClient mGoogleApiClient;
+    DBAdapter myDB;
 
 
     public String TAG;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Uri uriSavedImage;
     ImageView imageView;
-    protected static File imagesFolder;
+    protected static File imagesFolder = PhoneActivity.imagesFolder;
     protected static File image;
-
+    protected static String mCurrentPhotoPath;
+    protected static Switch photoSwitch;
 
 
     @Override
@@ -53,6 +60,16 @@ public class AddDrinkActivity extends ActionBarActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_drink);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        photoSwitch = (Switch) findViewById(R.id.photoSwitch);
+        photoSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    takePhoto();
+                }
+            }
+        });
     }
 
     @Override
@@ -178,11 +195,14 @@ public class AddDrinkActivity extends ActionBarActivity{
         myDB.close();
         name.replaceAll("\\s+","").toLowerCase();
         Log.d(TAG, "insideOnActivity" + name);
-        try {
-            File newFile = new File(imagesFolder, name + ".jpg");
+
+        String reName = name.replaceAll("\\s+","").toLowerCase();
+        File newFile = new File(imagesFolder, reName+".jpg");
+
+        if (photoSwitch.isChecked()) {
+            Log.d(TAG, "photo renamed as "+ reName);
             image.renameTo(newFile);
-        } catch (Exception e) {
-            e.printStackTrace();
+            mCurrentPhotoPath = image.getAbsolutePath();
         }
 
         Intent intent = new Intent(this, PhoneActivity.class);
@@ -191,30 +211,36 @@ public class AddDrinkActivity extends ActionBarActivity{
 
     }
 
-    public void takePhoto(View view) {
-        String name = "newdrink";
+    public void takePhoto(){
 
         imageView = (ImageView)findViewById(R.id.takenPhoto);
-
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        imagesFolder = new File(Environment.getExternalStorageDirectory(), "MyImages");
-        imagesFolder.mkdir();
-        image = new File(imagesFolder, name+".jpg");
+
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+
+            //imagesFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            image = new File(imagesFolder, "newdrink.jpg");
+        }
+
+        mCurrentPhotoPath = image.getAbsolutePath();
         uriSavedImage = Uri.fromFile(image);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
-
         startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "taken");
         Bitmap bitmap = null;
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == 100) {
                 try {
+                    Log.d(TAG, "before");
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriSavedImage);
+                    Log.d(TAG, "after");
 
                 } catch (FileNotFoundException e1) {
                     // TODO Auto-generated catch block
@@ -223,6 +249,21 @@ public class AddDrinkActivity extends ActionBarActivity{
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
+
+                // Get the dimensions of the bitmap
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                bmOptions.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+
+                // Decode the image file into a Bitmap sized to fill the View
+                bmOptions.inJustDecodeBounds = false;
+                bmOptions.inSampleSize = 12;
+
+                bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
                 imageView.setImageBitmap(bitmap);
             }
         }

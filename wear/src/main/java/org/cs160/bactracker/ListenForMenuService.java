@@ -25,15 +25,15 @@ public class ListenForMenuService extends WearableListenerService {
             final String path = uri != null ? uri.getPath() : null;
             Log.d(TAG, path);
             if ("/menu".equals(path)) {
-                dbAdapter = new DBAdapterWearable(getApplicationContext());
                 Log.d(TAG, "check");
+                final DataMap map = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
+                ArrayList<DataMap> dataMaps = map.getDataMapArrayList("dataMaps");
+                dbAdapter = DBAdapterWearable.getInstance(getApplicationContext());
                 try {
                     dbAdapter.openToWrite();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-                final DataMap map = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
-                ArrayList<DataMap> dataMaps = map.getDataMapArrayList("dataMaps");
                 for (int i = 0; i < dataMaps.size(); i++) {
                     DataMap m = dataMaps.get(i);
                     if (! dbAdapter.checkExists(DBAdapterWearable.KEY_NAME, m.getString("name"))) {
@@ -50,12 +50,13 @@ public class ListenForMenuService extends WearableListenerService {
                                 + m.getString("category"));
                     }
                 }
+
                 Log.d(TAG, "...About to Send Broadcast");
                 Intent intent = new Intent("menuRetrieved");
                 Intent intent2 = new Intent("menu");
                 sendBroadcast(intent);
                 sendBroadcast(intent2);
-                dbAdapter.close();
+                dbAdapter.printAllRows(TAG);
             }
         }
     }

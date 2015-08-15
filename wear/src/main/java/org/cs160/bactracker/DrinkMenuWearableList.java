@@ -15,6 +15,7 @@ import android.support.wearable.view.WearableListView;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class DrinkMenuWearableList extends Activity {
@@ -50,33 +51,34 @@ public class DrinkMenuWearableList extends Activity {
             mNames.add(d.getName());
         }
 
-        // This is our list header
-        mHeader = (TextView) findViewById(R.id.header_drink_menu);
-        WearableListView wearableListView =
-                (WearableListView) findViewById(R.id.wearable_List);
-        wearableListView.setAdapter(new MenuAdapter(this, mIcons, mNames));
-        wearableListView.setClickListener(mClickListener);
-        wearableListView.addOnScrollListener(mOnScrollListener);
-        mHeader.setText(category);
+            // This is our list header
+            mHeader = (TextView) findViewById(R.id.header_drink_menu);
+            WearableListView wearableListView =
+                    (WearableListView) findViewById(R.id.wearable_List);
+            wearableListView.setAdapter(new MenuAdapter(this, mIcons, mNames));
+            wearableListView.setClickListener(mClickListener);
+            wearableListView.addOnScrollListener(mOnScrollListener);
+            mHeader.setText(category);
     }
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drink_menu);
-        Intent i = new Intent(this, SignalForMenu.class);
-        startService(i);
-        retrieveMenu = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "menuRetrieved");
-                configure();
-            }
-        };
-        registerReceiver(retrieveMenu, new IntentFilter("menu"));
-        Log.d(TAG, "Received");
-    }
+        @Override
+        protected void onCreate (Bundle savedInstanceState){
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_drink_menu);
+            Intent i = new Intent(this, SignalForMenu.class);
+            startService(i);
+            retrieveMenu = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    Log.d(TAG, "menuRetrieved");
+                    configure();
+                }
+            };
+            registerReceiver(retrieveMenu, new IntentFilter("menu"));
+            Log.d(TAG, "Received");
+            configure();
+        }
 
     @Override
     public void onResume() {
@@ -87,13 +89,10 @@ public class DrinkMenuWearableList extends Activity {
 
     public ArrayList<DrinkItem> getDrinks(String category) {
         ArrayList<DrinkItem> drinks = new ArrayList<DrinkItem>();
-        DBAdapterWearable dbAdapterWearable = new DBAdapterWearable(this);
-        try {
-            dbAdapterWearable.openToRead();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Cursor c = dbAdapterWearable.getRowByCategory(category);
+
+        Cursor c = BACActivity.dbAdapterWearable.getRowByCategory(category);
+        Log.d(TAG, "Got Drinks");
+        Log.d(TAG, Integer.toString(c.getCount()));
         while (!c.isAfterLast()) {
             DrinkItem drink = new DrinkItem();
             drink.setName(c.getString(DBAdapterWearable.COL_NAME));
@@ -101,10 +100,24 @@ public class DrinkMenuWearableList extends Activity {
             drink.setIngredients(c.getString(DBAdapterWearable.COL_INGREDIENTS));
             drink.setCalories(c.getInt(DBAdapterWearable.COL_CAL));
             drink.setCategory(category);
+            double abv = c.getDouble(DBAdapterWearable.COL_ABV);
+            drink.setAbv(c.getDouble(DBAdapterWearable.COL_ABV));
+            float abvConv = ((float)abv) * .01f;
+            Log.d(TAG, "ABV CONV" + Float.toString(abvConv));
+            float size = 0.0f;
+            if (category.equals("Beer")) {
+                size = 12.0f;
+            } else if (category.equals("Wine")) {
+                size = 8.0f;
+            } else if (category.equals("Liquor")) {
+                size = 2.0f;
+            } else if (category.equals("Cocktail")) {
+                size = 8.0f;
+            }
+            drink.setAlcoholContent(size*abvConv);
             drinks.add(drink);
             c.moveToNext();
         }
-        dbAdapterWearable.close();
         return drinks;
     }
 

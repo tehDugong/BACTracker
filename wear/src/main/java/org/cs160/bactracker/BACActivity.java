@@ -22,7 +22,6 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class BACActivity extends Activity
@@ -35,22 +34,16 @@ public class BACActivity extends Activity
     private float bac;
     private BroadcastReceiver receiver, menuReceiver;
     private ImageButton menuButton;
+    public static DBAdapterWearable dbAdapterWearable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         Log.i(TAG, "BACActivity started!");
-
-
+        dbAdapterWearable = new DBAdapterWearable(getApplicationContext());
         super.onCreate(savedInstanceState);
-        DBAdapterWearable dbAdapter = new DBAdapterWearable(this);
-        try {
-            dbAdapter.openToWrite();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        dbAdapter.deleteAll();
-        dbAdapter.close();
+
+        dbAdapterWearable.deleteAll();
         Intent i = new Intent(this, SignalForMenu.class);
         startService(i);
 
@@ -165,32 +158,34 @@ public class BACActivity extends Activity
                 })
                 .create();
         ad.show();
-        DBAdapterWearable dbAdapterWearable = new DBAdapterWearable(this);
-        try {
-            dbAdapterWearable.openToRead();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        Cursor c = dbAdapterWearable.getAllRows();
+
+
+        Cursor c = BACActivity.dbAdapterWearable.getAllRows();
         ArrayList<String> names = new ArrayList<String>();
         while (!c.isAfterLast()) {
             String name = c.getString(DBAdapterWearable.COL_NAME);
             names.add(name);
+            c.moveToNext();
         }
-        dbAdapterWearable.close();
-        try {
-            dbAdapterWearable.openToWrite();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
         for (String name : names) {
-            dbAdapterWearable.updateRow(name, 0);
+            BACActivity.dbAdapterWearable.updateRow(name, 0);
         }
-        dbAdapterWearable.close();
     }
     public void toDrinksSelection(View v) {
 
         Intent i = new Intent(this, MenuWearableList.class);
+        startActivity(i);
+    }
+
+    public void toExitActivity (View v) {
+        Intent i = new Intent(getApplicationContext(), ExitActivity.class);
+        Log.i(TAG, "Exitting with BAC "+bac+" and limit "+limit);
+        if (bac < limit) {
+            i.putExtra("safe", true);
+        } else {
+            i.putExtra("safe", false);
+        }
         startActivity(i);
     }
 

@@ -32,16 +32,17 @@ public class MenuWearableList extends Activity {
         // Icons for the list
         mIcons = new ArrayList<Integer>();
         mIcons.add(R.drawable.beer);
-        mIcons.add(R.drawable.cocktail);
-        mIcons.add(R.drawable.liquor);
         mIcons.add(R.drawable.wine);
+        mIcons.add(R.drawable.liquor);
+
+        mIcons.add(R.drawable.cocktail);
 
         // names for the list
         mNames = new ArrayList<String>();
         mNames.add("Beer");
-        mNames.add("Cocktail");
-        mNames.add("Liquor");
         mNames.add("Wine");
+        mNames.add("Liquor");
+        mNames.add("Cocktail");
 
         // This is our list header
         mHeader = (TextView) findViewById(R.id.header_menu);

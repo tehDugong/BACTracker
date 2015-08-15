@@ -84,6 +84,7 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
     public void minusButtonClick(View v) {
         increment(-1);
     }
+
     public void increment(int inc) {
         if (inc + count < 0)
             return;
@@ -93,14 +94,12 @@ public class CountDrinks extends Activity implements GoogleApiClient.ConnectionC
         float alcohol = drink.getAlcoholContent() * inc;
         Log.i(TAG, "Alcohol calculated: " + alcohol);
         sendMessage("/alcohol", ByteBuffer.allocate(4).putFloat(alcohol).array());
-        DBAdapterWearable dbAdapterWearable = new DBAdapterWearable(this);
-        Log.d(TAG, Boolean.toString(dbAdapterWearable.updateRow(drink.getName(), count)));
-        Cursor c = dbAdapterWearable.getAllRows();
+        Log.d(TAG, Boolean.toString(BACActivity.dbAdapterWearable.updateRow(drink.getName(), count)));
+        Cursor c = BACActivity.dbAdapterWearable.getAllRows();
         while (!c.isAfterLast()) {
             Log.d(TAG, c.getString(DBAdapterWearable.COL_NAME) + ":"+ c.getInt(DBAdapterWearable.COL_COUNT));
             c.moveToNext();
         }
-        dbAdapterWearable.close();
     }
 
     @Override

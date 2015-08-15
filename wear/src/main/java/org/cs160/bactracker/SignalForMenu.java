@@ -14,6 +14,7 @@ import com.google.android.gms.wearable.Wearable;
 
 public class SignalForMenu extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     private GoogleApiClient mGoogleApiClient;
+    private final String TAG = "SignalForMenu";
     public SignalForMenu() {
     }
 
@@ -37,11 +38,10 @@ public class SignalForMenu extends Service implements GoogleApiClient.Connection
 
     private void sendMessage() {
         if(mGoogleApiClient.isConnected()) {
+            Log.d(TAG, "Connected message signal");
             new Thread( new Runnable() {
                 @Override
                 public void run() {
-                    DBAdapterWearable dbAdapter = new DBAdapterWearable(getApplicationContext());
-                    dbAdapter.init();
                     NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes( mGoogleApiClient ).await();
                     for(Node node : nodes.getNodes()) {
                         Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "GET_MENU", null).await();

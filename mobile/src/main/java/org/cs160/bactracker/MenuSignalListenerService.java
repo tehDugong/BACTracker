@@ -12,7 +12,6 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MenuSignalListenerService extends WearableListenerService {
@@ -32,12 +31,8 @@ public class MenuSignalListenerService extends WearableListenerService {
                             final PutDataMapRequest putRequest = PutDataMapRequest.create("/menu");
                             final DataMap map = putRequest.getDataMap();
                             DBAdapter dbAdapter = new DBAdapter(getApplicationContext());
-                            try {
-                                dbAdapter.openToRead();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
                             ArrayList<DataMap> dataMaps = new ArrayList<DataMap>();
+                            dbAdapter.printAllRows(TAG);
                             Cursor c = dbAdapter.getAllRows();
                             while (!c.isAfterLast()) {
                                 DataMap m = new DataMap();

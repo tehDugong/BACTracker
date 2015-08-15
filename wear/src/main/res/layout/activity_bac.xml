@@ -2,7 +2,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@color/black">
 
     <TextView
         android:id="@+id/bac_text"
@@ -46,12 +47,13 @@
         android:onClick="reset"/>
 
     <ImageButton
-        android:id="@+id/done_button"
+        android:id="@+id/exit_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_below="@id/current_BAC"
         android:layout_toRightOf="@id/menu_button"
-        android:background="@drawable/exit"/>
+        android:background="@drawable/exit"
+        android:onClick="toExitActivity"/>
 
 
 </RelativeLayout>

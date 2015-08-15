@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 
 import android.database.Cursor;
 
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Created by mwaliman on 8/1/15.
@@ -34,6 +36,7 @@ public class DrinkInfoActivity extends ActionBarActivity {
     String picturename;
     String category;
     private static final String TAG = "DrinkInfoActivity"; //used for logging database version changes
+    DBAdapter myDB = PhoneActivity.myDB;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,10 +50,10 @@ public class DrinkInfoActivity extends ActionBarActivity {
         if (extras != null) {
             name = extras.getString("name");
             cal = extras.getInt("cal");
-            abv = extras.getInt("abv");
+            abv = extras.getDouble("abv");
             ingredients = extras.getString("ingredients");
             category = extras.getString("category");
-            //Log.d(TAG, "drinkinfo "+ category);
+            Log.d(TAG, "check abv "+ Double.toString(abv));
             calTextView.setText(Integer.toString(cal) + " Calories");
             abvTextView.setText(Double.toString(abv) + " % Alcohol");
             ingredientsTextView.setText(ingredients);
@@ -58,26 +61,66 @@ public class DrinkInfoActivity extends ActionBarActivity {
         getSupportActionBar().setTitle(name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //picturename = category.replaceAll("\\s+","").toLowerCase();
+        //try to get form drawable
         picturename = name.replaceAll("\\s+","").toLowerCase();
         Log.i(TAG, picturename);
         Context context = drinkImageView.getContext();
         int id = context.getResources().getIdentifier(picturename, "drawable", context.getPackageName());
         Log.d(TAG, "drinkInfo"+id);
-        if (id == 0) {
-            String drinkPictureName = name.replaceAll("\\s+","").toLowerCase();
-            Log.d(TAG, "drinkPicName" + drinkPictureName);
-            File imgFile = AddDrinkActivity.imagesFolder;
 
-            if(imgFile.exists()){
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath()+"/"+drinkPictureName+".jpg");
-                drinkImageView.setImageBitmap(myBitmap);
-
-            }
-        }
-        else {
+        //Found drawable
+        if (id != 0) {
             drinkImageView.setImageResource(id);
         }
+        else if (id == 0){
+            String drinkPictureName = name.replaceAll("\\s+","").toLowerCase();
+            File imgFile = PhoneActivity.imagesFolder;
+
+            Log.d(TAG, "drinkPicName " + drinkPictureName);
+
+            //if (imgFile != null) {
+
+
+                String mCurrentPhotoPath = imgFile.getAbsolutePath() + "/" + drinkPictureName + ".jpg";
+                Bitmap checkValidPath = BitmapFactory.decodeFile(mCurrentPhotoPath);
+
+                if (checkValidPath != null) {
+                    // Get the dimensions of the bitmap
+                    Log.d(TAG, "photo path is not null");
+                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                    bmOptions.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+
+                    // Decode the image file into a Bitmap sized to fill the View
+                    bmOptions.inJustDecodeBounds = false;
+                    bmOptions.inSampleSize = 12;
+
+                    Bitmap myBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(90);
+                    myBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
+
+                    drinkImageView.setImageBitmap(myBitmap);
+                } else {
+                    //User didn't take a photo, use category one
+                    Log.d(TAG, "photo path is null");
+                    picturename = category.replaceAll("\\s+", "").toLowerCase() + "icon";
+                    context = drinkImageView.getContext();
+                    id = context.getResources().getIdentifier(picturename, "drawable", context.getPackageName());
+                    drinkImageView.setImageResource(id);
+                }
+            }
+        /*
+            else {
+                //User didn't take a photo, use category one
+                Log.d(TAG, "image file is null");
+                picturename = category.replaceAll("\\s+", "").toLowerCase() + "icon";
+                context = drinkImageView.getContext();
+                id = context.getResources().getIdentifier(picturename, "drawable", context.getPackageName());
+                drinkImageView.setImageResource(id);
+            }
+            */
+       // }
     }
 
     @Override
@@ -129,29 +172,46 @@ public class DrinkInfoActivity extends ActionBarActivity {
     }
 
     public void deleteFromDB(View view) {
-        AlertDialog ad = new AlertDialog.Builder(this)
-                .setMessage("Are you sure you want to delete this drink?")
-                .setTitle("Delete?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteOperation();
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                        dialog.dismiss();
-                    }
-                })
-                .create();
-        ad.show();
+        if (Arrays.asList(DBAdapter.genericDrinks).contains(name)) {
+            AlertDialog ad = new AlertDialog.Builder(this)
+                    .setMessage("Common Drinks cannot be deleted")
+                    .setTitle("Alert")
+                    .setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            ad.show();
+
+        }
+        else{
+            AlertDialog ad = new AlertDialog.Builder(this)
+                    .setMessage("Are you sure you want to delete this drink?")
+                    .setTitle("Delete?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteOperation();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            ad.show();
+        }
+
     }
 
     private void deleteOperation(){
-        DBAdapter myDB = new DBAdapter(this);
+        //DBAdapter myDB = new DBAdapter(this);
         myDB.open();
         Cursor c = myDB.getRowByName(name);
         String id = "'"+c.getString(0)+"'";
